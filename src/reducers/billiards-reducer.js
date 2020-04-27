@@ -65,7 +65,7 @@ export default function billiardsReducer(state = initialState, action) {
       console.log('UPDATING BALLS VIA REDUCER AND APPLY PHYSICS')
       // debugger;
       // let initialBilliardsInfo = [...state.billiards];
-      let finalBilliardsInfo = applyPhysics([...state.billiards], action.settings, action.elapsedTime);
+      let finalBilliardsInfo = applyPhysics([...state.billiards], action.settings);
 
       // status will either be 'idle' or 'awaiting-direction', base on movement still existing
       return {

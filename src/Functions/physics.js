@@ -174,7 +174,7 @@ const resolveBottomCollision = (ballObject) => {
 }
 
 // this funciton will need to move all balls, change their location, test for collisions
-export const applyPhysics = (billiardsObject, settings, elapsedTime) => {
+export const applyPhysics = (billiardsObject, settings) => {
   
   // handle current collisions
   // let newBilliardsArray = [...billiardsArray];
@@ -184,18 +184,16 @@ export const applyPhysics = (billiardsObject, settings, elapsedTime) => {
       resolveCushionCollisions(element);
     }
     
-    // element.left += (settings.refreshRate/100) * element.xVel;  // pre requestionAnimationFrame
-    // element.top -= (settings.refreshRate/100) * element.yVel;
-    element.left += (elapsedTime/100) * element.xVel;
-    element.top -= (elapsedTime/100) * element.yVel;
+    element.left += (settings.refreshRate/100) * element.xVel;
+    element.top -= (settings.refreshRate/100) * element.yVel;
     let v = getHypotenuse(element.xVel,element.yVel);
     if (v > energySinks.translationalFriction) v -= energySinks.translationalFriction;  // needs to be dfifferent based on positivity
     else v = 0;
     element.xVel = getMissingTriangleSide(v+energySinks.translationalFriction, element.xVel, v);
     // debugger;
     element.yVel = getMissingTriangleSide(v+energySinks.translationalFriction, element.yVel, v);
-    element.xAngle += (elapsedTime/100) * element.xSpin;
-    element.yAngle += (elapsedTime/100) * element.ySpin;
+    element.xAngle += (settings.refreshRate/100) * element.xSpin;
+    element.yAngle += (settings.refreshRate/100) * element.ySpin;
     if (Math.abs(element.xSpin) <= energySinks.rotationalFrictionX) element.xSpin = 0;
     else {
       if (element.xSpin > 0) element.xSpin -= energySinks.rotationalFrictionX;

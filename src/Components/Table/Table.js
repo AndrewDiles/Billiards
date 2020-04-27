@@ -7,6 +7,7 @@ import {
   updateBalls,
   endBallMotion
 } from "../../actions";
+import useTimeout from '../../Hooks/use-timeout';
 
 
 import { tableSizes, sizeRatios } from '../../Constants/tableSizes';
@@ -28,7 +29,6 @@ const Table = () => {
   const dispatch = useDispatch();
   const settings = useSelector((state) => state.settings);
   const billiards = useSelector((state) => state.billiards);
-  const [rAF, setRAF] = React.useState(null);
 
   useEffect (()=> {
     if (billiards.status === 'just-struck') {
@@ -37,13 +37,9 @@ const Table = () => {
       // send shot data to other player if not single player
       // update(dispatch, settings, billiards);
 
-      // update();  // pre requestAnimationFrame
+      useTimeout(update, settings.refreshRate);
       
       // debugger;
-
-
-      const startTime = Date.now();
-      setRAF(requestAnimationFrame(update(startTime)));
 
 
     }
@@ -51,7 +47,7 @@ const Table = () => {
 
   // console.log('refreshRaterefreshRaterefreshRaterefreshRate',settings.refreshRate);
 
-  const update = (startTime) => {
+  const update = () => {
     console.log('performing an update at rate of: ', settings.refreshRate);
     let stillMotion = false;
     // console.log('billiardsbilliardsbilliardsbilliardsbilliards',billiards);
@@ -59,17 +55,16 @@ const Table = () => {
       console.log('billiardbilliardbilliardbilliardbilliardbilliardbilliardbilliard',billiard)
       console.log('billiard.inMotionbilliard.inMotionbilliard.inMotionbilliard.inMotion,billiard.inMotion',billiard.inMotion)
       if (billiard.inMotion) stillMotion = true;
+      console.log('stillMotionstillMotionstillMotionstillMotionstillMotionstillMotion',stillMotion)
     })
     if (!stillMotion) {
-      cancelAnimationFrame(rAF);
       dispatch(endBallMotion());
       return
     }
     else {
     console.log('-----------GOT THIS FAR IN FUNCTION----------')
-    const elapsedTime = Date.now() - startTime;
-    dispatch(updateBalls(settings, elapsedTime));
-    // setTimeout(update, settings.refreshRate);  // pre requestAnimationFrame
+    dispatch(updateBalls(settings));
+    useTimeout(update, settings.refreshRate);
     // send info to other user(s) about final locations of balls
     // test game conditions (whose turn, game over, who won?  etc)
     }

@@ -83,9 +83,8 @@ export const cueStrike = (power, angle, strikeLocationX, strikeLocationY) => ({
   strikeLocationX,
   strikeLocationY
 })
-export const updateBalls = (settings, elapsedTime) => ({
+export const updateBalls = (settings) => ({
   settings,
-  elapsedTime,
   type: 'UPDATE_BALLS',
 })
 export const endBallMotion = () => ({
