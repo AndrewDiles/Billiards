@@ -5,7 +5,7 @@ export const ballColors = {
   3 :   { color: "red",       striped: false, },
   4 :   { color: "purple",    striped: false, },
   5 :   { color: "orange",    striped: false, },
-  6 :   { color: "darkgreen", striped: false, },
+  6 :   { color: "green",     striped: false, },
   7 :   { color: "maroon",    striped: false, },
   8 :   { color: "black",     striped: false, },
   9 :   { color: "yellow",    striped: true, },

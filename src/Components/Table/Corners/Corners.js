@@ -2,6 +2,8 @@ import React, { useContext } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import styled from 'styled-components';
 
+import felt from '../../../assets/pool_table/pool_table.png';
+
 import { tableSizes } from '../../../Constants/tableSizes';
 // import { SettingsContext } from '../../../SettingsContext';
 
@@ -62,10 +64,11 @@ const Green = styled.div`
   width: ${props => props.tableSizes[props.size].cornerGreenWidth && props.tableSizes[props.size].cornerGreenWidth}px;
   height: ${props => props.tableSizes[props.size].cornerGreenHeight && props.tableSizes[props.size].cornerGreenHeight}px;
   background: green;
+  background-image: url(${felt});
   border-radius: 50%;
   top: ${props => props.top}px;
   left: ${props => props.left}px;
-
+  
   ${props => props.corner === 'TL' && {
     transform: 'rotate(45deg)',
   }}

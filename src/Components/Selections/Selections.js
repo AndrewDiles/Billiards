@@ -6,6 +6,7 @@ import {
   changeTableSize,
   addBalls,
   changeGameType,
+  setGameStatusFirstShot,
 } from "../../actions";
 
 // import { SettingsContext } from '../../SettingsContext';
@@ -16,11 +17,13 @@ import StyledButton from '../StyledButton';
 
 
 
-const Selections = () => {
+const Selections = ({isSliding}) => {
   const dispatch = useDispatch();
   const settings = useSelector((state) => state.settings);
   // const { settings, setSettings } = useContext(SettingsContext);
-
+  if (!settings.sideBarOpen || isSliding) {
+    return (<></>)
+  }
   // import color stylings?
 
   const handleClick = (ev) => {
@@ -34,39 +37,51 @@ const Selections = () => {
     // dispatch(addBalls(settings.gameType));
     dispatch(changeGameType(text));
     dispatch(addBalls(text));
+    dispatch(setGameStatusFirstShot());
+
   }
+  let disabled = false;
+  // if (!(settings.status === 'idle' || settings.status === 'error')) disabled = true;
+  // if (!(userInfo.status === 'idle' || userInfo.status === 'error')) disabled = true;
+  // if (!(billiards.status === 'idle' || billiards.status === 'error')) disabled = true;
 
   return (
     <Wrapper>
       <StyledButton
       handleClick = {() => handleClickBallMaker("eight")}
+      disabled = {disabled}
       >
         Eight
       </StyledButton>
       <StyledButton
       handleClick = {() => handleClickBallMaker("nine")}
+      disabled = {disabled}
       >
         Nine
       </StyledButton>
       <StyledButton
       handleClick = {() => handleClickBallMaker("test")}
+      disabled = {disabled}
       >
         TestMakeBalls
       </StyledButton>
       <StyledButton
       handleClick = {handleClick}
+      disabled = {disabled}
       value = "narrow"
       >
         Narrow
       </StyledButton>
       <StyledButton
       handleClick = {handleClick}
+      disabled = {disabled}
       value = "medium"
       >
         Medium
       </StyledButton>
       <StyledButton
       handleClick = {handleClick}
+      disabled = {disabled}
       value = "full"
       >
         Full
@@ -76,9 +91,12 @@ const Selections = () => {
 }
 export default Selections;
 const Wrapper = styled.div`
-  position: absolute;
+  /* position: absolute; */
   z-index: 10;
   display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: left;
   top: 0;
   right: 0;
 `

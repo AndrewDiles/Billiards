@@ -1,4 +1,4 @@
-import React, { useEffect, useContext } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import styled from 'styled-components';
 
@@ -7,12 +7,10 @@ import {
   updateBalls,
   endBallMotion
 } from "../../actions";
-import useTimeout from '../../Hooks/use-timeout';
+import useInterval from '../../Hooks/use-interval';
 
-
+import felt from '../../assets/pool_table/pool_table.png';
 import { tableSizes, sizeRatios } from '../../Constants/tableSizes';
-
-// import { SettingsContext } from '../../SettingsContext';
 
 import { TableMemo } from './TableMemo/TableMemo';
 import Ball from './Balls';
@@ -29,42 +27,56 @@ const Table = () => {
   const dispatch = useDispatch();
   const settings = useSelector((state) => state.settings);
   const billiards = useSelector((state) => state.billiards);
-
-  useEffect (()=> {
-    if (billiards.status === 'just-struck') {
-      // console.log('DISPATCHING BEGIN BALL MOTION. THIS BETTER ONLY HAPPEN ONCE >.<')
-      dispatch(beginBallMotion());
-      // send shot data to other player if not single player
-      // update(dispatch, settings, billiards);
-
-      useTimeout(update, settings.refreshRate);
-      
-      // debugger;
+  const [startTime, setStartTime] = useState(false);
 
 
+  useInterval(() => {
+    if (!(billiards.status === 'just-struck' || billiards.status === "in-motion")) {
+      return;
     }
-  }, [billiards.status] )
+    else if (billiards.status === 'just-struck') {
+      setStartTime(Date.now())
+      dispatch(beginBallMotion());
+      update();
+      return;
+    }
+    else {
+      if (Date.now() - startTime >= settings.refreshRate) {
+        setStartTime(Date.now())
+        update();
+      }
+    }
+  }, settings.refreshRate);
+
+
+  // useEffect (()=> {
+  //   if (billiards.status === 'just-struck') {
+  //     // console.log('DISPATCHING BEGIN BALL MOTION. THIS BETTER ONLY HAPPEN ONCE >.<')
+  //     dispatch(beginBallMotion());
+  //     // send shot data to other player if not single player
+  //     // update(dispatch, settings, billiards);
+
+  //     // useTimeout(update, settings.refreshRate);
+
+  //     // debugger;
+
+
+  //   }
+  // }, [billiards.status] )
 
   // console.log('refreshRaterefreshRaterefreshRaterefreshRate',settings.refreshRate);
 
   const update = () => {
-    console.log('performing an update at rate of: ', settings.refreshRate);
     let stillMotion = false;
-    // console.log('billiardsbilliardsbilliardsbilliardsbilliards',billiards);
     billiards.billiards.forEach((billiard)=>{
-      console.log('billiardbilliardbilliardbilliardbilliardbilliardbilliardbilliard',billiard)
-      console.log('billiard.inMotionbilliard.inMotionbilliard.inMotionbilliard.inMotion,billiard.inMotion',billiard.inMotion)
       if (billiard.inMotion) stillMotion = true;
-      console.log('stillMotionstillMotionstillMotionstillMotionstillMotionstillMotion',stillMotion)
     })
     if (!stillMotion) {
       dispatch(endBallMotion());
       return
     }
     else {
-    console.log('-----------GOT THIS FAR IN FUNCTION----------')
     dispatch(updateBalls(settings));
-    useTimeout(update, settings.refreshRate);
     // send info to other user(s) about final locations of balls
     // test game conditions (whose turn, game over, who won?  etc)
     }
@@ -76,8 +88,10 @@ const Table = () => {
 
   return (
     <TableWrapper
+    id = {'Table'}
     settings = {settings}
     tableSizes = {tableSizes}
+    ballInHand = {settings.ballInHand}
     >
     <TableMemo
     settings = {settings}
@@ -90,6 +104,7 @@ const Table = () => {
         />
       )
     })}
+    {/* BELOW TO BE DELETED */}
     <TestPoint
     settings = {settings}
     top = {6.5}
@@ -132,10 +147,12 @@ const TableWrapper = styled.div`
   height: ${props => props.tableSizes[props.settings.tableSize].tableHeight && props.tableSizes[props.settings.tableSize].tableHeight}px;
   border-radius: ${props => props.tableSizes[props.settings.tableSize].tableBorderRadius && props.tableSizes[props.settings.tableSize].tableBorderRadius}px;
   background: green;
+  background-image: url(${felt});
   display: flex;
   justify-content: center;
   text-align: center;
   align-items: center;
   position: fixed;
   transform: ${props => props.settings.tableSize === "narrow" && 'rotate(90deg)'};
+  cursor: ${props => props.ballInHand && 'grabbing'};
 `

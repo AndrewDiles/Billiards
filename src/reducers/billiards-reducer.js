@@ -62,12 +62,11 @@ export default function billiardsReducer(state = initialState, action) {
     }
     
     case 'UPDATE_BALLS' : {
-      console.log('UPDATING BALLS VIA REDUCER AND APPLY PHYSICS')
+      // console.log('UPDATING BALLS VIA REDUCER AND APPLY PHYSICS')
       // debugger;
       // let initialBilliardsInfo = [...state.billiards];
       let finalBilliardsInfo = applyPhysics([...state.billiards], action.settings);
 
-      // status will either be 'idle' or 'awaiting-direction', base on movement still existing
       return {
         ...state,
         billiards: [...finalBilliardsInfo],
@@ -77,6 +76,16 @@ export default function billiardsReducer(state = initialState, action) {
       return {
         ...state,
         status: "idle",
+      }
+    }
+    case 'FREE_MOVE_CUE_BALL' : {
+      let billiardsCopy = [...state.billiards];
+      billiardsCopy[0].top = action.y;
+      billiardsCopy[0].left = action.x;
+      return {
+        ...state,
+        status: "in-motion",
+        billiards : billiardsCopy, 
       }
     }
     case 'REQUEST_START_GAME' : {

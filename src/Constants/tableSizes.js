@@ -72,7 +72,7 @@ export const tableSizes = {
     tableBorderRadius:  sizeRatios.narrow * actualSizes.tableBorderRadius,
     ballRadius:         sizeRatios.narrow * actualSizes.ballRadius,
     topPadding:         200,
-    leftPadding:        100,
+    leftPadding:        0,
   },
   medium : {
     feltWidth:          sizeRatios.medium * actualSizes.feltWidth,

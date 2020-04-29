@@ -2,12 +2,15 @@ import React, { useContext } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import styled from 'styled-components';
 
-
+import blueBG from '../../assets/circle blues/circle-blues.png';
+import squaresBG from '../../assets/repeated-square/repeated-square.png';
 import { tableSizes } from '../../Constants/tableSizes';
 // import { SettingsContext } from '../../SettingsContext';
 import Selections from '../Selections';
 
+import FreeMove from './FreeMove';
 import Table from '../Table';
+import ShotInput from '../ShotInput/ShotInput';
 
 // z-index guide:
 // table: default, 0, as objects will be children of it
@@ -27,14 +30,13 @@ const Game = () => {
     tableSizes = {tableSizes}
     settings= {settings}
     >
-      <Selections>
-      </Selections>
-      
+      {settings.gameStatus === 'free-move' || settings.gameStatus === 'first-shot' && <FreeMove/>}
       <TableContainer
       tableSizes = {tableSizes}
       settings= {settings}
       >
         <Table/>
+        {settings.gameType && <ShotInput/>}
       </TableContainer>
       
     </Screen>
@@ -65,7 +67,8 @@ align-items: center; */
 `
 
 const Screen = styled.div`
-background-color: lightgray;
+/* background-color: lightgray; */
+background-image: url(${blueBG});
 top:0;
 left: 0;
 width: 100vw;

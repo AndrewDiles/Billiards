@@ -1,15 +1,16 @@
 import React, { useContext } from 'react';
 import { useDispatch, useSelector } from "react-redux";
-// import { tokenactions } from '../reducers/'
+import { BrowserRouter as Router, Switch, Route, Redirect } from "react-router-dom";
 // import styled from 'styled-components';
 
 import GlobalStyles from './GlobalStyles';
 // import Selections from './Selections';
 // import tableSizes from '../Constants/tableSizes';
 
+import SideBar from './SideBar';
 import Game from './Game';
 
-import { SettingsContext } from '../SettingsContext';
+
 
 function App() {
   const settings = useSelector((state) => state.settings);
@@ -17,13 +18,14 @@ function App() {
 
   
   return (
-    <>
+    <Router>
+      <SideBar/>
       <GlobalStyles />
       <Game>
 
       </Game>
       
-    </>
+    </Router>
   );
 }
 

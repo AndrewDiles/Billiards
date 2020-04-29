@@ -11,10 +11,10 @@ export const sizeRatios = {
 }
 export const energySinks = {
   // ballCollision: 0.3,   not yet used
-  // cushionCollision: 0.6,   not yet used
+  cushionCollision: 0.95,
   rotationalFrictionX: .05,
   rotationalFrictionY: .1,
-  translationalFriction : .08,
+  translationalFriction : .012,
 }
 // Some incorrect simplifications:
 // Ignoring difference between kinetic and static friction
@@ -87,7 +87,9 @@ export const testIfInMotion = (billiardObject) => {
 
 const testRightCushionCollision = (top, left) => {
   let collision = null;
-  if (left >= 252 && top >= 23 && top <= 140) collision = "RIGHT_CUSHION";
+  console.log('testing the left inside right cushion test', left)
+  if (left >= 258 && top >= 23 && top <= 140) collision = "RIGHT_CUSHION";
+  if (collision) console.log('YYIOUUOUUHITIT THTHEHE RIRGHHGTITTT')
   return collision
 }
 const testLeftCushionCollision = (top, left) => {
@@ -130,11 +132,11 @@ const resolveRightCollision = (ballObject) => {
     if (collision === "RIGHT_CUSHION") {
       i = index;
       if (ballObject.xVel > 0) {
-        ballObject.xVel *= -1
+        ballObject.xVel *= -energySinks.cushionCollision;
       }
     }
   })
-  if (i) ballObject.collisions.splice(i, 1);
+  if (i !== null) ballObject.collisions.splice(i,1);
 }
 const resolveLeftCollision = (ballObject) => {
   let i = null;
@@ -142,11 +144,11 @@ const resolveLeftCollision = (ballObject) => {
     if (collision === "LEFT_CUSHION") {
       i = index;
       if (ballObject.xVel < 0) {
-        ballObject.xVel *= -1
+        ballObject.xVel *= -energySinks.cushionCollision;
       }
     }
   })
-  if (i) ballObject.collisions.splice(i, 1);
+  if (i !== null) ballObject.collisions.splice(i,1);
 }
 const resolveTopCollision = (ballObject) => {
   let i = null;
@@ -154,11 +156,11 @@ const resolveTopCollision = (ballObject) => {
     if (collision === "TOP_CUSHION") {
       i = index;
       if (ballObject.yVel > 0) {
-        ballObject.yVel *= -1
+        ballObject.yVel *= -energySinks.cushionCollision;
       }
     }
   })
-  if (i) ballObject.collisions.splice(i, 1);
+  if (i !== null) ballObject.collisions.splice(i,1);
 }
 const resolveBottomCollision = (ballObject) => {
   let i = null;
@@ -166,11 +168,11 @@ const resolveBottomCollision = (ballObject) => {
     if (collision === "BOTTOM_CUSHION") {
       i = index;
       if (ballObject.yVel < 0) {
-        ballObject.yVel *= -1
+        ballObject.yVel *= -energySinks.cushionCollision;
       }
     }
   })
-  if (i) ballObject.collisions.splice(i, 1);
+  if (i !== null) ballObject.collisions.splice(i,1);
 }
 
 // this funciton will need to move all balls, change their location, test for collisions
@@ -179,19 +181,47 @@ export const applyPhysics = (billiardsObject, settings) => {
   // handle current collisions
   // let newBilliardsArray = [...billiardsArray];
   return billiardsObject.map((elem) => {
+    if (elem.id === 'cue') {console.log("cue ball's xVel is:",elem.xVel)}
     let element = {...elem};
+    if (element.collisions.length === 0 && !element.inMotion) return element
     if (element.collisions.length != 0) {
-      resolveCushionCollisions(element);
+      // resolve new change in energy
+
+      // console.log('pre-resolution:',element.collisions);
+      // resolveCushionCollisions(element);
+      // console.log('post-resolution:',element.collisions);
     }
     
-    element.left += (settings.refreshRate/100) * element.xVel;
-    element.top -= (settings.refreshRate/100) * element.yVel;
-    let v = getHypotenuse(element.xVel,element.yVel);
-    if (v > energySinks.translationalFriction) v -= energySinks.translationalFriction;  // needs to be dfifferent based on positivity
-    else v = 0;
-    element.xVel = getMissingTriangleSide(v+energySinks.translationalFriction, element.xVel, v);
-    // debugger;
-    element.yVel = getMissingTriangleSide(v+energySinks.translationalFriction, element.yVel, v);
+    for(let n = 1; n <= 10; n++) {
+      if (element.xVel === 0 && element.yVel === 0) {n +=10; console.log('no movement, bailing');}
+      else {
+        let vi = getHypotenuse(element.xVel,element.yVel)/10; //one tenth the velocity to travel in one tenth the time
+        console.log('V initial over 10', vi);
+        
+        let vf = 0;
+        if (vi > energySinks.translationalFriction) vf -= energySinks.translationalFriction;  // reduces velocity due to friction
+        console.log('V final over 10', vf);
+        let testXVel = getMissingTriangleSide(vi, element.xVel, vf);
+        let testYVel = getMissingTriangleSide(vi, element.yVel, vf);
+        let testLeft = element.left + ( testXVel * (settings.refreshRate/100) );
+        let testTop = element.top + ( testYVel * (settings.refreshRate/100) );
+        // test colisions and preform rebounds
+        console.log('new xVel should be: ', testXVel*10);
+        element.xVel = testXVel*10;
+        element.yVel = testYVel*10;
+        element.left = testLeft;
+        element.top = testTop;
+      }
+    }
+    // element.left += (settings.refreshRate/100) * element.xVel;
+    // element.top -= (settings.refreshRate/100) * element.yVel;
+
+    // let v = getHypotenuse(element.xVel,element.yVel);
+    // if (v > energySinks.translationalFriction) v -= energySinks.translationalFriction;  // needs to be dfifferent based on positivity
+    // else v = 0;
+    // element.xVel = getMissingTriangleSide(v+energySinks.translationalFriction, element.xVel, v);
+    // // debugger;
+    // element.yVel = getMissingTriangleSide(v+energySinks.translationalFriction, element.yVel, v);
     element.xAngle += (settings.refreshRate/100) * element.xSpin;
     element.yAngle += (settings.refreshRate/100) * element.ySpin;
     if (Math.abs(element.xSpin) <= energySinks.rotationalFrictionX) element.xSpin = 0;
@@ -205,16 +235,20 @@ export const applyPhysics = (billiardsObject, settings) => {
       else element.ySpin += energySinks.rotationalFrictionY;
     }
     if (!element.isSinking) {
+
       // element.isSinking = testIsSinking(element.top, element.left);  // numbers need correction
-      if (!element.isSinking) {
-        let test = testRightCushionCollision(element.top, element.left)
-        if (!test) test = testLeftCushionCollision(element.top, element.left)
-        if (!test) test = testTopCushionCollision(element.top, element.left)
-        if (!test) test = testBottomCushionCollision(element.top, element.left)
-        if (test) element.collisions = [test]
-      }
+
+
+      // if (!element.isSinking) {
+      //   let test = testRightCushionCollision(element.top, element.left)
+      //   if (!test) test = testLeftCushionCollision(element.top, element.left)
+      //   if (!test) test = testTopCushionCollision(element.top, element.left)
+      //   if (!test) test = testBottomCushionCollision(element.top, element.left)
+      //   if (test) element.collisions = [test]
+      // }
     }
     if (!element.isSinking) element.inMotion = testIfInMotion(element);
+    else element.sinkingSize -= 0.001;  //calibrate to make it look good.
     return element
     // test collisions (has no affect if not in motion)
   })

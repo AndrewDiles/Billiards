@@ -57,10 +57,58 @@ export const startGameSuccess = (gameType) => ({
   gameType,
 });
 export const startGameError = () => ({
-  type: 'START_GAME_Error',
+  type: 'START_GAME_ERROR',
 });
 
+// to reveal, open and close the sidebar
+export const openSideBar = () => ({
+  type: 'OPEN_SIDE_BAR',
+});
+export const closeSideBar = () => ({
+  type: 'CLOSE_SIDE_BAR',
+});
+export const hoverInSideBar = () => ({
+  type: 'HOVER_IN_SIDE_BAR',
+});
+export const hoverOutSideBar = () => ({
+  type: 'HOVER_OUT_SIDE_BAR',
+});
 
+// to set game status
+export const setGameStatusFreeMove = () => ({
+  type: 'SET_GAME_STATUS_FREE_MOVE',
+});
+export const setGameStatusFirstShot = () => ({
+  type: 'SET_GAME_STATUS_FIRST_SHOT',
+});
+export const setGameStatusIdle = () => ({
+  type: 'SET_GAME_STATUS_IDLE',
+});
+export const setGameStatusAwaitingShot = () => ({
+  type: 'SET_GAME_STATUS_AWAITING_SHOT',
+});
+// cue ball pick up and release
+export const setBallOnTable = () => ({
+  type: 'SET_BALL_ON_TABLE',
+});
+export const setBallInHand = () => ({
+  type: 'SET_BALL_IN_HAND',
+});
+export const freeMoveCueBall = (x,y) => ({
+  type: 'FREE_MOVE_CUE_BALL',
+  x,
+  y,
+})
+
+// shot related values
+export const setShotPower = (shotPower) => ({
+  type: 'SET_SHOT_POWER',
+  shotPower,
+});
+export const setShotAngle = (angle) => ({
+  type: 'SET_SHOT_ANGLE',
+  angle,
+});
 
 // -- -- -- -- -- --
 // billiards actions:

@@ -3,6 +3,8 @@ import styled from 'styled-components';
 
 import { tableSizes, corners, sides } from '../../../Constants/tableSizes';
 
+import retina_wood from '../../../assets/retina_wood/retina_wood.png';
+
 import Corner from '../Corners';
 import Side from '../Sides';
 
@@ -56,6 +58,7 @@ const Rail = styled.div`
   border-radius: ${props => props.tableSizes[props.size].tableBorderRadius && props.tableSizes[props.size].tableBorderRadius}px;
   border: solid ${props => props.tableSizes[props.size].railWidth && props.tableSizes[props.size].cushionWidth &&
   props.tableSizes[props.size].railWidth + props.tableSizes[props.size].cushionWidth}px brown;
+  border-image : url(${retina_wood}) 20 20 20 20 round;
 `
 // const Outer = styled.div`
 //   width: ${props => props.tableSizes[props.settings.tableSize].tableWidth && props.tableSizes[props.settings.tableSize].tableWidth}px;
