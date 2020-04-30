@@ -18,8 +18,8 @@ import { actualSizes, tableSizes, sizeRatios } from '../../../Constants/tableSiz
 const Balls = ( {billiard} ) => {
   const settings = useSelector((state) => state.settings);
   // const [ballInHandTriggered, setBallInHandTriggered] = React.useState(false);
-  const [mouselocationLeft, setMouselocationLeft] = React.useState(null);
-  const [mouselocationTop, setMouselocationTop] = React.useState(null);
+  // const [mouselocationLeft, setMouselocationLeft] = React.useState(null);
+  // const [mouselocationTop, setMouselocationTop] = React.useState(null);
   const dispatch = useDispatch();
 
   React.useEffect((ev)=>{
@@ -34,14 +34,61 @@ const Balls = ( {billiard} ) => {
 
 
     const moveFunction = (ev) => {
+      if (!(ev.target.className.includes("Hole-Green") || ev.target.className.includes("cue"))){
+        console.log('dnebjndjenjdjenkjejkmned',ev.offsetX);
+        // setMouselocationLeft(parseFloat(ev.offsetX));
+        // setMouselocationTop(parseFloat(ev.offsetY));
+        // dispatch(freeMoveCueBall(
+        //   (ev.offsetX-tableSizes[settings.tableSize].ballRadius)/sizeRatios[settings.tableSize],
+        //   (ev.offsetY-tableSizes[settings.tableSize].ballRadius)/sizeRatios[settings.tableSize]
+        //   ));
+        const borderSize = tableSizes[settings.tableSize].cushionWidth + tableSizes[settings.tableSize].railWidth;
+        dispatch(freeMoveCueBall(
+          ((ev.offsetX-tableSizes[settings.tableSize].ballRadius)-borderSize)/sizeRatios[settings.tableSize],
+          ((ev.offsetY-tableSizes[settings.tableSize].ballRadius)-borderSize)/sizeRatios[settings.tableSize]
+          ));
+      }
+      else {
+        // let pathsKeys = Object.keys(ev.path);
+        // console.log('pathpathpathpathpthaptahpt', paths);
+        // let tableInfo = paths.find(element=>{element.classList.includes("Table")})
+        // let tableInfo = {};
+        // let tableInfo = ev.path.find(element=>{element.classList.includes("Table")})
+        // let leftMargin = tableInfo.offsetLeft;
+        // let topMargin = tableInfo.offsetTop;
+        // let tableWidth = tableInfo.offsetWidth;
+        // let tableHeight = tableInfo.offsetHeight;
+        
+        // const feltWidth = tableSizes[settings.tableSize].feltWidth;
+        // const feltHeight = tableSizes[settings.tableSize].feltHeight;
+        
+        // /sizeRatios[settings.tableSize];
+        
+        // /sizeRatios[settings.tableSize];
+        // const borderSize = tableSizes[settings.tableSize].cushionWidth + tableSizes[settings.tableSize].railWidth;
+        // const marginLeft = tableSizes[settings.tableSize].leftPadding;
+        // const marginTop = tableSizes[settings.tableSize].topPadding;
+        // let x = (ev.ClientX - borderSize - marginLeft);
+        // let y = (ev.ClientY - borderSize - marginTop);
+        // setMouselocationLeft(parseFloat(x));
+        // setMouselocationTop(parseFloat(y));
+        // dispatch(freeMoveCueBall(
+        //   (ev.offsetX-tableSizes[settings.tableSize].ballRadius)/sizeRatios[settings.tableSize],
+        //   (ev.offsetY-tableSizes[settings.tableSize].ballRadius)/sizeRatios[settings.tableSize]
+        //   ));
+        // console.log(leftMargin,topMargin,tableWidth,tableHeight)
+      }
+      // console.log('ev.targetev.targetev.target',ev)
       // console.log(ev,'evevevevevevevevevevev');
 
       // CHANGE THIS FROM OFFSET TO ABSOLUTE POSITION
 
       // console.log('LEFT event from mousemove listener',ev.offsetX);
       // console.log('TOP event from mousemove listener',ev.offsetY);
-      setMouselocationLeft(parseFloat(ev.offsetX));
-      setMouselocationTop(parseFloat(ev.offsetY));
+
+      // setMouselocationLeft(parseFloat(ev.offsetX));
+      // setMouselocationTop(parseFloat(ev.offsetY));
+
       // let location = {x: ev.clientX, y: ev.clientY};
       // setMouselocation(location);
       // let left = (ev.clientX/sizeRatios[settings.tableSize]) - borderSize - tableSizes[settings.tableSize].leftPadding;
@@ -50,14 +97,16 @@ const Balls = ( {billiard} ) => {
       // ,(ev.clientY/sizeRatios[settings.tableSize]) - borderSize - tableSizes[settings.tableSize].topPadding));
       // dispatch(freeMoveCueBall(left,top));
       // console.log('mouselocationLeftmouselocationLeftmouselocationLeftmouselocationLeft',mouselocationLeft)
-      dispatch(freeMoveCueBall(
-        (ev.offsetX-tableSizes[settings.tableSize].ballRadius)/sizeRatios[settings.tableSize],
-        (ev.offsetY-tableSizes[settings.tableSize].ballRadius)/sizeRatios[settings.tableSize]
-        ));
+      // dispatch(freeMoveCueBall(
+      //   (ev.offsetX-tableSizes[settings.tableSize].ballRadius)/sizeRatios[settings.tableSize],
+      //   (ev.offsetY-tableSizes[settings.tableSize].ballRadius)/sizeRatios[settings.tableSize]
+      //   ));
     }
     table.addEventListener('mousemove',moveFunction);
+    table.addEventListener('mousedown',(event) => handleTableClick(event));
     return () => {
       table.removeEventListener('mousemove',moveFunction);
+      table.removeEventListener('mouseclick',(event) => handleTableClick(event));
     }
   }, [settings.ballInHand])
 
@@ -90,32 +139,24 @@ const Balls = ( {billiard} ) => {
   }
 
   // console.log('Billiard from Ball.js',billiard);
+  const handleTableClick = (event) => {
+    if (!(settings.gameStatus === 'free-move' || settings.gameStatus === 'first-shot')) return;
+    console.log(event);
 
+    // if (testLegalBallDropLocation(mouselocationLeft, mouselocationTop)){
+    //   dispatch(setBallOnTable());
+    // }
+    if (testLegalBallDropLocation(event.offsetX, event.offsetY)){
+      dispatch(setBallOnTable());
+    }
+    else {console.log('can not drop ball here')}
+  }
   const handleClick = (ev) => {
     if (!(settings.gameStatus === 'free-move' || settings.gameStatus === 'first-shot')) return;
+    console.log('evtarget',ev.target)
     if (!ev.target.className.includes('cue')) return
     console.log('YOU CLICKED ON THE CUE BALL!');
     if (!settings.ballInHand) dispatch(setBallInHand());
-    else {
-      if (testLegalBallDropLocation(mouselocationLeft, mouselocationTop)){
-        dispatch(setBallOnTable());
-        // setBallInHandTriggered(false);
-      }
-      else {console.log('can not drop ball here')}
-
-//  THE ACTION LOOKS LIKE
-      // export const freeMoveCueBall = (x,y) => ({
-      //   type: 'FREE_MOVE_CUE_BALL',
-      //   x,
-      //   y,
-      // })
-
-
-
-      
-    }
-    
-
     // dispatch(cueStrike(20, 7*Math.PI/4, 0, 0));  //will later have parameters     power, angle 0=> right, Math.PI/2 => up Math.PI => left, 3Math.PI/2 => down strikeLocationX, strikeLocationY
   }
 

@@ -1,12 +1,14 @@
 const initialState = {
   gameOn: false,
-  gameType: null,
-  gameStatus: 'idle',
-  ballInHand: false,
-  shotPower: 1,
-  shotAngle: 0,
-  tableSize: 'full',
-  refreshRate: 15, // time in ms between refreshes
+  gameType: null,           // eight, nine, or null between games
+  gameStatus: 'idle',       
+  ballInHand: false,        // toggles depending on if player is holding a ball
+  shotPower: 1,             // magnitude of the shot's power
+  shotAngle: 0,             // the direction the cueball will be fired in (rads)
+  cueStrikeLocationX: 0.5,  // values other than 0.5 will cause cw or ccw spin (parallel to table)
+  cueStrikeLocationY: 0.5,  // values other than 0.5 will cause over or underspin
+  tableSize: 'full',        // full as default
+  refreshRate: 15,          // time in ms between refreshes
   status: 'idle',
   sideBarOpen: undefined,
   sideBarHover: false,  // may not use...  DELETE?
@@ -120,10 +122,25 @@ export default function settingsReducer(state = initialState, action) {
     }
     case 'SET_SHOT_ANGLE' : {
       if (state.shotAngle - action.angle < 0) {state.shotAngle += 2*Math.PI}
-      else if (state.shotAngle - action.angle > 2*Math.PI) {{state.shotAngle -= 2*Math.PI}}
+      else if (state.shotAngle - action.angle > 2*Math.PI) {state.shotAngle -= 2*Math.PI}
       return {
         ...state,
         shotAngle: state.shotAngle - action.angle,
+      }
+    }
+    case 'SET_CUE_STRIKE_LOCATION' : {
+      console.log('from inside reducer: x',action.x,'y',action.y);
+      let x = Math.floor(100*action.x)/100;
+      let y = Math.floor(100*action.y)/100;
+      if (x>1) x = 1;
+      if (x<0) x = 0;
+      if (y>1) y = 1;
+      if (y<0) y = 0;
+      console.log('from inside reducer, corrected values: x',x,'y',y);
+      return {
+        ...state,
+        cueStrikeLocationX: x,
+        cueStrikeLocationY: y,
       }
     }
     default: {

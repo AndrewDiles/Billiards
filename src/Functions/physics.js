@@ -11,10 +11,10 @@ export const sizeRatios = {
 }
 export const energySinks = {
   // ballCollision: 0.3,   not yet used
-  cushionCollision: 0.95,
+  cushionCollision: -0.95,
   rotationalFrictionX: .05,
   rotationalFrictionY: .1,
-  translationalFriction : .012,
+  translationalFriction : .008,
 }
 // Some incorrect simplifications:
 // Ignoring difference between kinetic and static friction
@@ -78,33 +78,54 @@ export const distanceBetweenTwoCircles = (top1, left1, top2, left2) => {
 
 export const testIfInMotion = (billiardObject) => {
   let motionTest = false;
-  if (billiardObject.xVel > 0 || billiardObject.yVel > 0 || billiardObject.xSpin > 0 || billiardObject.ySpin > 0) motionTest = true;
+  if (Math.abs(billiardObject.xVel) > 0 || 
+  Math.abs(billiardObject.yVel) > 0 || 
+  Math.abs(billiardObject.xSpin) > 0 || 
+  Math.abs(billiardObject.ySpin) > 0 ||
+  billiardObject.sinkingSize < 1
+  ) motionTest = true;
   // let result = {...billiardObject};
   // result.inMotion = motionTest;
   // return result;
   return motionTest
 }
-
+const testCushionCollisions = (top, left) => {
+  let collision = null;
+  collision = testRightCushionCollision(top, left);
+  if (collision) return collision
+  collision = testLeftCushionCollision(top, left);
+  if (collision) return collision
+  collision = testTopCushionCollision(top, left);
+  if (collision) return collision
+  collision = testBottomCushionCollision(top, left);
+  return collision
+}
 const testRightCushionCollision = (top, left) => {
   let collision = null;
-  console.log('testing the left inside right cushion test', left)
-  if (left >= 258 && top >= 23 && top <= 140) collision = "RIGHT_CUSHION";
-  if (collision) console.log('YYIOUUOUUHITIT THTHEHE RIRGHHGTITTT')
+  if (left >= 255 
+    && top >= 6 && top <= 121.5
+    ) collision = "RIGHT_CUSHION";
   return collision
 }
 const testLeftCushionCollision = (top, left) => {
   let collision = null;
-  if (left <= 2 && top >= 23 && top <= 140) collision = "LEFT_CUSHION";
+  if (left <= 0 
+    && top >= 6 && top <= 121.5
+    ) collision = "LEFT_CUSHION";
   return collision
 }
 const testTopCushionCollision = (top, left) => {
   let collision = null;
-  if (top <= 2 && ((left >= 24 && left <= 137) || (left >= 151.5 && left <= 265.5))) collision = "TOP_CUSHION";
+  if (top <= 0 
+    && ((left >= 5 && left <= 122) || (left >= 132 && left <= 247.5))
+    ) collision = "TOP_CUSHION";
   return collision
 }
 const testBottomCushionCollision = (top, left) => {
   let collision = null;
-  if (top >= 127.5 && ((left >= 24 && left <= 137) || (left >= 151.5 && left <= 265.5))) collision = "BOTTOM_CUSHION";
+  if (top >= 127.5 
+    && ((left >= 5 && left <= 122) || (left >= 132 && left <= 247.5))
+    ) collision = "BOTTOM_CUSHION";
   return collision
 }
 
@@ -120,61 +141,91 @@ const testIsSinking = (top, left) => {
   })
   return sinking
 }
-const resolveCushionCollisions = (ballObject) => {
-  resolveRightCollision(ballObject);
-  resolveLeftCollision(ballObject);
-  resolveTopCollision(ballObject);
-  resolveBottomCollision(ballObject);
+// const resolveCushionCollisions = (ballObject) => {
+//   resolveRightCollision(ballObject);
+//   resolveLeftCollision(ballObject);
+//   resolveTopCollision(ballObject);
+//   resolveBottomCollision(ballObject);
+// }
+// const resolveRightCollision = (ballObject) => {
+//   let i = null;
+//   ballObject.collisions.forEach((collision, index)=>{
+//     if (collision === "RIGHT_CUSHION") {
+//       i = index;
+//       if (ballObject.xVel > 0) {
+//         ballObject.xVel *= -energySinks.cushionCollision;
+//       }
+//     }
+//   })
+//   if (i !== null) ballObject.collisions.splice(i,1);
+// }
+// const resolveLeftCollision = (ballObject) => {
+//   let i = null;
+//   ballObject.collisions.forEach((collision, index)=>{
+//     if (collision === "LEFT_CUSHION") {
+//       i = index;
+//       if (ballObject.xVel < 0) {
+//         ballObject.xVel *= -energySinks.cushionCollision;
+//       }
+//     }
+//   })
+//   if (i !== null) ballObject.collisions.splice(i,1);
+// }
+// const resolveTopCollision = (ballObject) => {
+//   let i = null;
+//   ballObject.collisions.forEach((collision, index)=>{
+//     if (collision === "TOP_CUSHION") {
+//       i = index;
+//       if (ballObject.yVel > 0) {
+//         ballObject.yVel *= -energySinks.cushionCollision;
+//       }
+//     }
+//   })
+//   if (i !== null) ballObject.collisions.splice(i,1);
+// }
+// const resolveBottomCollision = (ballObject) => {
+//   let i = null;
+//   ballObject.collisions.forEach((collision, index)=>{
+//     if (collision === "BOTTOM_CUSHION") {
+//       i = index;
+//       if (ballObject.yVel < 0) {
+//         ballObject.yVel *= -energySinks.cushionCollision;
+//       }
+//     }
+//   })
+//   if (i !== null) ballObject.collisions.splice(i,1);
+// }
+const resolveCushionCollision = (collision, xVel, testXVel, yVel, testYVel, left, testLeft, top, testTop ) => {
+  if (collision === "TOP_CUSHION" ) {
+    top = 0.01;
+    xVel = testXVel;
+    left = testLeft;
+    if (yVel < 0) yVel = energySinks.cushionCollision * testYVel;
+    return {top, left, xVel, yVel}; 
+  }
+  else if (collision === "BOTTOM_CUSHION"){
+    console.log('BOTTOM CUSHION HIT DETECTED');
+    top = 127.49;
+    xVel = testXVel;
+    left = testLeft;
+    if (yVel > 0) yVel = energySinks.cushionCollision * testYVel;
+    return {top, left, xVel, yVel}; 
+  }
+  else if (collision === "LEFT_CUSHION"){
+    left = 0.01;
+    yVel = testYVel;
+    top = testTop;
+    if (xVel < 0) xVel = energySinks.cushionCollision * testXVel;
+    return {top, left, xVel, yVel}; 
+  }
+  else {
+    left = 254.99;
+    yVel = testYVel;
+    top = testTop;
+    if (xVel > 0) xVel = energySinks.cushionCollision * testXVel;
+    return {top, left, xVel, yVel}; 
+  }
 }
-const resolveRightCollision = (ballObject) => {
-  let i = null;
-  ballObject.collisions.forEach((collision, index)=>{
-    if (collision === "RIGHT_CUSHION") {
-      i = index;
-      if (ballObject.xVel > 0) {
-        ballObject.xVel *= -energySinks.cushionCollision;
-      }
-    }
-  })
-  if (i !== null) ballObject.collisions.splice(i,1);
-}
-const resolveLeftCollision = (ballObject) => {
-  let i = null;
-  ballObject.collisions.forEach((collision, index)=>{
-    if (collision === "LEFT_CUSHION") {
-      i = index;
-      if (ballObject.xVel < 0) {
-        ballObject.xVel *= -energySinks.cushionCollision;
-      }
-    }
-  })
-  if (i !== null) ballObject.collisions.splice(i,1);
-}
-const resolveTopCollision = (ballObject) => {
-  let i = null;
-  ballObject.collisions.forEach((collision, index)=>{
-    if (collision === "TOP_CUSHION") {
-      i = index;
-      if (ballObject.yVel > 0) {
-        ballObject.yVel *= -energySinks.cushionCollision;
-      }
-    }
-  })
-  if (i !== null) ballObject.collisions.splice(i,1);
-}
-const resolveBottomCollision = (ballObject) => {
-  let i = null;
-  ballObject.collisions.forEach((collision, index)=>{
-    if (collision === "BOTTOM_CUSHION") {
-      i = index;
-      if (ballObject.yVel < 0) {
-        ballObject.yVel *= -energySinks.cushionCollision;
-      }
-    }
-  })
-  if (i !== null) ballObject.collisions.splice(i,1);
-}
-
 // this funciton will need to move all balls, change their location, test for collisions
 export const applyPhysics = (billiardsObject, settings) => {
   
@@ -196,21 +247,43 @@ export const applyPhysics = (billiardsObject, settings) => {
       if (element.xVel === 0 && element.yVel === 0) {n +=10; console.log('no movement, bailing');}
       else {
         let vi = getHypotenuse(element.xVel,element.yVel)/10; //one tenth the velocity to travel in one tenth the time
-        console.log('V initial over 10', vi);
+        // console.log('V initial over 10', vi);
         
         let vf = 0;
-        if (vi > energySinks.translationalFriction) vf -= energySinks.translationalFriction;  // reduces velocity due to friction
-        console.log('V final over 10', vf);
+        if (vi > energySinks.translationalFriction) vf = vi - energySinks.translationalFriction;  // reduces velocity due to friction
+        // console.log('V final over 10', vf);
         let testXVel = getMissingTriangleSide(vi, element.xVel, vf);
         let testYVel = getMissingTriangleSide(vi, element.yVel, vf);
+        console.log('testYVeltestYVeltestYVeltestYVeltestYVeltestYVel',testYVel)
+        console.log('testXVeltestXVeltestXVeltestXVeltestXVeltestXVel',testXVel)
         let testLeft = element.left + ( testXVel * (settings.refreshRate/100) );
         let testTop = element.top + ( testYVel * (settings.refreshRate/100) );
-        // test colisions and preform rebounds
-        console.log('new xVel should be: ', testXVel*10);
-        element.xVel = testXVel*10;
-        element.yVel = testYVel*10;
-        element.left = testLeft;
-        element.top = testTop;
+        let collision = testCushionCollisions(testTop, testLeft);
+        console.log('collisioncollisioncollisioncollision',collision);
+        if (!collision) {
+          element.xVel = testXVel;
+          element.yVel = testYVel;
+          element.left = testLeft;
+          element.top = testTop;
+          console.log('New x,y Vels:', testXVel, testYVel);
+        }
+        else {
+          let cushionCollisionReturn = resolveCushionCollision(
+            collision, 
+            element.xVel, 
+            testXVel, 
+            element.yVel, 
+            testYVel, 
+            element.left, 
+            testLeft, 
+            element.top, 
+            testTop
+          )
+          element.top = cushionCollisionReturn.top;
+          element.left = cushionCollisionReturn.left;
+          element.xVel = cushionCollisionReturn.xVel;
+          element.yVel = cushionCollisionReturn.yVel;
+        }
       }
     }
     // element.left += (settings.refreshRate/100) * element.xVel;
@@ -259,8 +332,8 @@ export const applyCueStrike = (initialCueBallInfo, power, angle, strikeLocationX
   let finalCueBallInfo = {...initialCueBallInfo};
   finalCueBallInfo.xVel = power * Math.cos(angle);
   finalCueBallInfo.yVel = power * Math.sin(angle);
-  finalCueBallInfo.xSpin = power * strikeLocationX;
-  finalCueBallInfo.ySpin = power * strikeLocationY;
+  finalCueBallInfo.xSpin = power * Math.cos(Math.Pi*strikeLocationX);
+  finalCueBallInfo.ySpin = power * Math.cos(Math.Pi*strikeLocationY);
   finalCueBallInfo.inMotion = true;
   // ignore top and under spin for now (strikeLocationY)
   return finalCueBallInfo

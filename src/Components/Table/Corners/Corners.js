@@ -17,6 +17,7 @@ const Corners = ( {corner} ) => {
   let leftIndexB = `${corner}leftB`;
   return (
     <Green
+    className = {"Hole-Green"}
     corner = {corner}
     size = {settings.tableSize}
     tableSizes = {tableSizes}

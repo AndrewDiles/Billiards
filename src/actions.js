@@ -109,6 +109,11 @@ export const setShotAngle = (angle) => ({
   type: 'SET_SHOT_ANGLE',
   angle,
 });
+export const setCueStrikeLocation = (x,y) => ({
+  type: 'SET_CUE_STRIKE_LOCATION',
+  x,
+  y,
+});
 
 // -- -- -- -- -- --
 // billiards actions:

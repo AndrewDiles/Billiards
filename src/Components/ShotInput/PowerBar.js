@@ -30,8 +30,14 @@ const PowerBar = ({ maximumHeight }) => {
     }
     dispatch(setShotPower(powerRatio));
   }
+  // ${settings.shotPower*200}
+  let topColor = `rgb(${settings.shotPower*255}, 0 , 50)`;
+  let gradient = `linear-gradient( ${topColor}, rgb(0,255,50) )`;
+  
   return (
-    <Bar>
+    <Bar
+    size = {settings.tableSize}
+    >
       <PowerLevelContainer
       className = {'PLContainer'}
       disabled = {!(settings.gameStatus === 'idle' || 
@@ -43,6 +49,7 @@ const PowerBar = ({ maximumHeight }) => {
       onClick = {(ev)=>handleClickToChangePower(ev)}
       >
         <PowerLevel
+        gradient = {gradient}
         powerHeight = {100*settings.shotPower}
         />
       </PowerLevelContainer>
@@ -51,7 +58,8 @@ const PowerBar = ({ maximumHeight }) => {
 }
 export default PowerBar;
 const PowerLevel = styled.div`
-  background-color: red;
+  /* background-color: red; */
+  background-image: ${props => props.gradient && props.gradient};
   height: ${props => props.powerHeight && `${props.powerHeight}%`};
   width: 100%;
   border-radius: 25px;
@@ -67,8 +75,6 @@ const PowerLevelContainer = styled.div`
 const Bar = styled.div`
   border: solid 5px black;
   border-radius: 25px;
-  width: 50%;
+  width: ${props => props.size === 'medium' ? '35%' : '50%'};
   height: 80%;
 `
-
-

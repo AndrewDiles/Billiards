@@ -17,6 +17,7 @@ const Sides = ( {side} ) => {
   let leftIndexB = `${side}leftB`;
   return (
     <Green
+    className = {"Hole-Green"}
     side = {side}
     size = {settings.tableSize}
     tableSizes = {tableSizes}

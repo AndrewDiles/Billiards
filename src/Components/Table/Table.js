@@ -88,30 +88,39 @@ const Table = () => {
 
   return (
     <TableWrapper
-    id = {'Table'}
+    // id = {'Table'}
+    // className = {"Table"}
     settings = {settings}
     tableSizes = {tableSizes}
     ballInHand = {settings.ballInHand}
     >
-    <TableMemo
-    settings = {settings}
-    />
-    {billiards.billiards.map((billiard)=>{
-      return (
-        <Ball
-        key = {billiard.id}
-        billiard = {billiard}
-        />
-      )
-    })}
-    {/* BELOW TO BE DELETED */}
-    <TestPoint
-    settings = {settings}
-    top = {6.5}
-    left = {144.5}
-    >
+      {settings.ballInHand &&
+      <HighIndexTable
+      id = {'Table'}
+      className = {"Table"}
+      settings = {settings}
+      tableSizes = {tableSizes}
+      ballInHand = {settings.ballInHand}
+      />}
+      <TableMemo
+      settings = {settings}
+      />
+      {billiards.billiards.map((billiard)=>{
+        return (
+          <Ball
+          key = {billiard.id}
+          billiard = {billiard}
+          />
+        )
+      })}
+      {/* BELOW TO BE DELETED */}
+      {/* <TestPoint
+      settings = {settings}
+      top = {6.5}
+      left = {144.5}
+      >
 
-    </TestPoint>
+      </TestPoint> */}
     </TableWrapper>
   )
 }
@@ -132,15 +141,15 @@ const Table = () => {
 
 
 export default Table;
-const TestPoint = styled.div`
-top: ${props => props.top * sizeRatios[props.settings.tableSize]}px;
-left: ${props => props.left * sizeRatios[props.settings.tableSize]}px;
-height:5px;
-width:5px;
-position: absolute;
-background-color: blue;
-z-index: 25;
-`
+// const TestPoint = styled.div`
+// top: ${props => props.top * sizeRatios[props.settings.tableSize]}px;
+// left: ${props => props.left * sizeRatios[props.settings.tableSize]}px;
+// height:5px;
+// width:5px;
+// position: absolute;
+// background-color: blue;
+// z-index: 25;
+// `
 
 const TableWrapper = styled.div`
   width: ${props => props.tableSizes[props.settings.tableSize].tableWidth && props.tableSizes[props.settings.tableSize].tableWidth}px;
@@ -155,4 +164,13 @@ const TableWrapper = styled.div`
   position: fixed;
   transform: ${props => props.settings.tableSize === "narrow" && 'rotate(90deg)'};
   cursor: ${props => props.ballInHand && 'grabbing'};
+`
+const HighIndexTable = styled.div`
+  width: ${props => props.tableSizes[props.settings.tableSize].tableWidth && props.tableSizes[props.settings.tableSize].tableWidth}px;
+  height: ${props => props.tableSizes[props.settings.tableSize].tableHeight && props.tableSizes[props.settings.tableSize].tableHeight}px;
+  border-radius: ${props => props.tableSizes[props.settings.tableSize].tableBorderRadius && props.tableSizes[props.settings.tableSize].tableBorderRadius}px;
+  position: absolute;
+  cursor: ${props => props.ballInHand && 'grabbing'};
+  z-index: 10;
+  display: ${props => !props.ballInHand && 'none'};
 `
