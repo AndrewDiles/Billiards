@@ -3,6 +3,37 @@ const initialState = {
   status: 'idle',
 };
 
+// template:
+// userInfo : {
+  // "userName": "a",
+  // "password": "a",
+  // "dubloons": 4000,
+  // "inventory": {
+  //   "crookedStick": true,
+  //   "plainOlCue": false,
+  //   "magicWand": false,
+  //   "boomStick": false,
+  //   "wirtsLeg": false,
+  //   "chalk": false,
+  //   "purpleChalk": false,
+  //   "rainbowChalk": false
+  // },
+  // "gameHistory": [
+  //   {
+  //     "type": "nine",
+  //     "opponent": null,
+  //     "result" : "win26",
+  //     "date": "Sat May 02 2020 10:40:28 GMT-0400 (Eastern Daylight Time)"
+  //   },
+  //   {
+  //     "type": "eight",
+  //     "opponent": "Shark",
+  //     "result" : "loss",
+  //     "date": "Sat May 02 1920 10:40:28 GMT-0400 (Eastern Daylight Time)"
+  //   }
+  // ]
+// }
+
 export default function userReducer(state = initialState, action) {
   switch (action.type) {
     case 'REQUEST_USER_INFO' : {
@@ -12,8 +43,9 @@ export default function userReducer(state = initialState, action) {
       }
     }
     case 'RECEIVE_USER_INFO' : {
+      console.log('action from inside reducer',action.userInfo)
       return {
-        user: action.user,
+        user: action.userInfo,
         status: 'idle',
       }
     }

@@ -1,12 +1,15 @@
 import React, { useContext } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import styled from 'styled-components';
+import { NavLink } from "react-router-dom";
 
 import {
   changeTableSize,
   addBalls,
   changeGameType,
   setGameStatusFirstShot,
+  quitGame,
+  logUserOut
 } from "../../actions";
 
 // import { SettingsContext } from '../../SettingsContext';
@@ -20,7 +23,12 @@ import StyledButton from '../StyledButton';
 const Selections = ({isSliding}) => {
   const dispatch = useDispatch();
   const settings = useSelector((state) => state.settings);
-  // const { settings, setSettings } = useContext(SettingsContext);
+  const userInfo = useSelector((state) => state.userInfo);
+  const [href, setHref] = React.useState('');
+  React.useEffect(()=>{
+    setHref(window.location.href);
+  },[window.location.href])
+
   if (!settings.sideBarOpen || isSliding) {
     return (<></>)
   }
@@ -38,58 +46,127 @@ const Selections = ({isSliding}) => {
     dispatch(changeGameType(text));
     dispatch(addBalls(text));
     dispatch(setGameStatusFirstShot());
-
+  }
+  const handleQuit = () => {
+    dispatch(quitGame());
   }
   let disabled = false;
   // if (!(settings.status === 'idle' || settings.status === 'error')) disabled = true;
   // if (!(userInfo.status === 'idle' || userInfo.status === 'error')) disabled = true;
   // if (!(billiards.status === 'idle' || billiards.status === 'error')) disabled = true;
 
+  // console.log(window.location.href.includes('home'));
+
   return (
     <Wrapper>
-      <StyledButton
-      handleClick = {() => handleClickBallMaker("eight")}
-      disabled = {disabled}
-      >
-        Eight
-      </StyledButton>
-      <StyledButton
-      handleClick = {() => handleClickBallMaker("nine")}
-      disabled = {disabled}
-      >
-        Nine
-      </StyledButton>
-      <StyledButton
-      handleClick = {() => handleClickBallMaker("test")}
-      disabled = {disabled}
-      >
-        TestMakeBalls
-      </StyledButton>
-      <StyledButton
-      handleClick = {handleClick}
-      disabled = {disabled}
-      value = "narrow"
-      >
-        Narrow
-      </StyledButton>
-      <StyledButton
-      handleClick = {handleClick}
-      disabled = {disabled}
-      value = "medium"
-      >
-        Medium
-      </StyledButton>
-      <StyledButton
-      handleClick = {handleClick}
-      disabled = {disabled}
-      value = "full"
-      >
-        Full
-      </StyledButton>
+      {settings.gameOn ? (
+        <>
+          <StyledNavLink to="/">
+            <StyledButton
+            handleClick = {handleQuit}
+            disabled = {disabled}
+            >
+              QUIT GAME
+            </StyledButton>
+          </StyledNavLink>
+          <StyledButton
+          handleClick = {handleClick}
+          disabled = {disabled}
+          value = "narrow"
+          >
+            Size: Narrow
+          </StyledButton>
+          <StyledButton
+          handleClick = {handleClick}
+          disabled = {disabled}
+          value = "medium"
+          >
+            Size: Medium
+          </StyledButton>
+          <StyledButton
+          handleClick = {handleClick}
+          disabled = {disabled}
+          value = "full"
+          >
+            Size: Large
+          </StyledButton>
+        </>
+      ) : (
+        <>
+          {!href.includes('home') &&
+            <StyledNavLink to="/">
+              <StyledButton
+              handleClick = {() => {setHref('home')}}
+              >
+                HOME
+              </StyledButton>
+            </StyledNavLink>
+          }
+          {userInfo.user ? (
+            <>
+            <StyledNavLink to="/home">
+              <StyledButton
+              handleClick = {() => {setHref('home');dispatch(logUserOut())}}
+              // disabled = {}
+              >
+                LOGOUT
+              </StyledButton>
+            </StyledNavLink>
+            {!href.includes('account') &&
+              <StyledNavLink to="/view-account">
+                <StyledButton
+                handleClick = {() => {setHref('view-account')}}
+                // disabled = {}
+                >
+                  VISIT YOUR CABIN
+                </StyledButton>
+              </StyledNavLink>
+            }
+            </>
+          ) : (
+            !href.includes('login') &&
+              <StyledNavLink to="/login">
+                <StyledButton
+                handleClick = {() => {setHref('login')}}
+                // disabled = {}
+                >
+                  GO TO LOGIN
+                </StyledButton>
+              </StyledNavLink>
+          )}
+          <StyledNavLink to="/billiards">
+            <StyledButton
+            handleClick = {() => handleClickBallMaker("eight")}
+            disabled = {disabled}
+            >
+              Hotseat - Eight
+            </StyledButton>
+          </StyledNavLink>
+          <StyledNavLink to="/billiards">
+            <StyledButton
+            handleClick = {() => handleClickBallMaker("nine")}
+            disabled = {disabled}
+            >
+              Single - Nine
+            </StyledButton>
+          </StyledNavLink>
+          <StyledNavLink to="/billiards">
+            <StyledButton
+            handleClick = {() => handleClickBallMaker("test")}
+            disabled = {disabled}
+            >
+              TEST DELETE
+            </StyledButton>
+          </StyledNavLink>
+        </>
+      )}
     </Wrapper>
   )
 }
 export default Selections;
+const StyledNavLink = styled(NavLink)`
+  width: 100px;
+`
 const Wrapper = styled.div`
   /* position: absolute; */
   z-index: 10;

@@ -4,9 +4,9 @@
 export const requestUserInfo = () => ({
   type: 'REQUEST_USER_INFO',
 });
-export const receiveUserInfo = (user) => ({
+export const receiveUserInfo = (userInfo) => ({
   type: 'RECEIVE_USER_INFO',
-  user,
+  userInfo,
 });
 export const receiveUserInfoError = () => ({
   type: 'RECEIVE_USER_INFO_ERROR',
@@ -50,6 +50,9 @@ export const changeRefreshRate = (refreshRate) => ({
 export const requestStartGame = () => ({
   type: 'REQUEST_START_GAME',
 });
+export const quitGame = () => ({
+  type: 'QUIT_GAME',
+});
 
 // to change with information from server?
 export const startGameSuccess = (gameType) => ({
@@ -66,12 +69,6 @@ export const openSideBar = () => ({
 });
 export const closeSideBar = () => ({
   type: 'CLOSE_SIDE_BAR',
-});
-export const hoverInSideBar = () => ({
-  type: 'HOVER_IN_SIDE_BAR',
-});
-export const hoverOutSideBar = () => ({
-  type: 'HOVER_OUT_SIDE_BAR',
 });
 
 // to set game status

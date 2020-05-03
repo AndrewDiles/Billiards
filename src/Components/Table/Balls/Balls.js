@@ -32,10 +32,10 @@ const Balls = ( {billiard} ) => {
 
     // https://www.w3schools.com/jsref/tryit.asp?filename=tryjsref_element_getboundingclientrect
 
+    if (!billiard) return (<></>) // fail safe against issues during removal of balls
 
     const moveFunction = (ev) => {
       if (!(ev.target.className.includes("Hole-Green") || ev.target.className.includes("cue"))){
-        console.log('dnebjndjenjdjenkjejkmned',ev.offsetX);
         // setMouselocationLeft(parseFloat(ev.offsetX));
         // setMouselocationTop(parseFloat(ev.offsetY));
         // dispatch(freeMoveCueBall(
@@ -113,10 +113,10 @@ const Balls = ( {billiard} ) => {
   
 
   const testLegalBallDropLocation = (x,y) => {
-    console.log('legal drop test begins, (x,y) =', x,y)
+    // console.log('legal drop test begins, (x,y) =', x,y)
     let trueX = (x-tableSizes[settings.tableSize].ballRadius)/sizeRatios[settings.tableSize];
     let trueY = (y-tableSizes[settings.tableSize].ballRadius)/sizeRatios[settings.tableSize]
-    let legalLocation = true;
+    let legalLocation = false;
     // const borderSize = tableSizes[settings.tableSize].cushionWidth + tableSizes[settings.tableSize].railWidth;
     // const topBoundary = tableSizes[settings.tableSize].topPadding + borderSize;
     // const bottomBoundary = topBoundary + tableSizes[settings.tableSize].feltHeight;
@@ -129,10 +129,12 @@ const Balls = ( {billiard} ) => {
     // console.log('rightBoundary',rightBoundary);
     // console.log('trueX',trueX);
     // console.log('trueY',trueY);
-    if (trueX < 0) {legalLocation = false; console.log("OOB LEFT");}
-    else if (trueX > 63.75*sizeRatios[settings.tableSize]) {legalLocation = false; console.log("OOB RIGHT");}
-    else if (trueY < 0) {legalLocation = false; console.log("OOB TOP");}
-    else if (trueY > 32*sizeRatios[settings.tableSize]) {legalLocation = false; console.log("OOB BOTTOM");}
+    // console.log('trueX',trueX,'........trueY',trueY);
+    // if (trueX < 0) {legalLocation = false; console.log("OOB LEFT");}
+    // else if (trueX > 63.75*sizeRatios[settings.tableSize]) {legalLocation = false; console.log("OOB RIGHT");}
+    // else if (trueY < 0) {legalLocation = false; console.log("OOB TOP");}
+    // else if (trueY > 32*sizeRatios[settings.tableSize]) {legalLocation = false; console.log("OOB BOTTOM");}
+    if (trueX >= 13 && trueX <= 268 && trueY >= 13 && trueY <= 141.1) legalLocation = true;
     // test position of each ball.  
     // test on line for starting shot
     return legalLocation;
@@ -141,21 +143,20 @@ const Balls = ( {billiard} ) => {
   // console.log('Billiard from Ball.js',billiard);
   const handleTableClick = (event) => {
     if (!(settings.gameStatus === 'free-move' || settings.gameStatus === 'first-shot')) return;
-    console.log(event);
-
+    // console.log(event);
     // if (testLegalBallDropLocation(mouselocationLeft, mouselocationTop)){
     //   dispatch(setBallOnTable());
     // }
     if (testLegalBallDropLocation(event.offsetX, event.offsetY)){
       dispatch(setBallOnTable());
     }
-    else {console.log('can not drop ball here')}
+    // else {console.log('can not drop ball here')}
   }
   const handleClick = (ev) => {
     if (!(settings.gameStatus === 'free-move' || settings.gameStatus === 'first-shot')) return;
-    console.log('evtarget',ev.target)
+    // console.log('evtarget',ev.target)
     if (!ev.target.className.includes('cue')) return
-    console.log('YOU CLICKED ON THE CUE BALL!');
+    // console.log('YOU CLICKED ON THE CUE BALL!');
     if (!settings.ballInHand) dispatch(setBallInHand());
     // dispatch(cueStrike(20, 7*Math.PI/4, 0, 0));  //will later have parameters     power, angle 0=> right, Math.PI/2 => up Math.PI => left, 3Math.PI/2 => down strikeLocationX, strikeLocationY
   }
@@ -255,6 +256,7 @@ const BallContainer = styled.div`
   position: absolute;
   z-index: 4;
   transform: ${props => props.scale && props.scale};
+  /* border: red solid 1px; TEST PURPOSES*/ 
 `
 const Color = styled.div`
   height: ${props => props.radius && 2*props.radius}px;

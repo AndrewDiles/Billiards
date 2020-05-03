@@ -6,6 +6,8 @@ import cueStickPng from '../../assets/cueStick.png';
 
 import { setShotAngle, setCueStrikeLocation } from "../../actions";
 
+import {determinePadding} from '../../Functions/cuePadding';
+
 import { Icon } from 'react-icons-kit';
 import {rotateCcw} from 'react-icons-kit/feather/rotateCcw';
 import {rotateCw} from 'react-icons-kit/feather/rotateCw';
@@ -33,16 +35,11 @@ const CueAngleSetter = () => {
     dispatch(setCueStrikeLocation(settings.cueStrikeLocationX+x, settings.cueStrikeLocationY+y))
   }
 
-// console.log('shot Angle: ',settings.shotAngle)
-// console.log('testing math:', 50*Math.cos(settings.shotAngle))
-// console.log('testing math:', `${50*Math.cos(settings.shotAngle)}px`)
-
-let transform = `rotate(${-180*settings.shotAngle/Math.PI}deg)`;
-
-let marginRight = `${50*Math.cos(settings.shotAngle)}px`;
-let marginTop = `${50*Math.sin(settings.shotAngle)}px`;
-
-
+  let transform = `rotate(${-180*settings.shotAngle/Math.PI}deg)`;
+  let marginRight = `${50*Math.cos(settings.shotAngle)}px`;
+  let marginTop = `${50*Math.sin(settings.shotAngle)}px`;
+  let padding = determinePadding(settings.cueStrikeLocationX,settings.cueStrikeLocationY);
+    
   return (
     <ColumnWrapper>
       <ButtonsDiv>
@@ -53,10 +50,13 @@ let marginTop = `${50*Math.sin(settings.shotAngle)}px`;
         <StyledIcon onClick = {() => handleClickToChangeAngle(5*Math.PI/180)} size={15} icon={rotateCw}/>
         <StyledIcon onClick = {() => handleClickToChangeAngle(45*Math.PI/180)} size={20} icon={rotateCw}/>
       </ButtonsDiv>
-      <StyledIcon onClick = {() => handleClickToSetStrikePosition(0, 0.05)} size={15} icon={arrowUp} direction = {"up"} x = {settings.cueStrikeLocationX} y = {settings.cueStrikeLocationY}/>
+      <StyledIcon onClick = {() => handleClickToSetStrikePosition(0, 0.1)} size={15} icon={arrowUp} direction = {"up"} x = {settings.cueStrikeLocationX} y = {settings.cueStrikeLocationY}/>
       <RowWrapper>
-        <StyledIcon onClick = {() => handleClickToSetStrikePosition(-0.05, 0)} size={15} icon={arrowLeft} direction = {"left"} x = {settings.cueStrikeLocationX} y = {settings.cueStrikeLocationY}/>
-        <StyledCircle>
+        <StyledIcon onClick = {() => handleClickToSetStrikePosition(-0.1, 0)} size={15} icon={arrowLeft} direction = {"left"} x = {settings.cueStrikeLocationX} y = {settings.cueStrikeLocationY}/>
+        <StyledCircle
+        padding = {padding}
+        size = {settings.tableSize}
+        >
           <StyledImg
           id = {'cue-stick-setter'}
           transform = {transform}
@@ -73,9 +73,9 @@ let marginTop = `${50*Math.sin(settings.shotAngle)}px`;
 
           </RedSpot>
         </StyledCircle>
-        <StyledIcon onClick = {() => handleClickToSetStrikePosition(0.05, 0)} size={15} icon={arrowRight} direction = {"right"} x = {settings.cueStrikeLocationX} y = {settings.cueStrikeLocationY}/>
+        <StyledIcon onClick = {() => handleClickToSetStrikePosition(0.1, 0)} size={15} icon={arrowRight} direction = {"right"} x = {settings.cueStrikeLocationX} y = {settings.cueStrikeLocationY}/>
       </RowWrapper>
-      <StyledIcon onClick = {() => handleClickToSetStrikePosition(0, -0.05)} size={15} icon={arrowDown} direction = {"down"} x = {settings.cueStrikeLocationX} y = {settings.cueStrikeLocationY}/>
+      <StyledIcon onClick = {() => handleClickToSetStrikePosition(0, -0.1)} size={15} icon={arrowDown} direction = {"down"} x = {settings.cueStrikeLocationX} y = {settings.cueStrikeLocationY}/>
     </ColumnWrapper>
   )
 }
@@ -88,9 +88,6 @@ const RedSpot = styled.div`
   width: 5px;
   border-radius: 50%;
   position: absolute;
-  
-  /* margin-right: 100px; */
-  /* z-index: 8; */
 `
 const StyledCircle = styled.div`
   border: black solid 5px;
@@ -102,6 +99,8 @@ const StyledCircle = styled.div`
   align-items: center;
   text-align: center;
   background-color: linen;
+  padding: ${props => props.padding};
+  transform: ${props => props.size === 'narrow' && 'rotate(90deg)'};
 `
 const StyledImg = styled.img`
   user-select: none;
@@ -121,6 +120,7 @@ const StyledIcon = styled(Icon)`
   'pointer'};
   border-radius: 50%;
   color: rgba(255,255,255,0.3);
+  z-index: 10;
   &:hover {
     color: gold;
   }

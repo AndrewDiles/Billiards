@@ -165,14 +165,68 @@ export const tableSizes = {
   }
 };
 
+// export const holeInfo = [
+//   {TL: [9, 9, 7]}, // top, left, radius
+//   {TR: [9, 280, 7]},
+//   {BL: [152.5, 10, 7]},
+//   {BR: [152.5, 279, 7]},
+//   {T: [6.5, 144.5, 5.5]},
+//   {B: [155.5, 144, 5.5]}
+// ]
 export const holeInfo = [
-  {TL: [9, 9, 7]}, // top, left, radius
-  {TR: [9, 280, 7]},
-  {BL: [152.5, 10, 7]},
-  {BR: [152.5, 279, 7]},
-  {T: [6.5, 144.5, 5.5]},
-  {B: [155.5, 144, 5.5]}
+  {TL: [-11, -11, 10]}, // top, left, radius
+  {TR: [-11, 262, 10]},
+  {BL: [132, -11, 10]},
+  {BR: [132, 262, 10]},
+  {T: [-11.5, 126, 6.5]},
+  {B: [136, 126, 6.5]}
 ]
+export const holeInfoObject = {
+  TL: [-11, -11, 10], // top, left, radius
+  TR: [-11, 262, 10],
+  BL: [132, -11, 10],
+  BR: [132, 262, 10],
+  T: [-11.5, 126, 6.5],
+  B: [136, 126, 6.5]
+}
+export const holeAngleInfo = {
+  TL: {
+    left1: {top: 6.3, left: -2.7, testLeft: 1.218, testTop: 1.218, impactOn : 'TL'},       // hit box tests TOP lEFT of ball (0.29r right 0.29r down of TL)
+    left2: {top: 9.3, left: -1.2, testLeft: 1.218, testTop: 1.218, impactOn : 'TL'},       // corners occue 29% of the way away from the edges of a box, r = 4.2
+    right1: {top: -2.95, left: 5.8, testLeft: 7.182, testTop: 1.218, impactOn : 'TR'},     // tests TR of ball
+    right2: {top: -1.2, left: 9, testLeft: 7.182, testTop: 1.218, impactOn : 'TR'},
+  },
+  TR: {
+    left1: {top: -1.6, left: 255.05, testLeft: 1.218, testTop: 1.218, impactOn : 'TL'},    // tests TL of ball
+    left2: {top: -3.45, left: 258.05, testLeft: 1.218, testTop: 1.218, impactOn : 'TL'},
+    right1: {top: .3, left: 256.55, testLeft: 7.182, testTop: 1.218, impactOn : 'TR'},     // tests TR of ball
+    right2: {top: -1.95, left: 258.3, testLeft: 7.182, testTop: 1.218, impactOn : 'TR'},
+  },
+  BL: {
+    left1: {top: 130.3, left: -2.45, testLeft: 1.218, testTop: 1.218, impactOn : 'TL'},    // tests TL of ball
+    left2: {top: 128.05, left: -1.45, testLeft: 1.218, testTop: 1.218, impactOn : 'TL'},
+    right1: {top: 137.182, left: -1.45, testLeft: 7.182, testTop: 7.182, impactOn : 'BR'},   // tests BR of ball
+    right2: {top: 129.8, left: 1.05, testLeft: 7.182, testTop: 7.182, impactOn : 'BR'},
+  },
+  BR: {
+    left1: {top: 129.8, left: 253.8, testLeft: 1.218, testTop: 7.182, impactOn : 'BL'},   // tests BL of ball
+    left2: {top: 131.55, left: 256.3, testLeft: 1.218, testTop: 7.182, impactOn : 'BL'},
+    right1: {top: 128.05, left: 256.55, testLeft: 7.182, testTop: 1.218, impactOn : 'TR'},    // tests TR of ball
+    right2: {top: 130.3, left: 258.05, testLeft: 7.182, testTop: 1.218, impactOn : 'TR'},
+  },
+  T: {
+    left1: {top: -1.95, left: 124.8, testLeft: 1.218, testTop: 1.218, impactOn : 'TL'},    // tests TL of ball
+    left2: {top: -3.95, left: 125.3, testLeft: 1.218, testTop: 1.218, impactOn : 'TL'}, 
+    right1: {top: -3.7, left: 137.3, testLeft: 7.182, testTop: 1.218, impactOn : 'TR'},    // tests TR of ball
+    right2: {top: -1.7, left: 138, testLeft: 7.182, testTop: 1.218, impactOn : 'TR'},
+  },
+  B: {
+    left1: {top: 130.55, left: 124.8, testLeft: 1.218, testTop: 7.182, impactOn : 'BL'},   // tests BL of ball
+    left2: {top: 132.3, left: 125.3, testLeft: 1.218, testTop: 7.182, impactOn : 'BL'},
+    right1: {top: 132.05, left: 129.3, testLeft: 7.182, testTop: 7.182, impactOn : 'BR'},   // tests BR of ball
+    right2: {top: 130.08, left: 129.8, testLeft: 7.182, testTop: 7.182, impactOn : 'BR'},
+  },
+}
 
 
 // Side radius: 5.5

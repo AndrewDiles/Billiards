@@ -5,7 +5,10 @@ import styled from 'styled-components';
 import {
   beginBallMotion,
   updateBalls,
-  endBallMotion
+  endBallMotion,
+  removeBall,
+  setBallInHand,
+  freeMoveCueBall,
 } from "../../actions";
 import useInterval from '../../Hooks/use-interval';
 
@@ -68,15 +71,46 @@ const Table = () => {
 
   const update = () => {
     let stillMotion = false;
+    // console.log('billiards',billiards)
+    // console.log('billiards.billards',billiards.billiards)
     billiards.billiards.forEach((billiard)=>{
       if (billiard.inMotion) stillMotion = true;
     })
     if (!stillMotion) {
+      let id = [];
+      let whiteSunk = false;
+      billiards.billiards.forEach((billiard, index) => {
+        if (billiard.sinkingSize <= 0) {
+          if (billiard.id === "cue") {
+            whiteSunk = true;
+          }
+          else {
+            id.push(billiard.id);
+          }
+        }
+      })
+      // if (id.length>0) {
+      //   id.forEach((ball)=>{
+          // this should come back, but it was causing grief in a component that mapped out billiards
+          // dispatch(removeBall(ball))
+        // }) 
+        
+        // else //do something to change turn, and set free move
+      // }
+      if (whiteSunk) {
+        dispatch(setBallInHand())
+        dispatch(freeMoveCueBall())
+      }
       dispatch(endBallMotion());
+
+
+      // set white ball to not sunk and place in hand?
+
+
       return
     }
     else {
-    dispatch(updateBalls(settings));
+      dispatch(updateBalls(settings));
     // send info to other user(s) about final locations of balls
     // test game conditions (whose turn, game over, who won?  etc)
     }
@@ -108,7 +142,7 @@ const Table = () => {
       {billiards.billiards.map((billiard)=>{
         return (
           <Ball
-          key = {billiard.id}
+          key = {billiard && billiard.id}
           billiard = {billiard}
           />
         )

@@ -11,7 +11,6 @@ const initialState = {
   refreshRate: 15,          // time in ms between refreshes
   status: 'idle',
   sideBarOpen: undefined,
-  sideBarHover: false,  // may not use...  DELETE?
 };
 
 export default function settingsReducer(state = initialState, action) {
@@ -25,6 +24,7 @@ export default function settingsReducer(state = initialState, action) {
     case 'CHANGE_GAME_TYPE' : {
       return {
         ...state,
+        gameOn: true,
         gameType: action.gameType,
       }
     }
@@ -54,6 +54,13 @@ export default function settingsReducer(state = initialState, action) {
         status: 'error',
       }
     }
+    case 'QUIT_GAME' : {
+      let sideBarOpenHolder =state.sideBarOpen;
+      return {
+        ...initialState,
+        sideBarOpen: sideBarOpenHolder,
+      }
+    }
     case 'OPEN_SIDE_BAR' : {
       return {
         ...state,
@@ -64,18 +71,6 @@ export default function settingsReducer(state = initialState, action) {
       return {
         ...state,
         sideBarOpen: false,
-      }
-    }
-    case 'HOVER_IN_SIDE_BAR' : {
-      return {
-        ...state,
-        sideBarHover: true,
-      }
-    }
-    case 'HOVER_OUT_SIDE_BAR' : {
-      return {
-        ...state,
-        sideBarHover: false,
       }
     }
     case 'SET_GAME_STATUS_FREE_MOVE' : {
@@ -129,14 +124,14 @@ export default function settingsReducer(state = initialState, action) {
       }
     }
     case 'SET_CUE_STRIKE_LOCATION' : {
-      console.log('from inside reducer: x',action.x,'y',action.y);
+      // console.log('from inside reducer: x',action.x,'y',action.y);
       let x = Math.floor(100*action.x)/100;
       let y = Math.floor(100*action.y)/100;
       if (x>1) x = 1;
       if (x<0) x = 0;
       if (y>1) y = 1;
       if (y<0) y = 0;
-      console.log('from inside reducer, corrected values: x',x,'y',y);
+      // console.log('from inside reducer, corrected values: x',x,'y',y);
       return {
         ...state,
         cueStrikeLocationX: x,

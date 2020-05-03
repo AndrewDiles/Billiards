@@ -31,9 +31,9 @@ const Sidebar = () => {
   }
   
   const configs = {
-    tension: 300,
-    friction: 25,
-    mass: 5,
+    tension: 700, //300
+    friction: 100, //25
+    mass: 3, //5
   }
 
   const opening = useSpring({

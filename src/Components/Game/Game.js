@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import styled from 'styled-components';
+import { Redirect } from "react-router-dom";
 
 import blueBG from '../../assets/circle blues/circle-blues.png';
 import squaresBG from '../../assets/repeated-square/repeated-square.png';
@@ -22,6 +23,11 @@ import ShotInput from '../ShotInput/ShotInput';
 
 const Game = () => {
   const settings = useSelector((state) => state.settings);
+  if (!settings.gameOn) {
+    return (
+      <Redirect to="/home" />
+    )
+  }
   // const { settings } = useContext(SettingsContext);
   
 

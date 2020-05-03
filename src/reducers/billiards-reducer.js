@@ -82,6 +82,8 @@ export default function billiardsReducer(state = initialState, action) {
       let billiardsCopy = [...state.billiards];
       billiardsCopy[0].top = action.y;
       billiardsCopy[0].left = action.x;
+      billiardsCopy[0].sinklocation = null;
+      billiardsCopy[0].sinkingSize = 1;
       return {
         ...state,
         status: "in-motion",

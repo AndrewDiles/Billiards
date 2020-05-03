@@ -9,9 +9,16 @@ In an efffort to reduce the amount of re-rendering, I decided to turn the statio
 ## Fixed bugs:
 Correct jerking nature of free-move cue ball
 Changed movement to test increments of that update's movement and test for collisions along each interval to increase accuracy
+location of red spot as contact point on cue ball is adjusted
+add hit detection on hole's knotches
 
 ## Bugs to fix:
 
+Not enough contact points on angled cushion beside holes.  Ball can pass through ( just cause them to sink when out of bounds or make more contact points).
 Correct hit detection during free movement
+Free movement forces specified distance on first free move
+free move box detection by tableSize
 
-Change apply physics to foresee impact
+
+rotation of ball not working properly
+collision affects on balls seems to misbehave based on which quadrant is hit.

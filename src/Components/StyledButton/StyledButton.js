@@ -27,8 +27,8 @@ const StyledButton = ( { handleClick, value, disabled, children} ) => {
 
   return (
       <ButtonStylings
-      disabled = {disabled}
-      onClick = {(ev)=> handleClick(ev)}
+      disabled = {disabled || null}
+      onClick = {(ev)=> handleClick(ev) || null}
       value = {value}
       >
         {children}
