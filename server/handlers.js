@@ -1,7 +1,75 @@
 'use strict';
 
+const AppImport = require('./index');
+
 const { MongoClient } = require('mongodb');
 const assert = require('assert');
+// const socketClient = require('socket.io').listen(8899).sockets;
+
+const server = require('http').Server(AppImport);
+const socket = require('socket.io')(server);
+
+MongoClient.connect('mongodb+srv://poolMaster:8BallSidePocket@cluster0-el4bm.mongodb.net/test',
+  { useUnifiedTopology: true },
+  function(err, db){
+    if(err){
+      throw err;
+    }
+    console.log("connected to mongodb");
+
+    socket.on('connection', function(socket){
+      let lobbyInfo = db.collection('lobbyInfo');
+      sendStatus = function(status){
+        socket.emit('status', status);
+      }
+
+      // Get lobby list from collection
+      lobbyInfo.find().sort({timeOpened}).toArray(function(err, res){
+        if (err) {
+          throw err;
+        }
+        socket.emit('lobbies', res);
+
+      })
+    });
+
+    socket.on('createLobby', function(data){
+      let lobbyInfo = db.collection('lobbyInfo');
+      let Player1 = data.userName;
+      let Player1Wealth = data.accumulatedWealth;
+      let timeOpened = Date.now();
+      if (!Player1 || Player1Wealth === null) {
+        sendStatus('invalid input');
+      }
+      else{
+        let newLobby =
+        {
+          timeOpened : timeOpened,
+          gameOngoing: false,
+          Player1 : Player1,
+          Player1Wealth : Player1Wealth,
+          Player1Ready : false,
+          Player2 : null,
+          Player2Wealth : null,
+          Player2Ready : false,
+          LastGameState: null,
+          CurrentTurn : null
+        };
+
+        lobbyInfo.insert(newLobby, function(socket){
+          socket.emit('output', newLobby);
+
+          sendStatus({
+            message: 'Lobby created',
+          })
+        })
+      }
+    })
+  }
+);
+
+
+
 
 const uri = "mongodb+srv://poolMaster:8BallSidePocket@cluster0-el4bm.mongodb.net/test"
 

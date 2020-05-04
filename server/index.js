@@ -18,8 +18,10 @@ const {
 
 const PORT = 8899;
 
+const App = express();
 
-express()
+
+App
   .use(function (req, res, next) {
     res.header(
       "Access-Control-Allow-Methods",
@@ -85,3 +87,5 @@ express()
   .post("/be/game/gameOver", handleGameOver)
 
   .listen(PORT, () => console.info(`Listening on port ${PORT}`));
+
+  module.exports = App;
