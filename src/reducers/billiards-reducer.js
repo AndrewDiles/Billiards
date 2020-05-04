@@ -51,7 +51,7 @@ export default function billiardsReducer(state = initialState, action) {
       }
     }
     case 'CUE_STRIKE' : {
-      let newCueInfo = applyCueStrike(state.billiards[0], action.power, -action.angle, action.strikeLocationX || .5, action.strikeLocationY || .5);
+      let newCueInfo = applyCueStrike(state.billiards[0], action.power, -action.angle, action.strikeLocationX, action.strikeLocationY);
       let newState = {...state};
       newState.billiards.shift();
       newState.billiards.unshift(newCueInfo);

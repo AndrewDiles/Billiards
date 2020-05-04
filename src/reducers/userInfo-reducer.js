@@ -1,5 +1,6 @@
 const initialState = {
   user: null,
+  currentGame: null,
   status: 'idle',
 };
 
@@ -8,6 +9,7 @@ const initialState = {
   // "userName": "a",
   // "password": "a",
   // "dubloons": 4000,
+  // "accumulatedWealth" : 40000,
   // "inventory": {
   //   "crookedStick": true,
   //   "plainOlCue": false,
@@ -76,6 +78,49 @@ export default function userReducer(state = initialState, action) {
     }
     case 'LOG_USER_OUT' : {
       return {...initialState}
+    }
+    case 'REQUEST_AVAILABLE_GAMES' : {
+      return {
+        ...state,
+        status: 'loading',
+      }
+    }
+    case 'LOAD_AVAILABLE_GAMES_SUCCESS' : {
+      return {
+        ...state,
+        status: 'idle',
+      }
+    }
+    case 'LOAD_AVAILABLE_GAMES_ERROR' : {
+      return {
+        ...state,
+        status: 'error',
+      }
+    }
+    case 'REQUEST_JOIN_GAME' : {
+      return {
+        ...state,
+        status: 'joining',
+      }
+    }
+    case 'JOIN_GAME_SUCCESS' : {
+      return {
+        ...state,
+        currentGame: {...action.newGameInfo.newGameInfo},
+        status: 'idle',
+      }
+    }
+    case 'JOIN_GAME_ERROR' : {
+      return {
+        ...state,
+        status: 'idle',
+      }
+    }
+    case 'REMOVE_CURRENT_GAME' : {
+      return {
+        ...state,
+        currentGame: null,
+      }
     }
     default: {
       return state;

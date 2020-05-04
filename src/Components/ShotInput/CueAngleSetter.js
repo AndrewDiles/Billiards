@@ -122,6 +122,7 @@ const StyledIcon = styled(Icon)`
   color: rgba(255,255,255,0.3);
   z-index: 10;
   &:hover {
+    transform: scale(1.5);
     color: gold;
   }
 `

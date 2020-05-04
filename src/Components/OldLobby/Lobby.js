@@ -1,9 +1,14 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
+import { NavLink, Redirect } from "react-router-dom";
 import styled from 'styled-components';
 import { CircularProgress } from '@material-ui/core';
 
+import LobbyGames from './LobbyGame';
+
 import blueBG from '../../assets/circle blues/circle-blues.png';
+import StyledButton from '../StyledButton';
+import CreateLobbyGame from './CreateLobbyGame';
 
 import {
   requestAvailableGames,
@@ -15,11 +20,12 @@ const Lobby = () => {
   const dispatch = useDispatch();
   const settings = useSelector((state) => state.settings);
   const userInfo = useSelector((state) => state.userInfo);
-  const [lobbyGames, setLobbyGames] = useState([]);
+  const [lobbyGames, setLobbyGames] = useState(null);
+  const [mounting, setMounting] = useState(true);
   
 
   React.useEffect(()=>{
-    // if (mounting) { 
+    if (mounting) { 
       dispatch(requestAvailableGames());
       fetch('/be/lobby/view', {
         method: "GET",
@@ -38,10 +44,10 @@ const Lobby = () => {
           setLobbyGames(['The ship has sailed...  Check the dock once more?'])
         }
       })
-    // }
-    // return () => {
-    //   setMounting(false);
-    // }
+    }
+    return () => {
+      setMounting(false);
+    }
   }, [])  //use Websockets to listen for changes to the database?
 
   // if (lobbyGames !== null) {
@@ -50,7 +56,7 @@ const Lobby = () => {
   //   })
   // }
   // console.log('lobbyGames',lobbyGames)
-console.log('re-rendered');
+
 
   return (
     <Wrapper>
@@ -59,13 +65,12 @@ console.log('re-rendered');
       ) : (
         lobbyGames.map((game) => {
           return (
-            'hi'
-            // <LobbyGames
-            // setLobbyGames = {setLobbyGames}
-            // lobbyGames = {lobbyGames}
-            // key = {game.Player1}
-            // gameInfo = {game}
-            // />
+            <LobbyGames
+            setLobbyGames = {setLobbyGames}
+            lobbyGames = {lobbyGames}
+            key = {game.Player1}
+            gameInfo = {game}
+            />
           )
         })
       )}

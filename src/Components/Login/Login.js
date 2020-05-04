@@ -58,7 +58,8 @@ const Login = () => {
             userName: data.user.userName,
             currency: data.user.currency,
             gameHistory: data.user.gameHistory,
-            inventory: data.user.inventory
+            inventory: data.user.inventory,
+            accumulatedWealth: data.user.accumulatedWealth
           };
           dispatch(receiveUserInfo(userInfo));
         });
@@ -99,7 +100,8 @@ const Login = () => {
             userName: data.user.userName,
             currency: data.user.currency,
             gameHistory: data.user.gameHistory,
-            inventory: data.user.inventory
+            inventory: data.user.inventory,
+            accumulatedWealth: data.user.accumulatedWealth
           };
           dispatch(receiveUserInfo(userInfo));
         });

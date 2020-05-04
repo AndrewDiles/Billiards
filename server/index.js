@@ -8,6 +8,7 @@ const {
   handleLogIn,
   handleCreateAccount,
   handleViewLobby,
+  handleJoinGame,
   handlePurchase,
   handleCreateLobby,
   handleBeginGame,
@@ -57,12 +58,21 @@ express()
   // currency:
   // }
   
+  // fetches all the current lobbies from mongo
   .get("/be/lobby/view", handleViewLobby)
 
   // creates a lobby, returns a lobby number
   .post("/be/lobby/create", handleCreateLobby)
   // Body has shape: {
   // userName:
+  // }
+
+  // joins a lobby that already exists
+  .post("/be/lobby/join", handleJoinGame)
+  // Body has shape: {
+    // player1:
+    // joiningPlayer:
+    // joiningPlayerWealth:
   // }
 
   // begins a game from the lobby

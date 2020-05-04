@@ -275,7 +275,7 @@ const testBallCollisions = (testTop, testLeft, allBilliards, testBilliard) => {
   allBilliards.forEach((billiard)=>{
     if (billiard.id !== testBilliard.id && !billiard.sinkinglocation) {
       if(distanceBetweenTwoPoints(testTop,testLeft, billiard.top, billiard.left) < 2*r) {
-        console.log(`${testBilliard.id} ball has hit the ${billiard.id} ball!`);
+        // console.log(`${testBilliard.id} ball has hit the ${billiard.id} ball!`);
         // console.log('cue top,left:', testTop,testLeft, 'hit ball top,left:', billiard.top, billiard.left);
         // console.log('distancebetweenthem:',distanceBetweenTwoPoints(testTop,testLeft, billiard.top, billiard.left))
         // console.log('radius',r)
@@ -371,12 +371,22 @@ export const applyPhysics = (billiardsObject, settings) => {
     // if no collisions and ball is not in motion, then there is nothing to be done
     if (element.collisions.length === 0 && !element.inMotion) return element
 
+    // ensures that a ball will not be reconsidered if it has sunk.
+    if (element.sinkingSize <= 0) {
+      element.inMotion = false;
+    }
+
+    // Creating a container for past collisions to insure balls have a chance to get outside eachother
+    let pastCollisions = [];
+
     // if there is a pending collision it must be resolved immediately (this may occue at the time of the collision)
-    if (element.collisions.length !== 0 && !element.sinkinglocation) {
+    if (element.collisions.length !== 0 && !element.sinkinglocation && element.sinkingSize <= 0) {
       // resolve new change in energy  -- this may occur at time of impact
       element.collisions.forEach((collision)=> {
         element.xVel += collision[0];
         element.yVel += collision[1];
+        pastCollisions.push(collision[2]);
+        console.log(pastCollisions);
       })
       element.collisions = [];
 
@@ -387,7 +397,7 @@ export const applyPhysics = (billiardsObject, settings) => {
       // console.log('post-resolution:',element.collisions);
     }
     
-    console.log(`Moving the ${element.id} ball`)
+    // console.log(`Moving the ${element.id} ball`)
 
     // will do the changes that occur in one refreshRate's worth of time in 10 increments
     for(let n = 1; n <= 10; n++) {
@@ -397,7 +407,7 @@ export const applyPhysics = (billiardsObject, settings) => {
 
       // below case is true if the ball is sinking
       else if (element.sinkingSize < 1) {
-        //failed attempts:// bellow makes it look like sinking into BR quadrant of hole// element.top -= 0.9995*(element.top-holeInfoObject[element.sinklocation][0]- 0.5*holeInfoObject[element.sinklocation][2]);// element.left -= 0.9995*(element.left-holeInfoObject[element.sinklocation][1]- 0.5*holeInfoObject[element.sinklocation][2]);// sinks into top center// element.top -= 0.9995*(element.top-holeInfoObject[element.sinklocation][0]- 0.05*holeInfoObject[element.sinklocation][2]);// element.left -= 0.9995*(element.left-holeInfoObject[element.sinklocation][1]- 0.05*holeInfoObject[element.sinklocation][2]);// element.top -= 0.999999999*(element.top-holeInfoObject[element.sinklocation][0]- 0.5*holeInfoObject[element.sinklocation][2]);// element.left -= 0.999999999*(element.left-holeInfoObject[element.sinklocation][1]- 0*holeInfoObject[element.sinklocation][2]);// element.top -= 0.999999999*(element.top-holeInfoObject[element.sinklocation][0]);// element.left -= 0.999999999*(element.left-holeInfoObject[element.sinklocation][1]);// just TR of center// element.top -= 0.9995*(element.top-holeInfoObject[element.sinklocation][0]- 0.25*holeInfoObject[element.sinklocation][2]);// element.left -= 0.9995*(element.left-holeInfoObject[element.sinklocation][1]- 0.25*holeInfoObject[element.sinklocation][2]);// sinks into TL:// element.top -= 0.9995*(element.top-holeInfoObject[element.sinklocation][0]+ 0.5*holeInfoObject[element.sinklocation][2]);// element.left -= 0.9995*(element.left-holeInfoObject[element.sinklocation][1]+ 0.5*holeInfoObject[element.sinklocation][2]);// sinks in TR quad// element.top -= 0.9995*(element.top-holeInfoObject[element.sinklocation][0]+ 0.5*holeInfoObject[element.sinklocation][2]);// element.left -= 0.9995*(element.left-holeInfoObject[element.sinklocation][1]- 0.5*holeInfoObject[element.sinklocation][2]);
+        // failed attempts:// bellow makes it look like sinking into BR quadrant of hole// element.top -= 0.9995*(element.top-holeInfoObject[element.sinklocation][0]- 0.5*holeInfoObject[element.sinklocation][2]);// element.left -= 0.9995*(element.left-holeInfoObject[element.sinklocation][1]- 0.5*holeInfoObject[element.sinklocation][2]);// sinks into top center// element.top -= 0.9995*(element.top-holeInfoObject[element.sinklocation][0]- 0.05*holeInfoObject[element.sinklocation][2]);// element.left -= 0.9995*(element.left-holeInfoObject[element.sinklocation][1]- 0.05*holeInfoObject[element.sinklocation][2]);// element.top -= 0.999999999*(element.top-holeInfoObject[element.sinklocation][0]- 0.5*holeInfoObject[element.sinklocation][2]);// element.left -= 0.999999999*(element.left-holeInfoObject[element.sinklocation][1]- 0*holeInfoObject[element.sinklocation][2]);// element.top -= 0.999999999*(element.top-holeInfoObject[element.sinklocation][0]);// element.left -= 0.999999999*(element.left-holeInfoObject[element.sinklocation][1]);// just TR of center// element.top -= 0.9995*(element.top-holeInfoObject[element.sinklocation][0]- 0.25*holeInfoObject[element.sinklocation][2]);// element.left -= 0.9995*(element.left-holeInfoObject[element.sinklocation][1]- 0.25*holeInfoObject[element.sinklocation][2]);// sinks into TL:// element.top -= 0.9995*(element.top-holeInfoObject[element.sinklocation][0]+ 0.5*holeInfoObject[element.sinklocation][2]);// element.left -= 0.9995*(element.left-holeInfoObject[element.sinklocation][1]+ 0.5*holeInfoObject[element.sinklocation][2]);// sinks in TR quad// element.top -= 0.9995*(element.top-holeInfoObject[element.sinklocation][0]+ 0.5*holeInfoObject[element.sinklocation][2]);// element.left -= 0.9995*(element.left-holeInfoObject[element.sinklocation][1]- 0.5*holeInfoObject[element.sinklocation][2]);
         
         // below switch moves the ball based on the hole it is sinking into
         switch (element.sinklocation) {
@@ -509,6 +519,16 @@ export const applyPhysics = (billiardsObject, settings) => {
           // if no collision with wall then test for collisions with balls
           if (!collision) {
             let ballCollisions = testBallCollisions(testTop, testLeft, billiardsObject, element);
+
+            // This loop removes any detected collisions that occured within the time interval of the refresh rate.
+            ballCollisions.forEach((collision, index)=>{
+              let alreadyRecordedThisImpact = false;
+                pastCollisions.forEach((pastCollision)=>{
+                  if (collision[2]===pastCollision) alreadyRecordedThisImpact = true;
+                })
+              if (alreadyRecordedThisImpact) ballCollisions.splice(index,1);
+            })
+
             if (ballCollisions.length === 0) {
               element.xVel = testXVel;
               element.yVel = testYVel;
@@ -536,13 +556,13 @@ export const applyPhysics = (billiardsObject, settings) => {
 
 
 
-                console.log(`${element.id} ball only hit one other ball: the ${ballCollisions[0]} ball.`)
+                // console.log(`${element.id} ball only hit one other ball: the ${ballCollisions[0]} ball.`)
                 let topAv = (element.top + testTop)/2;
                 let leftAv = (element.left + testLeft)/2;
                 // let impactedBall = billiardsObject.find(ball => ball.id === ballCollisions[0]);
-                console.log('the ball the current ball being tested`s data is:',impactedBall);
+                // console.log('the ball the current ball being tested`s data is:',impactedBall);
                 let theta = angleBetweenTwoBalls(topAv, leftAv, impactedBall.top, impactedBall.left);
-                console.log('theta is:',theta)
+                console.log('theta is:',theta);
                 let Vib2 = getHypotenuse(impactedBall.xVel, impactedBall.yVel);
                 let Vib1 = getHypotenuse(testXVel, testYVel);
                 // let Vfb1x = Vib2*Math.sin(theta) - Vib1*Math.sin(theta);
@@ -551,23 +571,42 @@ export const applyPhysics = (billiardsObject, settings) => {
                 let Vfb1y = -Vib2*Math.cos(theta) + Vib1*Math.cos(theta);
                 Vfb1x > 0 ? Vfb1x > 0.001 ? Vfb1x -= 0.001 : Vfb1x = 0 : Vfb1x < -0.001 ? Vfb1x += 0.001 : Vfb1x = 0;
                 Vfb1y > 0 ? Vfb1y > 0.001 ? Vfb1y -= 0.001 : Vfb1y = 0 : Vfb1y < -0.001 ? Vfb1y += 0.001 : Vfb1y = 0;
-                element.xVel = Vfb1x;
-                element.yVel = Vfb1y;
-                // element.left = leftAv;
-                // element.top = topAv;
                 let Vfb2x = -Vib1*Math.sin(theta) + Vib2*Math.sin(theta);
                 let Vfb2y = -Vib1*Math.cos(theta) + Vib2*Math.cos(theta);
-                // let Vfb2x = Vib1*Math.sin(theta) - Vib2*Math.sin(theta);
-                // let Vfb2y = Vib1*Math.cos(theta) - Vib2*Math.cos(theta);
                 Vfb2x > 0 ? Vfb2x > 0.001 ? Vfb2x -= 0.001 : Vfb2x = 0 : Vfb2x < -0.001 ? Vfb2x += 0.001 : Vfb2x = 0;
                 Vfb2y > 0 ? Vfb2y > 0.001 ? Vfb2y -= 0.001 : Vfb2y = 0 : Vfb2y < -0.001 ? Vfb2y += 0.001 : Vfb2y = 0;
+                if (theta < -0.785398) {
+                  Vfb1x *= -1;
+                  Vfb1y *= -1;
+                  Vfb2y *= -1;
+                }
+                else if (theta < 0) {
+                  // Vfb2x *= -1;
+                }
+                else if (theta < 0.785398) {
+                  Vfb2x *= -1;
+                }
+                else {
+                  Vfb1x *= -1;
+                  Vfb1y *= -1;
+                  Vfb2y *= -1;
+                }
+                element.xVel = Vfb1x;
+                element.yVel = Vfb1y;
+                impactedBall.inMotion = true;
+                impactedBall.collisions.push([Vfb2x,Vfb2y, element.id]);
+                // element.left = leftAv;
+                // element.top = topAv;
+                
+                // let Vfb2x = Vib1*Math.sin(theta) - Vib2*Math.sin(theta);
+                // let Vfb2y = Vib1*Math.cos(theta) - Vib2*Math.cos(theta);
+                
                 // below is definately wrong
                 // impactedBall.xVel = Vfb2x;
                 // impactedBall.xVel = Vfb2y;
                 // impactedBall.inMotion = testIfInMotion(impactedBall);
                 // trying an alternative
-                impactedBall.inMotion = true;
-                impactedBall.collisions.push([Vfb2x,Vfb2y, element.id]);
+                
               // }
               // else {
               //   console.log(`${element.id} ball hit more than one other ball: ${ballCollisions} balls.`)
@@ -646,7 +685,7 @@ export const applyPhysics = (billiardsObject, settings) => {
 }
 
 export const applyCueStrike = (initialCueBallInfo, power, angle, strikeLocationX, strikeLocationY) => {
-  // console.log()
+  console.log(angle,'angle')
   let finalCueBallInfo = {...initialCueBallInfo};
   finalCueBallInfo.xVel = power * Math.cos(angle);
   finalCueBallInfo.yVel = power * Math.sin(angle);
@@ -657,18 +696,3 @@ export const applyCueStrike = (initialCueBallInfo, power, angle, strikeLocationX
   // ignore top and under spin for now (strikeLocationY)
   return finalCueBallInfo
 }
-
-//  id,       cue, or the ball's number
-//  inMotion, true if any of the vel/spin values are not zero
-//  top,      top location before size ratio is applied
-//  left,     left location before size ratio is applied
-//  xVel,    cm/s
-//  yVel,    cm/s
-//  xAngle,  x rotational angle (+ => cw from top down) 
-//  yAngle,  y rotational angle (+ => into table off right side of ball from top down)
-//  xSpin,   rad/s
-//  ySpin,   rad/s
-//  collisions, an array, each element is the information of an object that it has collided with
-//  sinklocation, "none" until sinking, the either "T", "B", "TL", etc, to represent which hole
-//  sinkingSize, 1 when not sinking.  Once it is sinking number will be less than one and be a multiplier on its size
-//  gameSize,   should not be needed

@@ -1,28 +1,27 @@
-import React, { useContext } from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from "react-redux";
-import styled, { withTheme } from 'styled-components';
+import styled from 'styled-components';
+
+import grabGreen from '../../../assets/grabGreen.png';
+import grabRed from '../../../assets/grabRed.png';
 
 import {
-  beginBallMotion,
-  cueStrike,
   setBallOnTable,
   setBallInHand,
   freeMoveCueBall
 } from "../../../actions";
 
-
-import { ballColors, initialBallLocations } from '../../../Constants/ballConstants';
+import { ballColors } from '../../../Constants/ballConstants';
 import { actualSizes, tableSizes, sizeRatios } from '../../../Constants/tableSizes';
-
 
 const Balls = ( {billiard} ) => {
   const settings = useSelector((state) => state.settings);
+  const [legalDrop, setLegalDrop] = React.useState(true);
   // const [ballInHandTriggered, setBallInHandTriggered] = React.useState(false);
   // const [mouselocationLeft, setMouselocationLeft] = React.useState(null);
   // const [mouselocationTop, setMouselocationTop] = React.useState(null);
   const dispatch = useDispatch();
-
-  React.useEffect((ev)=>{
+  useEffect((ev)=>{
     if (!settings.ballInHand 
       // || ballInHandTriggered
       ) return;
@@ -46,7 +45,14 @@ const Balls = ( {billiard} ) => {
         dispatch(freeMoveCueBall(
           ((ev.offsetX-tableSizes[settings.tableSize].ballRadius)-borderSize)/sizeRatios[settings.tableSize],
           ((ev.offsetY-tableSizes[settings.tableSize].ballRadius)-borderSize)/sizeRatios[settings.tableSize]
-          ));
+        ));
+        if (testLegalBallDropLocation(ev.offsetX, ev.offsetY)){
+          setLegalDrop(true);
+        }
+        else {
+          setLegalDrop(false);
+        }
+
       }
       else {
         // let pathsKeys = Object.keys(ev.path);
@@ -110,8 +116,6 @@ const Balls = ( {billiard} ) => {
     }
   }, [settings.ballInHand])
 
-  
-
   const testLegalBallDropLocation = (x,y) => {
     // console.log('legal drop test begins, (x,y) =', x,y)
     let trueX = (x-tableSizes[settings.tableSize].ballRadius)/sizeRatios[settings.tableSize];
@@ -149,6 +153,10 @@ const Balls = ( {billiard} ) => {
     // }
     if (testLegalBallDropLocation(event.offsetX, event.offsetY)){
       dispatch(setBallOnTable());
+      const TableWrapper = document.getElementById('TableWrapper');
+      TableWrapper.style.cursor = 'default';
+
+      setLegalDrop(true);
     }
     // else {console.log('can not drop ball here')}
   }
@@ -166,8 +174,21 @@ const Balls = ( {billiard} ) => {
   // console.log('degYMod180degYMod180degYMod180',degYMod180);
   // console.log('sinDegYsinDegYsinDegYsinDegY',sinDegY);
   let scale = `scale(${billiard.sinkingSize})`;
+  // const greenGrabCursor = `url(${grabGreen})`;
+  // const redGrabCursor = `url(${grabRed})`;
+
+  
+  const TableWrapper = document.getElementById('TableWrapper');
+  if (TableWrapper && settings.ballInHand) {
+    legalDrop ? TableWrapper.style.cursor = `url(${grabGreen}), auto` : TableWrapper.style.cursor = `url(${grabRed}), auto`
+  }
+
+  // cursor: url(${red}), auto;
+  
+  // legalDrop ? Table.style.cursor = url(grabRed);
   return (
     <BallContainer
+    legalDrop = {legalDrop}
     className = {billiard.id}
     freeMove = {(settings.gameStatus === 'free-move' || settings.gameStatus === 'first-shot') && billiard.id === 'cue'}
     inHand = {settings.ballInHand}
@@ -197,21 +218,34 @@ const Balls = ( {billiard} ) => {
           striped = {ballColors[billiard.id].striped}
           color = {ballColors[billiard.id].color}
         >
-          <WhiteCenterCircle
-          className = {billiard.id}
-          sinDegY = {100*sinDegY}
-          degYMod180 = {degYMod180}
-          yAngle = {billiard.yAngle}
-          >
-            {/* {billiard.id !== 'cue' && billiard.id} */}
-            {billiard.id}
-          </WhiteCenterCircle>
+          {billiard.id !== 'cue' &&
+            <WhiteCenterCircle
+            className = {billiard.id}
+            sinDegY = {100*sinDegY}
+            degYMod180 = {degYMod180}
+            yAngle = {billiard.yAngle}
+            >
+              {billiard.id}
+              <Shine/>  
+              {/* Shine actually doesn't currently make sense, as the light source would cause a shine in the same location, yet these shines rotates differently */}
+            </WhiteCenterCircle>
+          }
         </Stripe>
       </Color>
     </BallContainer>
   )
 }
 export default Balls;
+const Shine = styled.div`
+  height: 50%;
+  width: 50%;
+  border-radius: 50%;
+  position: absolute;
+  bottom: 15%;
+  right: 15%;
+  background-color: azure;
+  opacity: 0.3;
+`
 const WhiteCenterCircle = styled.div`
   height: 90%;
   /* height: ${props => props.degYMod180 > 90 ? `${.9*(props.sinDegY+50)}%` : `${.9*(props.sinDegY)}%`}; */
@@ -245,7 +279,6 @@ const Stripe = styled.div`
 
 
 // Math.sin(90 * Math.PI / 180)
-
 
 const BallContainer = styled.div`
   cursor: ${props => props.freeMove ? props.inHand ? 'grabbing' : 'grab' : 'arrow'};

@@ -30,6 +30,29 @@ export const logUserOut = () => ({
   type: 'LOG_USER_OUT',
 });
 
+// lobby actions:
+// get lobby data:
+export const requestAvailableGames = () => ({
+  type: 'REQUEST_AVAILABLE_GAMES',
+});
+export const loadAvailableGamesSuccess = () => ({
+  type: 'LOAD_AVAILABLE_GAMES_SUCCESS',
+});
+export const loadAvailableGamesError = () => ({
+  type: 'LOAD_AVAILABLE_GAMES_ERROR',
+});
+// joining a lobby:
+export const requestJoinGame = () => ({
+  type: 'REQUEST_JOIN_GAME',
+});
+export const joinGameSuccess = (newGameInfo) => ({
+  type: 'JOIN_GAME_SUCCESS',
+  newGameInfo,
+});
+export const joinGameError = () => ({
+  type: 'JOIN_GAME_ERROR',
+});
+
 // -- -- -- -- -- --
 // settings actions:
 // changing table size:
@@ -52,6 +75,9 @@ export const requestStartGame = () => ({
 });
 export const quitGame = () => ({
   type: 'QUIT_GAME',
+});
+export const removeCurrentGame = () => ({
+  type: 'REMOVE_CURRENT_GAME',
 });
 
 // to change with information from server?

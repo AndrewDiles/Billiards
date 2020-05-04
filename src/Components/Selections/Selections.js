@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import styled from 'styled-components';
 import { NavLink } from "react-router-dom";
@@ -9,6 +9,7 @@ import {
   changeGameType,
   setGameStatusFirstShot,
   quitGame,
+  removeCurrentGame,
   logUserOut
 } from "../../actions";
 
@@ -49,6 +50,7 @@ const Selections = ({isSliding}) => {
   }
   const handleQuit = () => {
     dispatch(quitGame());
+    dispatch(removeCurrentGame());
   }
   let disabled = false;
   // if (!(settings.status === 'idle' || settings.status === 'error')) disabled = true;
@@ -73,6 +75,7 @@ const Selections = ({isSliding}) => {
           handleClick = {handleClick}
           disabled = {disabled}
           value = "narrow"
+          selected = {settings.tableSize === 'narrow'}
           >
             Size: Narrow
           </StyledButton>
@@ -80,6 +83,7 @@ const Selections = ({isSliding}) => {
           handleClick = {handleClick}
           disabled = {disabled}
           value = "medium"
+          selected = {settings.tableSize === 'medium'}
           >
             Size: Medium
           </StyledButton>
@@ -87,6 +91,7 @@ const Selections = ({isSliding}) => {
           handleClick = {handleClick}
           disabled = {disabled}
           value = "full"
+          selected = {settings.tableSize === 'full'}
           >
             Size: Large
           </StyledButton>
@@ -134,6 +139,15 @@ const Selections = ({isSliding}) => {
                 </StyledButton>
               </StyledNavLink>
           )}
+          {!href.includes('view-lobby') &&
+            <StyledNavLink to="/view-lobby">
+              <StyledButton
+              handleClick = {() => {setHref('view-lobby')}}
+              >
+                FIND MATES
+              </StyledButton>
+            </StyledNavLink>
+          }
           <StyledNavLink to="/billiards">
             <StyledButton
             handleClick = {() => handleClickBallMaker("eight")}

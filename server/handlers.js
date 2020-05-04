@@ -3,7 +3,6 @@
 const { MongoClient } = require('mongodb');
 const assert = require('assert');
 
-// const uri = "mongodb+srv://poolMaster:8BallSidePocket@cluster0-csv1l.mongodb.net/test?retryWrites=true&w=majority";
 const uri = "mongodb+srv://poolMaster:8BallSidePocket@cluster0-el4bm.mongodb.net/test"
 
 const client = new MongoClient(uri, { 
@@ -21,7 +20,7 @@ const client = new MongoClient(uri, {
     }
 
     await client.connect();
-    const db = client.db('billiardsInfo');  // this may need to be Billiards?
+    const db = client.db('billiardsInfo');
     
     try {
       const result = await db.collection('userInfo').findOne({ userName: userName });
@@ -66,6 +65,7 @@ const client = new MongoClient(uri, {
           userName: userName,
           password: password,
           dubloons: 0,
+          accumulatedWealth: 0,
           inventory: {
             crookedStick: true,
             plainOlCue: false,
@@ -88,34 +88,64 @@ const client = new MongoClient(uri, {
     }
   };
 
-  //TBD
   const handleViewLobby = async (req, res) => {
-
-    const userName = req.body.userName;
-    const password = req.body.password;
-
-    if (password.length === 0 || userName.length === 0) {
-      res.status(400).json({ status: 400, message: 'Fields may not be blank'  });
-    }
-
     await client.connect();
-    const db = client.db('billiardsInfo');  // this may need to be Billiards?
-    
+    const db = client.db('billiardsInfo');
     try {
-      const result = await db.collection('userInfo').findOne({ userName: userName });
-      
-      if (!result || result.length === 0) {
-        res.status(404).json({ status: 404, user: 'Not Found' });
-      }
-      else if (result.passWord !== password) {
-        res.status(400).json({ status: 400, message: 'Password is incorrect'  });
-      }
-      else {
-        res.status(200).json({ status: 200, user: result })
-      }
+      const result = await db.collection('lobbyInfo').find().toArray();
+      res.status(200).json({ status: 200, lobbyGames: result })
     } catch (err) {
       console.log(err);
       res.status(500).json({ status: 500, message: "error" });
+    }
+  };
+
+
+  
+  
+
+  const handleJoinGame = async (req, res) => {
+
+    const player1 = req.body.player1;
+    const joiningPlayer = req.body.player2;
+    const joiningPlayerWealth = req.body.player2Wealth;
+    // console.log('player1',player1)
+    // console.log('joiningPlayer',joiningPlayer)
+    // console.log('joiningPlayerWealth',joiningPlayerWealth)
+    if (!player1 || !joiningPlayer || joiningPlayerWealth === null) {
+      // console.log('11111111')
+      res.status(400).json({ status: 400, error: 'Credentials be missing...'  });
+    }
+    else {
+      await client.connect();
+      const db = client.db('billiardsInfo');
+      
+      try {
+        const findMatch = await db.collection('lobbyInfo').findOne({ Player1: player1 });
+        // console.log('222222222')
+        if (!findMatch) {
+          // console.log('333333333')
+          res.status(404).json({ status: 404, error: 'That scurvy dog took off!' });
+        }
+        else if (findMatch.player2) {
+          // console.log('3.5 3.5 3.5 3.5')
+          res.status(401).json({ status: 401, error: "They've already found a sucker to beat." });
+        }
+        else {
+          const query = { Player1: player1 };
+          const newValues = { $set: { Player2: joiningPlayer, Player2Wealth: joiningPlayerWealth } };
+          const r = await db.collection('lobbyInfo').updateOne(query, newValues);
+          // assert.equal(1, r.matchedCount);
+          // console.log('44444444')
+          assert.equal(1, r.modifiedCount);
+          // console.log('55555555')
+          res.status(200).json({ status: 200, message: "Success!" })
+        }
+      } catch (err) {
+        console.log(err);
+        // console.log('666666666')
+        res.status(500).json({ status: 500, error: "Someone will walk the plank for this error!" });
+      }
     }
   };
 
@@ -868,6 +898,7 @@ const client = new MongoClient(uri, {
 module.exports = {
   handleLogIn,
   handleCreateAccount,
+  handleJoinGame,
   handlePurchase,
   handleViewLobby,
   handleCreateLobby,

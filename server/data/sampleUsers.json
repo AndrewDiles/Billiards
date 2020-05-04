@@ -3,6 +3,7 @@
     "userName": "a",
     "password": "a",
     "dubloons": 4000,
+    "accumulatedWealth": 4000,
     "inventory": {
       "crookedStick": true,
       "plainOlCue": false,
@@ -32,6 +33,7 @@
     "userName": "Shark",
     "password": "Shark",
     "dubloons": 40000,
+    "accumulatedWealth": 65000,
     "inventory": {
       "crookedStick": true,
       "plainOlCue": true,

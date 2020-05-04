@@ -1,0 +1,27 @@
+[
+  {
+    "timeOpened" : 1588487347739,
+    "gameOngoing": false,
+    "Player1" : "Scubba Joe",
+    "Player1Wealth" : 2500,
+    "Player1Ready" : false,
+    "Player2" : null,
+    "Player2Wealth" : null,
+    "Player2Ready" : false,
+    "LastGameState": null,
+    "CurrentTurn" : null
+  },
+
+  {
+    "timeOpened" : 1587487347739,
+    "gameOngoing": false,
+    "Player1" : "Daavy Jones",
+    "Player1Wealth" : 66666666,
+    "Player1Ready" : false,
+    "Player2" : null,
+    "Player2Wealth" : null,
+    "Player2Ready" : false,
+    "LastGameState": null,
+    "CurrentTurn" : null
+  }
+]

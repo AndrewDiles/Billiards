@@ -1,6 +1,6 @@
 export const determinePadding = (x,y) => {
   let padding = '0 0 0 0';
-  console.log('x',x,'y',y)
+  // console.log('x',x,'y',y)
   if (x === 0 && y === 0 ) padding = '60px 60px 0 0';
   else if (x === 0.1 && y === 0) padding = '64px 50px 0 0';
   else if (x === 0.2 && y === 0) padding = '68px 40px 0 0';

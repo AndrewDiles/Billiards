@@ -122,7 +122,7 @@ const Table = () => {
 
   return (
     <TableWrapper
-    // id = {'Table'}
+    id = {'TableWrapper'}
     // className = {"Table"}
     settings = {settings}
     tableSizes = {tableSizes}
@@ -197,6 +197,7 @@ const TableWrapper = styled.div`
   align-items: center;
   position: fixed;
   transform: ${props => props.settings.tableSize === "narrow" && 'rotate(90deg)'};
+  overflow: hidden;
   cursor: ${props => props.ballInHand && 'grabbing'};
 `
 const HighIndexTable = styled.div`
@@ -204,7 +205,8 @@ const HighIndexTable = styled.div`
   height: ${props => props.tableSizes[props.settings.tableSize].tableHeight && props.tableSizes[props.settings.tableSize].tableHeight}px;
   border-radius: ${props => props.tableSizes[props.settings.tableSize].tableBorderRadius && props.tableSizes[props.settings.tableSize].tableBorderRadius}px;
   position: absolute;
-  cursor: ${props => props.ballInHand && 'grabbing'};
+  /* cursor: ${props => props.ballInHand && 'grabbing'}; */
   z-index: 10;
   display: ${props => !props.ballInHand && 'none'};
+
 `

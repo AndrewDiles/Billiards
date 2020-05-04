@@ -1,5 +1,5 @@
 export const ballColors = {
-  cue:  { color: "white",     striped: false, },
+  cue:  { color: "aliceblue",     striped: false, },
   1 :   { color: "yellow",    striped: false, },
   2 :   { color: "blue",      striped: false, },
   3 :   { color: "red",       striped: false, },
