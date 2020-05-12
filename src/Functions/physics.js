@@ -174,7 +174,7 @@ const testIsSinking = (top, left) => {
     let key = Object.keys(hole);
     if ( (distanceBetweenTwoPoints(top, left, hole[key[0]][0], hole[key[0]][1])) <  hole[key[0]][2] ) {
       sinking = key[0];
-      console.log(`A BALL IS SINKING INTO THE ${key[0]} HOLE!`); 
+      // console.log(`A BALL IS SINKING INTO THE ${key[0]} HOLE!`); 
     }
   })
   // fall back test in case ball is out of bounds
@@ -246,7 +246,7 @@ const resolveCushionCollision = (collision, xVel, testXVel, yVel, testYVel, left
     return {top, left, xVel, yVel}; 
   }
   else if (collision === "BOTTOM_CUSHION"){
-    console.log('BOTTOM CUSHION HIT DETECTED');
+    // console.log('BOTTOM CUSHION HIT DETECTED');
     top = 127.49;
     xVel = testXVel;
     left = testLeft;
@@ -268,45 +268,37 @@ const resolveCushionCollision = (collision, xVel, testXVel, yVel, testYVel, left
     return {top, left, xVel, yVel}; 
   }
 }
-const testBallCollisions = (testTop, testLeft, allBilliards, testBilliard) => {
+export const testBallCollisions = (testTop, testLeft, allBilliards, testBilliard) => {
   let result = [];
   // let r = tableSizes[settings.tableSize].ballRadius;
   let r = 4.2;
   allBilliards.forEach((billiard)=>{
     if (billiard.id !== testBilliard.id && !billiard.sinkinglocation) {
+      // console.log('distance between:',distanceBetweenTwoPoints(testTop,testLeft, billiard.top, billiard.left))
+      // console.log('2r req: ', 2*r)
       if(distanceBetweenTwoPoints(testTop,testLeft, billiard.top, billiard.left) < 2*r) {
-        // console.log(`${testBilliard.id} ball has hit the ${billiard.id} ball!`);
-        // console.log('cue top,left:', testTop,testLeft, 'hit ball top,left:', billiard.top, billiard.left);
-        // console.log('distancebetweenthem:',distanceBetweenTwoPoints(testTop,testLeft, billiard.top, billiard.left))
-        // console.log('radius',r)
         result.push(billiard.id)
       }
     }
-
-
-
-
-////////////////////////////////////
-
-    //  id,       cue, or the ball's number
-//  inMotion, true if any of the vel/spin values are not zero
-//  top,      top location before size ratio is applied
-//  left,     left location before size ratio is applied
-//  xVel,    cm/s
-//  yVel,    cm/s
-//  xAngle,  x rotational angle (+ => cw from top down) 
-//  yAngle,  y rotational angle (+ => into table off right side of ball from top down)
-//  xSpin,   rad/s
-//  ySpin,   rad/s
-//  collisions, an array, each element is the information of an object that it has collided with
-//  sinklocation, "none" until sinking, the either "T", "B", "TL", etc, to represent which hole
-//  sinkingSize, 1 when not sinking.  Once it is sinking number will be less than one and be a multiplier on its size
-//  gameSize,   should not be needed
   })
-
-
   return result;
 }
+export const testSingleBallCollision = (ball1, ball2, radius) => {
+  let result = false;
+  let r = radius;
+  
+    if (ball1.id !== ball2.id && !ball2.sinkinglocation && !ball1.sinkinglocation) {
+      let distance = distanceBetweenTwoPoints(ball1.top,ball1.left, ball2.top, ball2.left); 
+      // console.log('distance between objects in question is:', distance, '. For contact, needs to be below', 2*r );
+      // console.log('object1 and its left/top positions are: ',ball1.id, ball1.left,ball1.top);
+      // console.log('object2 and its left/top positions are: ',ball2.id, ball2.left,ball2.top);
+      if(distance < 2*r) {
+        result = true;
+      }
+    }
+  return result;
+}
+
 export const testCornerCollisions = (testTop, testLeft, initTop, initLeft) => {
   let holes = ['TL','TR','BL','BR','T','B'];
   let sides = ['left1','left2','right1','right2'];
@@ -323,8 +315,8 @@ export const testCornerCollisions = (testTop, testLeft, initTop, initLeft) => {
       // this size should be experimented with, somewhat arbitrary allowance for error
       // verify ball is not just near corner but is also moving toward it
       if ( upcomingDistance < 1){
-        console.log('close to a corner');
-        console.log('upcomingDistance',upcomingDistance,'previousDistance',previousDistance);
+        // console.log('close to a corner');
+        // console.log('upcomingDistance',upcomingDistance,'previousDistance',previousDistance);
 
         if (upcomingDistance < previousDistance) { 
           // below is original attempt, but it made bad presumptions about movement directions
@@ -349,7 +341,7 @@ export const testCornerCollisions = (testTop, testLeft, initTop, initLeft) => {
           // }
           // if (rightDirection) {
           result = {hole: hole, side: side, impactOn: holeAngleInfo[hole][side].impactOn};
-          console.log('corner impact on', result)
+          // console.log('corner impact on', result)
         }
       }
     })
@@ -378,20 +370,19 @@ export const applyPhysics = (billiardsObject, settings) => {
 
     // Creating a container for past collisions to insure balls have a chance to get outside eachother
     let pastCollisions = [];
+    // console.log('element.collisions for', element.id, ' : ' ,element.collisions)
 
     // if there is a pending collision it must be resolved immediately (this may occue at the time of the collision)
-    if (element.collisions.length !== 0 && !element.sinkinglocation && element.sinkingSize <= 0) {
+    if (element.collisions.length !== 0 && !element.sinkinglocation && element.sinkingSize > 0) {
       // resolve new change in energy  -- this may occur at time of impact
       element.collisions.forEach((collision)=> {
         element.xVel += collision[0];
         element.yVel += collision[1];
         pastCollisions.push(collision[2]);
-        console.log(pastCollisions);
+        // console.log(pastCollisions);
       })
       element.collisions = [];
-
-
-
+      element.inMotion = true;
       // console.log('pre-resolution:',element.collisions);
       // resolveCushionCollisions(element);
       // console.log('post-resolution:',element.collisions);
@@ -475,16 +466,21 @@ export const applyPhysics = (billiardsObject, settings) => {
 
           // if the ball is not sinking see if it hits a corner
           else {
-            cornerCollision = testCornerCollisions(testTop, testLeft, element.top, element.left);
+
+            // -------  corner collisions not working as well as I had hoped.....  -------
+            // cornerCollision = testCornerCollisions(testTop, testLeft, element.top, element.left);
 
             // if it did hit a corner, then set its new location and velocity accordingly
             if (cornerCollision) {
+              // console.log('impact on',holeAngleInfo[cornerCollision.hole][cornerCollision.side].impactOn)
               element.top = holeAngleInfo[cornerCollision.hole][cornerCollision.side].top - holeAngleInfo[cornerCollision.hole][cornerCollision.side].testTop;
               element.left = holeAngleInfo[cornerCollision.hole][cornerCollision.side].left - holeAngleInfo[cornerCollision.hole][cornerCollision.side].testLeft;
 
               let VxHolder = testXVel;
               let VyHolder = testYVel;
               if(holeAngleInfo[cornerCollision.hole][cornerCollision.side].impactOn === 'TL') {
+
+
                 element.xVel = VyHolder*energySinks.cushionCollision;
                 element.yVel = -1*VxHolder*energySinks.cushionCollision;
                 element.top +=0.1;
@@ -503,10 +499,18 @@ export const applyPhysics = (billiardsObject, settings) => {
                 element.left -=0.1;
               }
               else if(holeAngleInfo[cornerCollision.hole][cornerCollision.side].impactOn === 'BL') {
-                element.xVel = -1*VyHolder*energySinks.cushionCollision;
-                element.yVel = VxHolder*energySinks.cushionCollision;
-                element.top -=0.1;
-                element.left +=0.1;
+                if (VyHolder>0) {
+                  element.xVel = -1*VyHolder*energySinks.cushionCollision;
+                  element.yVel = VxHolder*energySinks.cushionCollision;
+                  element.top -=0.1;
+                  element.left +=0.1;
+                }
+                else {
+                  element.xVel = -1*VyHolder*energySinks.cushionCollision;
+                  element.yVel = VxHolder*energySinks.cushionCollision;
+                  element.top -=0.1;
+                  element.left +=0.1;
+                }
               }
             }
           }
@@ -519,7 +523,9 @@ export const applyPhysics = (billiardsObject, settings) => {
           // if no collision with wall then test for collisions with balls
           if (!collision) {
             let ballCollisions = testBallCollisions(testTop, testLeft, billiardsObject, element);
-
+            if (ballCollisions.length > 0 && element.id === "cue" && element.firstCollision === null) {
+              element.firstCollision = ballCollisions[0];
+            }
             // This loop removes any detected collisions that occured within the time interval of the refresh rate.
             ballCollisions.forEach((collision, index)=>{
               let alreadyRecordedThisImpact = false;
@@ -557,12 +563,16 @@ export const applyPhysics = (billiardsObject, settings) => {
 
 
                 // console.log(`${element.id} ball only hit one other ball: the ${ballCollisions[0]} ball.`)
-                let topAv = (element.top + testTop)/2;
-                let leftAv = (element.left + testLeft)/2;
+                // let topAv = (element.top + testTop)/2;
+                // let leftAv = (element.left + testLeft)/2;
+                // testing if collisions work better by using initial ball location.
+                let topAv = element.top;
+                let leftAv = element.left;
+
                 // let impactedBall = billiardsObject.find(ball => ball.id === ballCollisions[0]);
                 // console.log('the ball the current ball being tested`s data is:',impactedBall);
                 let theta = angleBetweenTwoBalls(topAv, leftAv, impactedBall.top, impactedBall.left);
-                console.log('theta is:',theta);
+                // console.log('theta is:',theta);
                 let Vib2 = getHypotenuse(impactedBall.xVel, impactedBall.yVel);
                 let Vib1 = getHypotenuse(testXVel, testYVel);
                 // let Vfb1x = Vib2*Math.sin(theta) - Vib1*Math.sin(theta);
@@ -595,8 +605,11 @@ export const applyPhysics = (billiardsObject, settings) => {
                 element.yVel = Vfb1y;
                 impactedBall.inMotion = true;
                 impactedBall.collisions.push([Vfb2x,Vfb2y, element.id]);
-                // element.left = leftAv;
-                // element.top = topAv;
+                let approxXPos = (leftAv/2) + (leftAv + Vfb1x* (settings.refreshRate/100))/2;
+                let approxYPos = (topAv/2) + (topAv + Vfb1y* (settings.refreshRate/100))/2;
+
+                element.left = approxXPos;
+                element.top = approxYPos;
                 
                 // let Vfb2x = Vib1*Math.sin(theta) - Vib2*Math.sin(theta);
                 // let Vfb2y = Vib1*Math.cos(theta) - Vib2*Math.cos(theta);
@@ -677,6 +690,16 @@ export const applyPhysics = (billiardsObject, settings) => {
       else {element.sinkingSize = 0; element.inMotion = false};
       // console.log('current size of the sinking ball:' , element.sinkingSize);
     }
+
+    // Final fail safe to make sure ball is not out of bounds
+    if (!element.sinkinglocation && element.sinkingSize === 1) {
+      let sinking = testOutOfBounds(element.top, element.left);
+      if (sinking) {
+        element.sinkingSize = 0.99;
+        element.sinkinglocation = "TL";
+      }
+    }
+
     return element
     // test collisions (has no affect if not in motion)
   })
@@ -685,14 +708,55 @@ export const applyPhysics = (billiardsObject, settings) => {
 }
 
 export const applyCueStrike = (initialCueBallInfo, power, angle, strikeLocationX, strikeLocationY) => {
-  console.log(angle,'angle')
+  // console.log(angle,'angle')
   let finalCueBallInfo = {...initialCueBallInfo};
   finalCueBallInfo.xVel = power * Math.cos(angle);
   finalCueBallInfo.yVel = power * Math.sin(angle);
-  finalCueBallInfo.xSpin = power * Math.cos(Math.PI*strikeLocationX);
+  finalCueBallInfo.xSpin = power * Math.cos(Math.PI*strikeLocationX)/2;
   // console.log('finalCueBallInfo.xSpinfinalCueBallInfo.xSpin',finalCueBallInfo.xSpin)
-  finalCueBallInfo.ySpin = power * Math.cos(Math.Pi*strikeLocationY);
+  finalCueBallInfo.ySpin = power * Math.cos(Math.Pi*strikeLocationY)/2;
   finalCueBallInfo.inMotion = true;
   // ignore top and under spin for now (strikeLocationY)
   return finalCueBallInfo
+}
+
+// Final test to make sure balls are not inside eachother:
+export const moveBallsOutsideEachOther = (billiardsObject) => {
+  return billiardsObject.map((elem) => {
+    
+    // spreading contents to insure different references
+    let element = {...elem};
+
+    billiardsObject.forEach((billiard)=>{
+      
+      if (billiard.id !== element.id) {
+        let test = testSingleBallCollision(element, billiard, 4.1);
+        while (test) {
+          let theta = angleBetweenTwoBalls(element.top, element.left, billiard.top, billiard.left)
+          let rand = Math.random() -0.5;
+          element.left += 10*rand*Math.cos(theta);
+          element.top += 10*rand*Math.sin(theta);
+          // Case element is BR of billiard
+          // if (element.top >= billiard.top && element.left >= billiard.left ) {
+          //   element.top += 10;
+          //   element.left += 10;
+          // }
+          // else if (element.top >= billiard.top && element.left <= billiard.left) {
+          //   element.top += 10;
+          //   element.left -= 10;
+          // }
+          // else if (element.top <= billiard.top && element.left <= billiard.left) {
+          //   element.top -= 10;
+          //   element.left -= 10;
+          // }
+          // else if (element.top <= billiard.top && element.left <= billiard.left) {
+          //   element.top -= 10;
+          //   element.left -= 10;
+          // }
+          test = testSingleBallCollision(element, billiard, 4.2);
+        }
+      }
+    })
+    return element;
+  })
 }

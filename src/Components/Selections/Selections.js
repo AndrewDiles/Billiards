@@ -10,7 +10,8 @@ import {
   setGameStatusFirstShot,
   quitGame,
   removeCurrentGame,
-  logUserOut
+  logUserOut,
+  joinGameSuccess
 } from "../../actions";
 
 // import { SettingsContext } from '../../SettingsContext';
@@ -46,6 +47,38 @@ const Selections = ({isSliding}) => {
     // dispatch(addBalls(settings.gameType));
     dispatch(changeGameType(text));
     dispatch(addBalls(text));
+    let player1 = "player1";
+    if (userInfo.user) player1 = userInfo.user.userName;
+    if (text === "eight") {
+      dispatch(joinGameSuccess(
+        {
+          activePlayer: "player1",
+          gameWinner: null,
+          player1 : {
+            name: player1,
+            ballType: null,
+            ballsSunk: [],
+          },
+          player2 : {
+            name: "player2",
+            ballType: null,
+            ballsSunk: [],
+          }
+        }
+      ));
+    }
+    if (text === "nine") {
+      dispatch(joinGameSuccess(
+        {
+          player1Name: player1,
+          player1GameInfo: {
+            ballsSunk: [],
+            numberOfShots: 0,
+            activePlayer: true
+          }
+        }
+      ));
+    }
     dispatch(setGameStatusFirstShot());
   }
   const handleQuit = () => {
@@ -139,7 +172,7 @@ const Selections = ({isSliding}) => {
                 </StyledButton>
               </StyledNavLink>
           )}
-          {!href.includes('view-lobby') &&
+          {!href.includes('view-lobby') && userInfo.user &&
             <StyledNavLink to="/view-lobby">
               <StyledButton
               handleClick = {() => {setHref('view-lobby')}}
@@ -169,7 +202,7 @@ const Selections = ({isSliding}) => {
             handleClick = {() => handleClickBallMaker("test")}
             disabled = {disabled}
             >
-              TEST DELETE
+              Experiment
             </StyledButton>
           </StyledNavLink>
         </>

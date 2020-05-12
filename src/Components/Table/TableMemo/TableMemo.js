@@ -1,21 +1,58 @@
 import React from 'react';
 import styled from 'styled-components';
+import { useSelector } from "react-redux";
 
 import { tableSizes, corners, sides } from '../../../Constants/tableSizes';
 
 import retina_wood from '../../../assets/retina_wood/retina_wood.png';
 
+import blueChalk from '../../../assets/blueChalk.png';
+import purpleChalk from '../../../assets/purpleChalk.png';
+import rainbowChalk from '../../../assets/rainbowChalk.png';
+
 import Corner from '../Corners';
 import Side from '../Sides';
 
 export function TableMemoComponent({ settings }) {
-  console.log('TABLE MEMO HAS RE-RENDERED')
+  const userInfo = useSelector((state) => state.userInfo);
+  // console.log('TABLE MEMO HAS RE-RENDERED');
+
+  let chalkUrl = blueChalk;
+  if (userInfo.user) {
+    if (userInfo.user.inventory.rainbowChalk) chalkUrl = rainbowChalk;
+    else if (userInfo.user.inventory.purpleChalk) chalkUrl = purpleChalk;
+  }
+  let transform,left,top,size;
+  if (settings.tableSize === "narrow") {
+    transform = 'rotate(90deg)`';
+    top = '2.5px';
+    left = '50px';
+    size = '15px';
+  }
+  else if (settings.tableSize === "medium") {
+    top = '2.5px';
+    left = '50px';
+    size = '15px';
+  }
+  else {
+    top = '4px';
+    left = '100px';
+    size = '25px';
+  }
 
   return (
     <Rail
     size = {settings.tableSize}
     tableSizes = {tableSizes}
     >
+      <ChalkImg
+      transform = {transform}
+      size = {size}
+      left = {left}
+      top = {top}
+      src = {chalkUrl} 
+      alt = "A small image of a the user's chalk"
+      />
       <Cushion
       size = {settings.tableSize}
       tableSizes = {tableSizes}
@@ -41,6 +78,16 @@ export function TableMemoComponent({ settings }) {
   )
 }
 export const TableMemo = React.memo(TableMemoComponent);
+
+const ChalkImg = styled.img`
+  user-select: none;
+  height: ${props => props.size && props.size};
+  width: ${props => props.size && props.size};
+  position: absolute;
+  transform: ${props => props.transform && props.transform};
+  left: ${props => props.left && props.left};
+  top: ${props => props.top && props.top};
+`
 
 const Cushion = styled.div`
   width: ${props => 4 * props.tableSizes[props.size].cushionWidth + props.tableSizes[props.size].feltWidth}px;

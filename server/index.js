@@ -54,11 +54,12 @@ App
   // password:
   // }
 
-  .post("/be/purchase/:itemName", handlePurchase)
+  .post("/be/purchase/", handlePurchase)
   // Body has shape: {
   // userName:
-  // currency:
+  // item:
   // }
+  // returns new userInfo
   
   // fetches all the current lobbies from mongo
   .get("/be/lobby/view", handleViewLobby)

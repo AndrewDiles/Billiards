@@ -56,7 +56,7 @@ const Login = () => {
           // console.log(userData, "IM IN USERDATA LOGGED IN");
           let userInfo = {
             userName: data.user.userName,
-            currency: data.user.currency,
+            dubloons: data.user.dubloons,
             gameHistory: data.user.gameHistory,
             inventory: data.user.inventory,
             accumulatedWealth: data.user.accumulatedWealth
@@ -98,7 +98,7 @@ const Login = () => {
         res.json().then((data) => {
           let userInfo = {
             userName: data.user.userName,
-            currency: data.user.currency,
+            dubloons: data.user.dubloons,
             gameHistory: data.user.gameHistory,
             inventory: data.user.inventory,
             accumulatedWealth: data.user.accumulatedWealth
@@ -122,10 +122,9 @@ const Login = () => {
     })
   }
 
-
   return (
     <Wrapper>
-      <div/>
+      {/* <div/> */}
       <Column>
         username
         <StyledInput onChange = {(ev)=>{setUserName(ev.target.value)}} value = {userName} type = "textfield"/>
@@ -140,12 +139,15 @@ const Login = () => {
           LOGIN
         </StyledButton>
       </Column>
+
       <Column>
-      {errorMessage &&
-        <ErrorBox>
-          {errorMessage}
-        </ErrorBox>
-        }</Column>
+        {errorMessage &&
+          <ErrorBox>
+            {errorMessage}
+          </ErrorBox>
+        }
+      </Column>
+
       <Column>
         username
         <StyledInput onChange = {(ev)=>{setNewUserName(ev.target.value)}} value = {newUserName} type = "textfield"/>
@@ -163,8 +165,8 @@ const Login = () => {
           CREATE ACCOUNT
         </StyledButton>
       </Column>
-      <div/>
-      
+
+      {/* <div/> */}
     </Wrapper>
   )
 }
@@ -203,8 +205,12 @@ min-height: 100vh;
 /* position: static; */
 display: flex;
 flex-direction: row;
-justify-content: center;
+justify-content: space-evenly;
 align-items: center;
 text-align: center;
+padding: 0 50px;
+@media screen and (max-width: 750px) {
+  flex-direction: column;
+}
 `
 

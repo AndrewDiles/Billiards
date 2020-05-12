@@ -5,10 +5,12 @@ import styled from 'styled-components';
 import grabGreen from '../../../assets/grabGreen.png';
 import grabRed from '../../../assets/grabRed.png';
 
+import { testBallCollisions } from '../../../Functions/physics';
+
 import {
   setBallOnTable,
   setBallInHand,
-  freeMoveCueBall
+  freeMoveCueBallIllegal
 } from "../../../actions";
 
 import { ballColors } from '../../../Constants/ballConstants';
@@ -16,6 +18,7 @@ import { actualSizes, tableSizes, sizeRatios } from '../../../Constants/tableSiz
 
 const Balls = ( {billiard} ) => {
   const settings = useSelector((state) => state.settings);
+  const billiardInfo = useSelector((state) => state.billiards)
   const [legalDrop, setLegalDrop] = React.useState(true);
   // const [ballInHandTriggered, setBallInHandTriggered] = React.useState(false);
   // const [mouselocationLeft, setMouselocationLeft] = React.useState(null);
@@ -42,71 +45,27 @@ const Balls = ( {billiard} ) => {
         //   (ev.offsetY-tableSizes[settings.tableSize].ballRadius)/sizeRatios[settings.tableSize]
         //   ));
         const borderSize = tableSizes[settings.tableSize].cushionWidth + tableSizes[settings.tableSize].railWidth;
-        dispatch(freeMoveCueBall(
-          ((ev.offsetX-tableSizes[settings.tableSize].ballRadius)-borderSize)/sizeRatios[settings.tableSize],
-          ((ev.offsetY-tableSizes[settings.tableSize].ballRadius)-borderSize)/sizeRatios[settings.tableSize]
-        ));
+        if (settings.gameStatus === 'first-shot') {
+          dispatch(freeMoveCueBallIllegal(
+            50,
+            ((ev.offsetY-tableSizes[settings.tableSize].ballRadius)-borderSize)/sizeRatios[settings.tableSize]
+          ));
+        }
+        else {
+          dispatch(freeMoveCueBallIllegal(
+            ((ev.offsetX-tableSizes[settings.tableSize].ballRadius)-borderSize)/sizeRatios[settings.tableSize],
+            ((ev.offsetY-tableSizes[settings.tableSize].ballRadius)-borderSize)/sizeRatios[settings.tableSize]
+          ));
+        }
+        
         if (testLegalBallDropLocation(ev.offsetX, ev.offsetY)){
           setLegalDrop(true);
         }
         else {
           setLegalDrop(false);
         }
-
       }
-      else {
-        // let pathsKeys = Object.keys(ev.path);
-        // console.log('pathpathpathpathpthaptahpt', paths);
-        // let tableInfo = paths.find(element=>{element.classList.includes("Table")})
-        // let tableInfo = {};
-        // let tableInfo = ev.path.find(element=>{element.classList.includes("Table")})
-        // let leftMargin = tableInfo.offsetLeft;
-        // let topMargin = tableInfo.offsetTop;
-        // let tableWidth = tableInfo.offsetWidth;
-        // let tableHeight = tableInfo.offsetHeight;
-        
-        // const feltWidth = tableSizes[settings.tableSize].feltWidth;
-        // const feltHeight = tableSizes[settings.tableSize].feltHeight;
-        
-        // /sizeRatios[settings.tableSize];
-        
-        // /sizeRatios[settings.tableSize];
-        // const borderSize = tableSizes[settings.tableSize].cushionWidth + tableSizes[settings.tableSize].railWidth;
-        // const marginLeft = tableSizes[settings.tableSize].leftPadding;
-        // const marginTop = tableSizes[settings.tableSize].topPadding;
-        // let x = (ev.ClientX - borderSize - marginLeft);
-        // let y = (ev.ClientY - borderSize - marginTop);
-        // setMouselocationLeft(parseFloat(x));
-        // setMouselocationTop(parseFloat(y));
-        // dispatch(freeMoveCueBall(
-        //   (ev.offsetX-tableSizes[settings.tableSize].ballRadius)/sizeRatios[settings.tableSize],
-        //   (ev.offsetY-tableSizes[settings.tableSize].ballRadius)/sizeRatios[settings.tableSize]
-        //   ));
-        // console.log(leftMargin,topMargin,tableWidth,tableHeight)
-      }
-      // console.log('ev.targetev.targetev.target',ev)
-      // console.log(ev,'evevevevevevevevevevev');
 
-      // CHANGE THIS FROM OFFSET TO ABSOLUTE POSITION
-
-      // console.log('LEFT event from mousemove listener',ev.offsetX);
-      // console.log('TOP event from mousemove listener',ev.offsetY);
-
-      // setMouselocationLeft(parseFloat(ev.offsetX));
-      // setMouselocationTop(parseFloat(ev.offsetY));
-
-      // let location = {x: ev.clientX, y: ev.clientY};
-      // setMouselocation(location);
-      // let left = (ev.clientX/sizeRatios[settings.tableSize]) - borderSize - tableSizes[settings.tableSize].leftPadding;
-      // let top = (ev.clientY/sizeRatios[settings.tableSize]) - borderSize - tableSizes[settings.tableSize].topPadding;
-      // dispatch(freeMoveCueBall((ev.clientX/sizeRatios[settings.tableSize]) - borderSize - tableSizes[settings.tableSize].leftPadding
-      // ,(ev.clientY/sizeRatios[settings.tableSize]) - borderSize - tableSizes[settings.tableSize].topPadding));
-      // dispatch(freeMoveCueBall(left,top));
-      // console.log('mouselocationLeftmouselocationLeftmouselocationLeftmouselocationLeft',mouselocationLeft)
-      // dispatch(freeMoveCueBall(
-      //   (ev.offsetX-tableSizes[settings.tableSize].ballRadius)/sizeRatios[settings.tableSize],
-      //   (ev.offsetY-tableSizes[settings.tableSize].ballRadius)/sizeRatios[settings.tableSize]
-      //   ));
     }
     table.addEventListener('mousemove',moveFunction);
     table.addEventListener('mousedown',(event) => handleTableClick(event));
@@ -121,46 +80,39 @@ const Balls = ( {billiard} ) => {
     let trueX = (x-tableSizes[settings.tableSize].ballRadius)/sizeRatios[settings.tableSize];
     let trueY = (y-tableSizes[settings.tableSize].ballRadius)/sizeRatios[settings.tableSize]
     let legalLocation = false;
-    // const borderSize = tableSizes[settings.tableSize].cushionWidth + tableSizes[settings.tableSize].railWidth;
-    // const topBoundary = tableSizes[settings.tableSize].topPadding + borderSize;
-    // const bottomBoundary = topBoundary + tableSizes[settings.tableSize].feltHeight;
-    // const leftBoundary = tableSizes[settings.tableSize].leftPadding + borderSize;
-    // const rightBoundary = leftBoundary + tableSizes[settings.tableSize].feltWidth;
-    // const ballDiameter = 2*tableSizes[settings.tableSize].ballRadius;
-    // console.log('topBoundary',topBoundary);
-    // console.log('bottomBoundary',bottomBoundary);
-    // console.log('leftBoundary',leftBoundary);
-    // console.log('rightBoundary',rightBoundary);
-    // console.log('trueX',trueX);
-    // console.log('trueY',trueY);
-    // console.log('trueX',trueX,'........trueY',trueY);
-    // if (trueX < 0) {legalLocation = false; console.log("OOB LEFT");}
-    // else if (trueX > 63.75*sizeRatios[settings.tableSize]) {legalLocation = false; console.log("OOB RIGHT");}
-    // else if (trueY < 0) {legalLocation = false; console.log("OOB TOP");}
-    // else if (trueY > 32*sizeRatios[settings.tableSize]) {legalLocation = false; console.log("OOB BOTTOM");}
+    
     if (trueX >= 13 && trueX <= 268 && trueY >= 13 && trueY <= 141.1) legalLocation = true;
     // test position of each ball.  
     // test on line for starting shot
+    if (legalLocation) {
+      const insideAnotherBall = testBallCollisions(trueY-13.08, trueX-13.08, billiardInfo.billiards, billiardInfo.billiards[0]);
+      if (insideAnotherBall.length !== 0) legalLocation = false;
+      // console.log('insideAnotherBall',insideAnotherBall)
+    }
     return legalLocation;
   }
 
-  // console.log('Billiard from Ball.js',billiard);
   const handleTableClick = (event) => {
+    console.log('Table Clicked');
+    console.log('settings.gameStatus',settings.gameStatus);
+    console.log("settings.gameStatus === 'first-shot'",settings.gameStatus === 'first-shot');
+    console.log(!(settings.gameStatus === 'free-move' || settings.gameStatus === 'first-shot'));
     if (!(settings.gameStatus === 'free-move' || settings.gameStatus === 'first-shot')) return;
     // console.log(event);
     // if (testLegalBallDropLocation(mouselocationLeft, mouselocationTop)){
     //   dispatch(setBallOnTable());
     // }
+    console.log('Table Clicked and function did not bail');
     if (testLegalBallDropLocation(event.offsetX, event.offsetY)){
       dispatch(setBallOnTable());
       const TableWrapper = document.getElementById('TableWrapper');
       TableWrapper.style.cursor = 'default';
-
       setLegalDrop(true);
     }
-    // else {console.log('can not drop ball here')}
+    else {console.log('can not drop ball here')}
   }
   const handleClick = (ev) => {
+    console.log('Ball Clicked')
     if (!(settings.gameStatus === 'free-move' || settings.gameStatus === 'first-shot')) return;
     // console.log('evtarget',ev.target)
     if (!ev.target.className.includes('cue')) return
@@ -186,6 +138,7 @@ const Balls = ( {billiard} ) => {
   // cursor: url(${red}), auto;
   
   // legalDrop ? Table.style.cursor = url(grabRed);
+  // console.log(parseFloat(billiard.sinkingSize),'parseFloat(billiard.sinkingSize)')
   return (
     <BallContainer
     legalDrop = {legalDrop}
@@ -199,6 +152,7 @@ const Balls = ( {billiard} ) => {
     top = {(billiard.top + actualSizes.railWidth + actualSizes.cushionWidth) * sizeRatios[settings.tableSize]}
     left = {(billiard.left + actualSizes.railWidth + actualSizes.cushionWidth) * sizeRatios[settings.tableSize]}
     scale = {scale}
+    opacity = {parseFloat(billiard.sinkingSize)}
     // top = {initialBallLocations[settings.gameType][billiard.id].top * sizeRatios[settings.tableSize]}
     // left = {initialBallLocations[settings.gameType][billiard.id].left * sizeRatios[settings.tableSize]}
     >
@@ -218,7 +172,7 @@ const Balls = ( {billiard} ) => {
           striped = {ballColors[billiard.id].striped}
           color = {ballColors[billiard.id].color}
         >
-          {billiard.id !== 'cue' &&
+          {/* {billiard.id !== 'cue' && */}
             <WhiteCenterCircle
             className = {billiard.id}
             sinDegY = {100*sinDegY}
@@ -229,7 +183,7 @@ const Balls = ( {billiard} ) => {
               <Shine/>  
               {/* Shine actually doesn't currently make sense, as the light source would cause a shine in the same location, yet these shines rotates differently */}
             </WhiteCenterCircle>
-          }
+          {/* } */}
         </Stripe>
       </Color>
     </BallContainer>
@@ -289,6 +243,8 @@ const BallContainer = styled.div`
   position: absolute;
   z-index: 4;
   transform: ${props => props.scale && props.scale};
+  opacity: ${props => props.opacity};
+  /* opacity: 0.5; */
   /* border: red solid 1px; TEST PURPOSES*/ 
 `
 const Color = styled.div`
@@ -311,3 +267,80 @@ const Color = styled.div`
 //   width: '100%',
 //   height: '40%',
 // }}
+
+
+
+// Failed code from inside moveFunction:
+// else {
+  // let pathsKeys = Object.keys(ev.path);
+  // console.log('pathpathpathpathpthaptahpt', paths);
+  // let tableInfo = paths.find(element=>{element.classList.includes("Table")})
+  // let tableInfo = {};
+  // let tableInfo = ev.path.find(element=>{element.classList.includes("Table")})
+  // let leftMargin = tableInfo.offsetLeft;
+  // let topMargin = tableInfo.offsetTop;
+  // let tableWidth = tableInfo.offsetWidth;
+  // let tableHeight = tableInfo.offsetHeight;
+  
+  // const feltWidth = tableSizes[settings.tableSize].feltWidth;
+  // const feltHeight = tableSizes[settings.tableSize].feltHeight;
+  
+  // /sizeRatios[settings.tableSize];
+  
+  // /sizeRatios[settings.tableSize];
+  // const borderSize = tableSizes[settings.tableSize].cushionWidth + tableSizes[settings.tableSize].railWidth;
+  // const marginLeft = tableSizes[settings.tableSize].leftPadding;
+  // const marginTop = tableSizes[settings.tableSize].topPadding;
+  // let x = (ev.ClientX - borderSize - marginLeft);
+  // let y = (ev.ClientY - borderSize - marginTop);
+  // setMouselocationLeft(parseFloat(x));
+  // setMouselocationTop(parseFloat(y));
+  // dispatch(freeMoveCueBall(
+  //   (ev.offsetX-tableSizes[settings.tableSize].ballRadius)/sizeRatios[settings.tableSize],
+  //   (ev.offsetY-tableSizes[settings.tableSize].ballRadius)/sizeRatios[settings.tableSize]
+  //   ));
+  // console.log(leftMargin,topMargin,tableWidth,tableHeight)
+// }
+// console.log('ev.targetev.targetev.target',ev)
+// console.log(ev,'evevevevevevevevevevev');
+
+// CHANGE THIS FROM OFFSET TO ABSOLUTE POSITION
+
+// console.log('LEFT event from mousemove listener',ev.offsetX);
+// console.log('TOP event from mousemove listener',ev.offsetY);
+
+// setMouselocationLeft(parseFloat(ev.offsetX));
+// setMouselocationTop(parseFloat(ev.offsetY));
+
+// let location = {x: ev.clientX, y: ev.clientY};
+// setMouselocation(location);
+// let left = (ev.clientX/sizeRatios[settings.tableSize]) - borderSize - tableSizes[settings.tableSize].leftPadding;
+// let top = (ev.clientY/sizeRatios[settings.tableSize]) - borderSize - tableSizes[settings.tableSize].topPadding;
+// dispatch(freeMoveCueBall((ev.clientX/sizeRatios[settings.tableSize]) - borderSize - tableSizes[settings.tableSize].leftPadding
+// ,(ev.clientY/sizeRatios[settings.tableSize]) - borderSize - tableSizes[settings.tableSize].topPadding));
+// dispatch(freeMoveCueBall(left,top));
+// console.log('mouselocationLeftmouselocationLeftmouselocationLeftmouselocationLeft',mouselocationLeft)
+// dispatch(freeMoveCueBall(
+//   (ev.offsetX-tableSizes[settings.tableSize].ballRadius)/sizeRatios[settings.tableSize],
+//   (ev.offsetY-tableSizes[settings.tableSize].ballRadius)/sizeRatios[settings.tableSize]
+//   ));
+
+
+// Failed code from inside testLegalBallDropLocation
+    // const borderSize = tableSizes[settings.tableSize].cushionWidth + tableSizes[settings.tableSize].railWidth;
+    // const topBoundary = tableSizes[settings.tableSize].topPadding + borderSize;
+    // const bottomBoundary = topBoundary + tableSizes[settings.tableSize].feltHeight;
+    // const leftBoundary = tableSizes[settings.tableSize].leftPadding + borderSize;
+    // const rightBoundary = leftBoundary + tableSizes[settings.tableSize].feltWidth;
+    // const ballDiameter = 2*tableSizes[settings.tableSize].ballRadius;
+    // console.log('topBoundary',topBoundary);
+    // console.log('bottomBoundary',bottomBoundary);
+    // console.log('leftBoundary',leftBoundary);
+    // console.log('rightBoundary',rightBoundary);
+    // console.log('trueX',trueX);
+    // console.log('trueY',trueY);
+    // console.log('trueX',trueX,'........trueY',trueY);
+    // if (trueX < 0) {legalLocation = false; console.log("OOB LEFT");}
+    // else if (trueX > 63.75*sizeRatios[settings.tableSize]) {legalLocation = false; console.log("OOB RIGHT");}
+    // else if (trueY < 0) {legalLocation = false; console.log("OOB TOP");}
+    // else if (trueY > 32*sizeRatios[settings.tableSize]) {legalLocation = false; console.log("OOB BOTTOM");}

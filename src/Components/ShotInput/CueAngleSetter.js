@@ -2,7 +2,13 @@ import React from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import styled from 'styled-components';
 
-import cueStickPng from '../../assets/cueStick.png';
+import crookedStick from '../../assets/crookedStick.png';
+import plainOlCue from '../../assets/plainOlCue.png';
+import magicWand from '../../assets/magicWand.png';
+import boomStick from '../../assets/boomStick.png';
+import wirtsLeg from '../../assets/wirtsLeg.png';
+
+
 
 import { setShotAngle, setCueStrikeLocation } from "../../actions";
 
@@ -19,6 +25,7 @@ import {arrowUp} from 'react-icons-kit/feather/arrowUp';
 
 const CueAngleSetter = () => {
   const settings = useSelector((state) => state.settings);
+  const userInfo = useSelector((state) => state.userInfo);
   const dispatch = useDispatch();
 
   const handleClickToChangeAngle = (angle) => {
@@ -39,7 +46,16 @@ const CueAngleSetter = () => {
   let marginRight = `${50*Math.cos(settings.shotAngle)}px`;
   let marginTop = `${50*Math.sin(settings.shotAngle)}px`;
   let padding = determinePadding(settings.cueStrikeLocationX,settings.cueStrikeLocationY);
-    
+  let cueUrl = plainOlCue;
+  
+  if (userInfo.user) {
+    if (userInfo.user.inventory.wirtsLeg) cueUrl = wirtsLeg;
+    else if (userInfo.user.inventory.boomStick) cueUrl = boomStick;
+    else if (userInfo.user.inventory.magicWand) cueUrl = magicWand;
+    else if (userInfo.user.inventory.plainOlCue) cueUrl = plainOlCue;
+    else if (userInfo.user.inventory.crookedStick) cueUrl = crookedStick;
+  }
+
   return (
     <ColumnWrapper>
       <ButtonsDiv>
@@ -62,7 +78,7 @@ const CueAngleSetter = () => {
           transform = {transform}
           marginRight = {marginRight}
           marginTop = {marginTop}
-          src = {cueStickPng} 
+          src = {cueUrl} 
           alt = "A small image of a cue stick to visualize the angle of a shot"
           />
           <RedSpot

@@ -48,6 +48,7 @@ const ButtonStylings = styled.button`
   /* font-size: 1.3em; */
   font-weight: bolder;
   text-align: center;
+  transition: background-color 0.5s;
   &:hover {
     cursor: ${props => props.disabled ? 'not-allowed' : 'pointer'};
     background-color: gold;

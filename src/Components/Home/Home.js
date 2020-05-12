@@ -34,8 +34,12 @@ const Home = () => {
       <RowDiv>
         <Column>
           <h3>
-            Feel free to play without an account, but know that you will not accumalate money without being logged in while you play.
+            Please make an account to play against other shark-shooters remotely.
           </h3>
+          <h3>
+            Or enjoy local player without an account.
+          </h3>
+          <h3></h3>
           {!userInfo.user ? (
             <NavLink to="/login">
               <StyledButton
@@ -65,12 +69,18 @@ const Home = () => {
               </NavLink>
             </>
           )}
-
-          ENTER LINK OR INSTRUCTIONS FOR GUI USE/PLAY
+          <h3>
+            Curious how to use this GUI?  See below for instructions:
+          </h3>
+          <ReactPlayer
+          height = {'300px'}
+          width = {'533px'}
+          url="https://youtu.be/08cdUCacaHI"
+          />          
         </Column>
         <Column>
           <h3>
-            Curious how to play pool?  View some rules here:
+            Curious how to play pool?  See below rules:
           </h3>
           <ReactPlayer
           height = {'300px'}

@@ -1,15 +1,13 @@
 import React, { useContext } from 'react';
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import styled from 'styled-components';
 import { Redirect } from "react-router-dom";
 
 import blueBG from '../../assets/circle blues/circle-blues.png';
-import squaresBG from '../../assets/repeated-square/repeated-square.png';
+// import squaresBG from '../../assets/repeated-square/repeated-square.png';
 import { tableSizes } from '../../Constants/tableSizes';
-// import { SettingsContext } from '../../SettingsContext';
-import Selections from '../Selections';
 
-import FreeMove from './FreeMove';
+import GameMsg from './GameMsg';
 import Table from '../Table';
 import ShotInput from '../ShotInput/ShotInput';
 
@@ -28,15 +26,12 @@ const Game = () => {
       <Redirect to="/home" />
     )
   }
-  // const { settings } = useContext(SettingsContext);
-  
-
   return (
     <Screen
     tableSizes = {tableSizes}
     settings= {settings}
     >
-      {settings.gameStatus === 'free-move' || settings.gameStatus === 'first-shot' && <FreeMove/>}
+      <GameMsg/>
       <TableContainer
       tableSizes = {tableSizes}
       settings= {settings}

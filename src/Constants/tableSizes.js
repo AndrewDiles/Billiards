@@ -210,10 +210,16 @@ export const holeAngleInfo = {
   },
   BR: {
     left1: {top: 129.8, left: 253.8, testLeft: 1.218, testTop: 7.182, impactOn : 'BL'},   // tests BL of ball
-    left2: {top: 131.55, left: 256.3, testLeft: 1.218, testTop: 7.182, impactOn : 'BL'},
-    right1: {top: 128.05, left: 256.55, testLeft: 7.182, testTop: 1.218, impactOn : 'TR'},    // tests TR of ball
-    right2: {top: 130.3, left: 258.05, testLeft: 7.182, testTop: 1.218, impactOn : 'TR'},
+    left2: {top: 131.55, left: 255.3, testLeft: 1.218, testTop: 7.182, impactOn : 'BL'},
+    right1: {top: 128.05, left: 258.55, testLeft: 7.182, testTop: 1.218, impactOn : 'TR'},    // tests TR of ball
+    right2: {top: 130.3, left: 260.05, testLeft: 7.182, testTop: 1.218, impactOn : 'TR'},
   },
+  // BR: {  acting up...
+  //   left1: {top: 129.8, left: 253.8, testLeft: 1.218, testTop: 7.182, impactOn : 'BL'},   // tests BL of ball
+  //   left2: {top: 131.55, left: 256.3, testLeft: 1.218, testTop: 7.182, impactOn : 'BL'},
+  //   right1: {top: 128.05, left: 256.55, testLeft: 7.182, testTop: 1.218, impactOn : 'TR'},    // tests TR of ball
+  //   right2: {top: 130.3, left: 258.05, testLeft: 7.182, testTop: 1.218, impactOn : 'TR'},
+  // },
   T: {
     left1: {top: -1.95, left: 124.8, testLeft: 1.218, testTop: 1.218, impactOn : 'TL'},    // tests TL of ball
     left2: {top: -3.95, left: 125.3, testLeft: 1.218, testTop: 1.218, impactOn : 'TL'}, 

@@ -79,6 +79,15 @@ export const quitGame = () => ({
 export const removeCurrentGame = () => ({
   type: 'REMOVE_CURRENT_GAME',
 });
+export const setGameWinnerEightBall = (winner) => ({
+  type: 'SET_GAME_WINNER_EIGHT_BALL',
+  winner
+});
+export const setGameWinnerNineBall = () => ({
+  type: 'SET_GAME_WINNER_NINE_BALL',
+});
+
+
 
 // to change with information from server?
 export const startGameSuccess = (gameType) => ({
@@ -110,6 +119,15 @@ export const setGameStatusIdle = () => ({
 export const setGameStatusAwaitingShot = () => ({
   type: 'SET_GAME_STATUS_AWAITING_SHOT',
 });
+export const changeActivePlayer = () => ({
+  type: 'CHANGE_ACTIVE_PLAYER',
+});
+export const setGameStatusAwaitingChoice = () => ({
+  type: 'SET_STATUS_AWAITING_CHOICE',
+});
+
+
+
 // cue ball pick up and release
 export const setBallOnTable = () => ({
   type: 'SET_BALL_ON_TABLE',
@@ -117,8 +135,13 @@ export const setBallOnTable = () => ({
 export const setBallInHand = () => ({
   type: 'SET_BALL_IN_HAND',
 });
-export const freeMoveCueBall = (x,y) => ({
-  type: 'FREE_MOVE_CUE_BALL',
+export const freeMoveCueBallWhiteSunk = (x,y) => ({
+  type: 'FREE_MOVE_CUE_BALL_WHITE_SUNK',
+  x,
+  y,
+})
+export const freeMoveCueBallIllegal = (x,y) => ({
+  type: 'FREE_MOVE_CUE_BALL_ILLEGAL',
   x,
   y,
 })
@@ -137,6 +160,10 @@ export const setCueStrikeLocation = (x,y) => ({
   x,
   y,
 });
+export const addToShotTotal = () => ({
+  type: 'ADD_TO_SHOT_TOTAL',
+});
+
 
 // -- -- -- -- -- --
 // billiards actions:
@@ -163,10 +190,26 @@ export const updateBalls = (settings) => ({
   settings,
   type: 'UPDATE_BALLS',
 })
+export const finalizeBallMotion = () => ({
+  type: 'FINALIZE_BALL_MOTION'
+});
+// below has become obsolete and replace by the above finalize
 export const endBallMotion = () => ({
   type: 'END_BALL_MOTION'
 })
-
-
+export const addToBallsSunkNine = (incomingBallsSunk) => ({
+  type: 'ADD_TO_BALLS_SUNK_NINE',
+  incomingBallsSunk,
+})
+export const setObjectives = ( player, ballType ) => ({
+  type: 'SET_OBJECTIVES',
+  player,
+  ballType
+})
+export const addToSunkBalls = ( solids, stripes ) => ({
+  type: 'ADD_TO_SUNK_BALLS',
+  solids,
+  stripes
+})
 
 

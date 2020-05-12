@@ -1,12 +1,15 @@
 import React from 'react';
-import { useDispatch, useSelector } from "react-redux";
-import { NavLink, Redirect } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { Redirect } from "react-router-dom";
 import styled from 'styled-components';
 
-import ReactPlayer from "react-player"
 
 import blueBG from '../../assets/circle blues/circle-blues.png';
-import StyledButton from '../StyledButton';
+
+import Stash from './Stash';
+import GameHistory from './GameHistory';
+
+import coin from '../../assets/spinningDubloon.gif';
 
 const Account = () => {
   const settings = useSelector((state) => state.settings);
@@ -21,24 +24,41 @@ const Account = () => {
   return (
     <Wrapper>
       <h1>
-        Account Screen
+        Welcome to your cabin, {userInfo.user.userName}!
       </h1>
-      
-      
+      <CabinContent>
+        <Column>
+          <Stash/>
+        </Column>
+        <Column>
+          <GameHistory/>
+        </Column>
+      </CabinContent>
     </Wrapper>
   )
 }
 export default Account;
-
 const Column = styled.div`
   display: flex;
   flex-direction: column;
-  width: 50%;
+  /* width: 50%; */
+  width: 500px;
   align-items: center;
+  border: white 1px solid;
+  @media screen and (max-width: 1100px) {
+    margin-top: 25px;
+  }
 `
-const RowDiv = styled.div`
+const CabinContent = styled.div`
   display:flex;
   flex-direction: row;
+  width: 100%;
+  justify-content: space-evenly;
+  align-items: top;
+  text-align: center;
+  @media screen and (max-width: 1100px) {
+    flex-direction: column;
+  }
 `
 const Wrapper = styled.div`
 color: linen;

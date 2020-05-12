@@ -138,6 +138,12 @@ export default function settingsReducer(state = initialState, action) {
         cueStrikeLocationY: y,
       }
     }
+    case 'SET_STATUS_AWAITING_CHOICE' : {
+      return {
+        ...state,
+        gameStatus: "awaiting-Choice",
+      }
+    }
     default: {
       return state;
     }

@@ -1,8 +1,9 @@
-import { applyPhysics, applyCueStrike } from '../Functions/physics';
+import { applyPhysics, applyCueStrike, moveBallsOutsideEachOther } from '../Functions/physics';
 import { generateBilliards } from '../Functions/ballGeneration';
 
 const initialState = {
   billiards: [],
+  gameType: null,
   status: 'idle',
 };
 
@@ -30,6 +31,7 @@ export default function billiardsReducer(state = initialState, action) {
       const newBilliardsState = generateBilliards(action.gameType);
       return {
         ...state,
+        gameType: action.gameType,
         billiards: [...newBilliardsState],
       }
     }
@@ -55,8 +57,11 @@ export default function billiardsReducer(state = initialState, action) {
       let newState = {...state};
       newState.billiards.shift();
       newState.billiards.unshift(newCueInfo);
+      let refreshedCueBallCollision = newState.billiards;
+      refreshedCueBallCollision[0].firstCollision = null;
       return {
         ...newState,
+        billiards : refreshedCueBallCollision,
         status: "just-struck",
       }
     }
@@ -66,10 +71,20 @@ export default function billiardsReducer(state = initialState, action) {
       // debugger;
       // let initialBilliardsInfo = [...state.billiards];
       let finalBilliardsInfo = applyPhysics([...state.billiards], action.settings);
+      finalBilliardsInfo = moveBallsOutsideEachOther(finalBilliardsInfo);
 
       return {
         ...state,
         billiards: [...finalBilliardsInfo],
+      }
+    }
+    case 'FINALIZE_BALL_MOTION' : {
+      let finalBilliardsInfo = moveBallsOutsideEachOther([...state.billiards]);
+
+      return {
+        ...state,
+        billiards: [...finalBilliardsInfo],
+        status: "idle",
       }
     }
     case 'END_BALL_MOTION' : {
@@ -78,7 +93,7 @@ export default function billiardsReducer(state = initialState, action) {
         status: "idle",
       }
     }
-    case 'FREE_MOVE_CUE_BALL' : {
+    case 'FREE_MOVE_CUE_BALL_WHITE_SUNK' : {
       let billiardsCopy = [...state.billiards];
       billiardsCopy[0].top = action.y;
       billiardsCopy[0].left = action.x;
@@ -86,7 +101,16 @@ export default function billiardsReducer(state = initialState, action) {
       billiardsCopy[0].sinkingSize = 1;
       return {
         ...state,
-        status: "in-motion",
+        // status: "in-motion",
+        billiards : billiardsCopy, 
+      }
+    }
+    case 'FREE_MOVE_CUE_BALL_ILLEGAL' : {
+      let billiardsCopy = [...state.billiards];
+      billiardsCopy[0].top = action.y;
+      billiardsCopy[0].left = action.x;
+      return {
+        ...state,
         billiards : billiardsCopy, 
       }
     }

@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import styled from 'styled-components';
 import { CircularProgress } from '@material-ui/core';
-
+import { BrowserRouter as Router, Redirect } from "react-router-dom";
 import blueBG from '../../assets/circle blues/circle-blues.png';
+
+import socketIOClient from "socket.io-client";
 
 import {
   requestAvailableGames,
@@ -17,39 +19,65 @@ const Lobby = () => {
   const userInfo = useSelector((state) => state.userInfo);
   const [lobbyGames, setLobbyGames] = useState([]);
   
-
-  React.useEffect(()=>{
-    // if (mounting) { 
-      dispatch(requestAvailableGames());
-      fetch('/be/lobby/view', {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }).then((res) => {
-        if (res.status === 200) {
-          res.json().then((data) => {
-            dispatch(loadAvailableGamesSuccess());
-            setLobbyGames(data.lobbyGames);
-          });
-        } else {
-          console.log('res',res);
-          dispatch(loadAvailableGamesError());
-          setLobbyGames(['The ship has sailed...  Check the dock once more?'])
-        }
-      })
-    // }
-    // return () => {
-    //   setMounting(false);
-    // }
-  }, [])  //use Websockets to listen for changes to the database?
-
-  // if (lobbyGames !== null) {
-  //   lobbyGames.forEach((lobby) => {
-  //     console.log(lobby);
-  //   })
+  const socket = socketIOClient.connect('http://localhost:8899', {
+    headers: {
+      "Access-Control-Allow-Origin": "http://localhost:3000"
+    },
+    httpNodeCors: {
+      origin: "*",
+      methods: "GET,PUT,POST,DELETE"
+    },
+  });
+  
+  if (!userInfo.user) {
+    return (
+      <Redirect to="/home" />
+    )
+  }
+  
+  // React.useEffect(()=>{
+  //   // if (mounting) { 
+  //     dispatch(requestAvailableGames());
+  //     fetch('/be/lobby/view', {
+  //       method: "GET",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //     }).then((res) => {
+  //       if (res.status === 200) {
+  //         res.json().then((data) => {
+  //           dispatch(loadAvailableGamesSuccess());
+  //           setLobbyGames(data.lobbyGames);
+  //         });
+  //       } else {
+  //         console.log('res',res);
+  //         dispatch(loadAvailableGamesError());
+  //         setLobbyGames(['The ship has sailed...  Check the dock once more?'])
+  //       }
+  //     })
+  //   // }
+  //   // return () => {
+  //   //   setMounting(false);
+  //   // }
+  // }, [])  //use Websockets to listen for changes to the database?
+  
+  // if (socket === undefined) {
+  //   console.log('socket not established')
   // }
-  // console.log('lobbyGames',lobbyGames)
+  // else {
+  //   console.log('socket connection establish');
+  //   // get lobby info
+  //   socket.on('connection', function(data){
+  //       console.log('data:',data);
+  //       if(data.length){
+  //           // set data into state...
+  //       }
+  //       else {
+  //         console.log("No lobbies found")
+  //       }
+  //   });
+  // }
+
 console.log('re-rendered');
 
   return (
