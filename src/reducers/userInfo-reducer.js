@@ -1,4 +1,4 @@
-import { act } from "react-dom/test-utils";
+// import { act } from "react-dom/test-utils";
 
 const initialState = {
   user: null,
@@ -73,7 +73,7 @@ export default function userReducer(state = initialState, action) {
       }
     }
     case 'RECEIVE_USER_INFO' : {
-      console.log('action from inside reducer',action.userInfo)
+      // console.log('action from inside reducer',action.userInfo)
       return {
         user: action.userInfo,
         status: 'idle',
@@ -107,6 +107,47 @@ export default function userReducer(state = initialState, action) {
     case 'LOG_USER_OUT' : {
       return {...initialState}
     }
+
+    case 'REQUEST_PURCHASE_ITEM' : {
+      return {
+        ...state,
+        status: 'loading'
+      }
+    }
+    case 'PURCHASE_ITEM_SUCCESS' : {
+      return {
+        ...state,
+        user: action.user,
+        status: 'idle',
+      }
+    }
+    case 'PURCHASE_ITEM_ERROR' : {
+      return {
+        ...state,
+        status: 'error'
+      }
+    }
+
+    case 'REQUEST_ADD_GAME_TO_HISTORY' : {
+      return {
+        ...state,
+        status: 'loading'
+      }
+    }
+    case 'ADD_GAME_TO_HISTORY_SUCCESS' : {
+      return {
+        ...state,
+        user: action.user,
+        status: 'idle',
+      }
+    }
+    case 'ADD_GAME_TO_HISTORY_ERROR' : {
+      return {
+        ...state,
+        status: 'error'
+      }
+    }
+
     case 'REQUEST_AVAILABLE_GAMES' : {
       return {
         ...state,
@@ -297,7 +338,26 @@ export default function userReducer(state = initialState, action) {
         newState.currentGame.player1.ballsSunk = newSolids;
       }
       return newState;
-
+    }
+    // case 'INCREMENT_NUMBER_OF_SHOTS' : {
+    //   console.log('state.currentGame.player1GameInfo.numberOfShots',state.currentGame.player1GameInfo.numberOfShots)
+    //   return {
+    //     ...state,
+    //     currentGame: {
+    //       ...state.currentGame,
+    //       player1GameInfo: {
+    //         ...state.currentGame.player1GameInfo,
+    //         numberOfShots : state.currentGame.player1GameInfo.numberOfShots + 1,
+    //       }
+    //     },
+    //   }
+    // }
+    case 'ADD_SUNK_BALLS' : {
+      let newState = {...state};
+      action.newlySunkBalls.forEach((ballNumber)=>{
+        newState.currentGame.player1GameInfo.ballsSunk.push(ballNumber);
+      })
+      return newState
     }
     default: {
       return state;

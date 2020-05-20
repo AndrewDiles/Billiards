@@ -1,10 +1,9 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { useSelector } from "react-redux";
 import styled from 'styled-components';
 import { Redirect } from "react-router-dom";
 
 import blueBG from '../../assets/circle blues/circle-blues.png';
-// import squaresBG from '../../assets/repeated-square/repeated-square.png';
 import { tableSizes } from '../../Constants/tableSizes';
 
 import GameMsg from './GameMsg';

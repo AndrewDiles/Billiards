@@ -1,16 +1,14 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import styled from 'styled-components';
 
 import {
   beginBallMotion,
   updateBalls,
-  endBallMotion,
+  // endBallMotion,  // obsolete
   finalizeBallMotion,
-  addToBallsSunkNine,
-  removeBall,
+  // removeBall,  // obsolete
   setBallInHand,
-  freeMoveCueBallIllegal,
   freeMoveCueBallWhiteSunk,
   setGameStatusFreeMove,
   setGameStatusIdle,
@@ -20,12 +18,19 @@ import {
   setObjectives,
   setGameStatusAwaitingChoice,
   addToSunkBalls,
+  addToShotTotal,
+  // incrementNumberOfShots, // obsolete
+  returnBallsToTable,
+  addSunkBalls,
+  requestAddGameToHistory,
+  addGameToHistorySuccess,
+  addGameToHistoryError,
 
 } from "../../actions";
 import useInterval from '../../Hooks/use-interval';
 
 import felt from '../../assets/pool_table/pool_table.png';
-import { tableSizes, sizeRatios } from '../../Constants/tableSizes';
+import { tableSizes } from '../../Constants/tableSizes';
 
 import { TableMemo } from './TableMemo/TableMemo';
 import Ball from './Balls';
@@ -43,10 +48,7 @@ const Table = () => {
   const settings = useSelector((state) => state.settings);
   const billiards = useSelector((state) => state.billiards);
   const userInfo = useSelector((state) => state.userInfo);
-
   const [startTime, setStartTime] = useState(false);
-  const [pastSunkBalls, setPastSunkBalls] = useState([]);
-
 
   useInterval(() => {
     if (!(billiards.status === 'just-struck' || billiards.status === "in-motion")) {
@@ -117,15 +119,19 @@ const Table = () => {
         let foul = false;
         // See if players have designated ball types and set foul according to first contact
         if (userInfo.currentGame[userInfo.currentGame.activePlayer].ballType === "solids") {
-          if (billiards.billiards[0].firstCollision >= 8 || !billiards.billiards[0].firstCollision) foul = true;
+          if (billiards.billiards[0].firstCollision > 8 || !billiards.billiards[0].firstCollision ||
+            ( billiards.billiards[0].firstCollision === 8 && userInfo.currentGame[userInfo.currentGame.activePlayer].ballsSunk.length !== 7 )
+            ) foul = true;
         }
         else if (userInfo.currentGame[userInfo.currentGame.activePlayer].ballType === "stripes") {
-          if (billiards.billiards[0].firstCollision <= 8 || !billiards.billiards[0].firstCollision) foul = true;
+          if (billiards.billiards[0].firstCollision < 8 || !billiards.billiards[0].firstCollision ||
+            ( billiards.billiards[0].firstCollision === 8 && userInfo.currentGame[userInfo.currentGame.activePlayer].ballsSunk.length !== 7 )
+            ) foul = true;
         }
         // If no designated ball types, then foul on scratch or no ball contact
         else if (billiards.billiards[0].firstCollision === 8 || !billiards.billiards[0].firstCollision) foul = true;
 
-        // See if white or 8 were sunk.  Saparate balls sunk into newly sunk and sunk balls that are accounted for
+        // See if white or 8 were sunk.  Separate balls sunk into newly sunk and sunk balls that are accounted for
         let allBallsEverSunk = [];
         let whiteSunk = false;
         let eightSunk = false;
@@ -146,14 +152,14 @@ const Table = () => {
         let newlySunkBalls = [...allBallsEverSunk];
         userInfo.currentGame.player1.ballsSunk.forEach((ball) => {
           newlySunkBalls.forEach((newBall, index) => {
-            if (newBall = ball) {
+            if (newBall === ball) {
               newlySunkBalls.splice(index, 1);
             }
           })
         })
         userInfo.currentGame.player2.ballsSunk.forEach((ball) => {
           newlySunkBalls.forEach((newBall, index) => {
-            if (newBall = ball) {
+            if (newBall === ball) {
               newlySunkBalls.splice(index, 1);
             }
           })
@@ -312,7 +318,169 @@ const Table = () => {
       // Case 2.2: Nineball
       else if (settings.gameType === 'nine') {
 
+        // Regardless of outcome, numberOfShots will be increased by clicking shoot button
+
+        // Determine is object ball was hit first
+        let foul = false;
+        let targetBallNumber = 1;
+        for(let i=0; i<userInfo.currentGame.player1GameInfo.ballsSunk.length; i++) {
+          if (userInfo.currentGame.player1GameInfo.ballsSunk[i] === targetBallNumber) {
+            targetBallNumber ++;
+            i = -1;
+          }
+        }
+        if (targetBallNumber !== billiards.billiards[0].firstCollision) {
+          foul = true;
+          if (!billiards.billiards[0].firstCollision) {
+            console.log('Foul - no ball hit.')
+          }
+          else {
+            console.log('Foul - incorrect first contact.  Cue hit ', billiards.billiards[0].firstCollision, ' ball and should have hit the ', targetBallNumber);
+          }
+        }
+
+        // See if white or 9 were sunk.  Separate balls sunk into newly sunk and sunk balls that are accounted for
+        let allBallsEverSunk = [];
+        let whiteSunk = false;
+        let nineSunk = false;
+        // All balls with sinkingSize === 0 have sunk (at some point)
+        billiards.billiards.forEach((billiard, index) => {
+          if (billiard.sinkingSize <= 0) {
+            if (billiard.id === "cue") {
+              whiteSunk = true;
+            }
+            else {
+              allBallsEverSunk.push(billiard.id);
+              if (billiard.id === 9) nineSunk = true;
+            }
+          }
+        })
+        // Remove balls that have already been counted as sunk to find the new balls that have been sunk
+        let newlySunkBalls = [...allBallsEverSunk];
+        userInfo.currentGame.player1GameInfo.ballsSunk.forEach((ball) => {
+          newlySunkBalls.forEach((newBall, index) => {
+            if (newBall === ball) {
+              newlySunkBalls.splice(index, 1);
+            }
+          })
+        })
+
+        // console.log('foul', foul)
+        // console.log('whiteSunk', whiteSunk)
+        // console.log('nineSunk', nineSunk)
+        // console.log('allBallsEverSunk',allBallsEverSunk)
+        // console.log('newlySunkBalls',newlySunkBalls)
+
+        // Regardless of impending game state, numberOfShots will be increased as a penalty if the white ball was sunk
+        if (whiteSunk) dispatch(addToShotTotal());
+
+        // Cases 2.2.1: no balls were hit - reset game status
+        if (!billiards.billiards[0].firstCollision) {
+          // Sub case 2.2.1.1: white sunk - return white ball, etc
+          if (whiteSunk) {
+            dispatch(finalizeBallMotion());
+            dispatch(setBallInHand());
+            dispatch(freeMoveCueBallWhiteSunk());
+            dispatch(setGameStatusFreeMove());
+          }
+          // Sub case 2.2.1.2: no scratch - reset game status
+          else {
+            dispatch(finalizeBallMotion());
+            dispatch(setGameStatusIdle());
+          }
+        }
+        // Cases 2.2.2: illegal first ball hit
+        else if (foul && whiteSunk) {
+          // Sub case 2.2.2.1: white sunk - return white ball, put ball in hand, return sunk balls, return sunk balls, reset game status
+          if (newlySunkBalls.length > 0) dispatch(returnBallsToTable(newlySunkBalls));
+          dispatch(finalizeBallMotion());
+          dispatch(setBallInHand());
+          dispatch(freeMoveCueBallWhiteSunk());
+          dispatch(setGameStatusFreeMove());
+        }
+        // Sub case 2.2.2.2: foul no white sunk - return sunk balls, return sunk balls, reset game status
+        else if (foul) {
+          if (newlySunkBalls.length > 0) dispatch(returnBallsToTable(newlySunkBalls));
+          dispatch(finalizeBallMotion());
+          dispatch(setGameStatusIdle());
+        }
+        // Cases 2.2.3: legal strike
+        // Sub cases 2.2.3.1: no balls sunk
+        else if (newlySunkBalls.length === 0) {
+          // Sub sub case 2.2.3.1.1: whiteSunk - ball in hand, etc
+          if (whiteSunk) {
+            dispatch(finalizeBallMotion());
+            dispatch(setBallInHand());
+            dispatch(freeMoveCueBallWhiteSunk());
+            dispatch(setGameStatusFreeMove());
+          }
+          // Sub sub case 2.2.3.1.2: no scratch - reset gameStatus
+          else {
+            dispatch(finalizeBallMotion());
+            dispatch(setGameStatusIdle());
+          }
+        }
+        // Sub cases 2.2.3.2: balls sunk
+        else if (newlySunkBalls.length > 0) {
+          // Sub sub case 2.2.3.2.1: Nine ball sunk
+          if (nineSunk) {
+            dispatch(setGameWinnerNineBall());
+            // if player is logged in, add game's record to their history and reward them dubloons
+            if (userInfo.user) {
+              let gameInfo = {
+                type: "nine",
+                opponent: "null",
+                result: `win${userInfo.currentGame.player1GameInfo.numberOfShots}`,
+                reward: 50,
+                date: Date(),
+              }
+              dispatch(requestAddGameToHistory());
+
+              fetch('/be/game/gameOver', {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ 
+                  userName: userInfo.user.userName,
+                  gameInfo: gameInfo, 
+                }),
+              }).then((res) => {
+                if (res.status === 200) {
+                  res.json().then((data) => {
+                    dispatch(addGameToHistorySuccess(data.userInfo));
+                    dispatch(setGameWinnerNineBall());
+                  });
+                } else {
+                  console.log('error: res',res);
+                  dispatch(addGameToHistoryError());
+                }
+              })
+            }
+            else dispatch(setGameWinnerNineBall());
+          }
+          // Sub sub case 2.2.3.2.2: white sunk
+          else if (whiteSunk) {
+            dispatch(addSunkBalls(newlySunkBalls));
+            dispatch(finalizeBallMotion());
+            dispatch(setBallInHand());
+            dispatch(freeMoveCueBallWhiteSunk());
+            dispatch(setGameStatusFreeMove());
+          }
+          // Sub sub case 2.2.3.2.3: catch all for no foul, no scratch, no game end and one or more balls sunk
+          else {
+            dispatch(addSunkBalls(newlySunkBalls));
+            dispatch(finalizeBallMotion());
+            dispatch(setGameStatusIdle());
+          }
+        }
       } // End of 9 ball update
+
+      // Case 2.3 Experimentation
+      else {
+        dispatch(finalizeBallMotion());
+        dispatch(setGameStatusIdle());
+      }
 
     } // End Case motion has ceased
     return
@@ -391,21 +559,6 @@ const HighIndexTable = styled.div`
 // background-color: blue;
 // z-index: 25;
 // `
-
-// test results (following are true before application of scaling ratios): 
-// right wall impact when left >= 276.5, top>= 23 && top <=140
-// left wall impact when left <= 13.5, top>= 23 && top <=140
-// bottom wall impact when top >= 149.5 and left >=24 && 137 or left >= 151.5 && 265.5
-// top wall impact when top <= 13 and left >=24 && 137 or left >= 151.5 && 265.5
-// Corner radius: 7
-// TL center: top: 9, left: 9
-// TR: top 9, left: 280
-// BL: top: 152.5, left: 10
-// BR: top: 152.5, left 279
-// Side radius: 5.5
-// B: top: 155.5 left: 144
-// T: top: 6.5 left: 144.5
-
 
 // original update: 
 // const update = () => {

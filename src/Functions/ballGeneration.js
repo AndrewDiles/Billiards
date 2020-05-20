@@ -1,4 +1,4 @@
-import { ballColors, initialBallLocations} from '../Constants/ballConstants';
+import { initialBallLocations } from '../Constants/ballConstants';
 
 export const generateBilliards = (gameType) => {
   let billiardsToGenerate = [];
@@ -20,6 +20,9 @@ export const generateBilliards = (gameType) => {
         billiardsToGenerate.push(i);
       }
       break;
+    }
+    default : {
+      
     }
   }
   let billiardsGenerationReturn = [];
@@ -43,18 +46,3 @@ export const generateBilliards = (gameType) => {
   })
   return billiardsGenerationReturn;
 }
-
-//  id,       cue, or the ball's number
-//  inMotion, true if any of the vel/spin values are not zero
-//  top,      top location before size ratio is applied
-//  left,     left location before size ratio is applied
-//  x-vel,    cm/s
-//  y-vel,    cm/s
-//  x-angle,  x rotational angle (+ => cw from top down) 
-//  y-angle,  y rotational angle (+ => into table off right side of ball from top down)
-//  x-spin,   degree/s
-//  y-spin,   degree/s
-//  collisions, an array, each element is the information of an object that it has collided with
-//  sinklocation, "none" until sinking, the either "T", "B", "TL", etc, to represent which hole
-//  sinkingSize, 1 when not sinking.  Once it is sinking number will be less than one and be a multiplier on its size
-//  gameSize,   should not be needed

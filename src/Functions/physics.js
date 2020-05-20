@@ -560,8 +560,6 @@ export const applyPhysics = (billiardsObject, settings) => {
               // case one collision
               // if (ballCollisions.length === 1) {
 
-
-
                 // console.log(`${element.id} ball only hit one other ball: the ${ballCollisions[0]} ball.`)
                 // let topAv = (element.top + testTop)/2;
                 // let leftAv = (element.left + testLeft)/2;
@@ -760,3 +758,19 @@ export const moveBallsOutsideEachOther = (billiardsObject) => {
     return element;
   })
 }
+
+
+
+// test results (following are true before application of scaling ratios): 
+// right wall impact when left >= 276.5, top>= 23 && top <=140
+// left wall impact when left <= 13.5, top>= 23 && top <=140
+// bottom wall impact when top >= 149.5 and left >=24 && 137 or left >= 151.5 && 265.5
+// top wall impact when top <= 13 and left >=24 && 137 or left >= 151.5 && 265.5
+// Corner radius: 7
+// TL center: top: 9, left: 9
+// TR: top 9, left: 280
+// BL: top: 152.5, left: 10
+// BR: top: 152.5, left 279
+// Side radius: 5.5
+// B: top: 155.5 left: 144
+// T: top: 6.5 left: 144.5

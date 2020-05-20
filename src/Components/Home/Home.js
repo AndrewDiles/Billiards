@@ -8,9 +8,6 @@ import ReactPlayer from "react-player"
 import blueBG from '../../assets/circle blues/circle-blues.png';
 import StyledButton from '../StyledButton';
 
-
-{/* <NavLink to="/">HOME</NavLink> */}
-
 const Home = () => {
   // const settings = useSelector((state) => state.settings);
   const userInfo = useSelector((state) => state.userInfo);
@@ -39,7 +36,7 @@ const Home = () => {
           <h3>
             Or enjoy local player without an account.
           </h3>
-          <h3></h3>
+          {/* <h3/></h3> */}
           {!userInfo.user ? (
             <NavLink to="/login">
               <StyledButton

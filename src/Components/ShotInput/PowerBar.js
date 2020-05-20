@@ -3,9 +3,6 @@ import { useDispatch, useSelector } from "react-redux";
 import styled from 'styled-components';
 
 import {
-  setGameStatusIdle,
-  setGameStatusAwaitingShot,
-  cueStrike,
   setShotPower
 } from "../../actions";
 
@@ -17,7 +14,7 @@ const PowerBar = ({ maximumHeight }) => {
 
   const handleClickToChangePower = (ev) => {
     if (!(settings.gameStatus === 'idle' || settings.gameStatus === 'awaiting-shot' || 
-    settings.gameStatus === 'first-move' || settings.gameStatus === 'first-shot')|| settings.ballInHand) return;
+    settings.gameStatus === 'free-move' || settings.gameStatus === 'first-shot')|| settings.ballInHand) return;
     let powerRatio = null;
     if (ev.target.className.includes('PLContainer')) {
     powerRatio = 1 - ev.nativeEvent.offsetY/maximumHeight;

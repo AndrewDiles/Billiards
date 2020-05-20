@@ -214,18 +214,22 @@ const client = new MongoClient(uri, {
   };
 
 
-  //TBD
   const handlePurchase = async (req, res) => {
 
     const userName = req.body.userName;
     const item = req.body.item;
 
+    console.log(`user ${userName} wishes to buy ${item}`);
+
     if (!userName || !item) {
       res.status(400).json({ status: 400, message: 'Fields may not be blank'  });
+      return;
     }
 
+    console.log('getting mongo info')
+
     await client.connect();
-    const db = client.db('billiardsInfo');  // this may need to be Billiards?
+    const db = client.db('billiardsInfo');
     
     try {
       const result = await db.collection('userInfo').findOne({ userName: userName });
@@ -234,7 +238,6 @@ const client = new MongoClient(uri, {
         res.status(404).json({ status: 404, user: 'Not Found' });
       }
       else {
-
         let cost = 0;
         if (item === 'plainOlCue') cost = 100;
         else if (item === 'magicWand') cost = 500;
@@ -244,14 +247,19 @@ const client = new MongoClient(uri, {
         else if (item === 'rainbowChalk') cost = 10000;
         console.log(`cost of ${item} is ${cost}`);
         let newWealth = result.dubloons - cost;
+        let newInventory = result.inventory;
+        newInventory[item] = true;
         const query = { userName: userName };
-        const newValues = { $set: { inventory : {...result.inventory,item : true}, wealth : newWealth}};
+        const newValues = { $set: { inventory : newInventory, dubloons : newWealth}};
         const r = await db.collection('userInfo').updateOne(query, newValues);
         // assert.equal(1, r.matchedCount);
         // console.log('44444444')
         assert.equal(1, r.modifiedCount);
         // console.log('55555555')
-        res.status(200).json({ status: 200, userInfo: newValues })
+        let newUserInfo = result;
+        newUserInfo.dubloons = newWealth;
+        newUserInfo.inventory = newInventory;
+        res.status(200).json({ status: 200, userInfo: newUserInfo })
       }
     } catch (err) {
       console.log(err);
@@ -352,13 +360,14 @@ const client = new MongoClient(uri, {
     }
   };
 
+
   // TBD
   const handleGameOver = async (req, res) => {
 
     const userName = req.body.userName;
-    const password = req.body.password;
+    const gameInfo = req.body.gameInfo;
 
-    if (password.length === 0 || userName.length === 0) {
+    if (userName.length === 0 || !gameInfo) {
       res.status(400).json({ status: 400, message: 'Fields may not be blank'  });
     }
 
@@ -371,11 +380,32 @@ const client = new MongoClient(uri, {
       if (!result || result.length === 0) {
         res.status(404).json({ status: 404, user: 'Not Found' });
       }
-      else if (result.passWord !== password) {
-        res.status(400).json({ status: 400, message: 'Password is incorrect'  });
-      }
       else {
-        res.status(200).json({ status: 200, user: result })
+        let newWealth = result.dubloons + gameInfo.reward;
+        let newAccumulatedWealth = result.accumulatedWealth + gameInfo.reward;
+        let newHistoryElement = {
+          type: gameInfo.type, 
+          opponent: gameInfo.opponent,
+          result: gameInfo.result,
+          date: gameInfo.date,
+        };
+        let newHistory = result.gameHistory;
+        newHistory.push(newHistoryElement);
+        const query = { userName: userName };
+        const newValues = { 
+          $set: { 
+            dubloons : newWealth, 
+            accumulatedWealth : newAccumulatedWealth, 
+            gameHistory: newHistory
+          }
+        };
+        const r = await db.collection('userInfo').updateOne(query, newValues);
+        assert.equal(1, r.modifiedCount);
+        let newUserInfo = result;
+        newUserInfo.dubloons = newWealth;
+        newUserInfo.accumulatedWealth = newAccumulatedWealth;
+        newUserInfo.gameHistory = newHistory;
+        res.status(200).json({ status: 200, userInfo: newUserInfo })
       }
     } catch (err) {
       console.log(err);

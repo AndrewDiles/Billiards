@@ -127,4 +127,3 @@ justify-content: center;
 align-items: center;
 text-align: center;
 `
-

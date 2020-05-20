@@ -3,16 +3,12 @@ import { useSelector } from "react-redux";
 import { Redirect } from "react-router-dom";
 import styled from 'styled-components';
 
-
 import blueBG from '../../assets/circle blues/circle-blues.png';
 
 import Stash from './Stash';
 import GameHistory from './GameHistory';
 
-import coin from '../../assets/spinningDubloon.gif';
-
 const Account = () => {
-  const settings = useSelector((state) => state.settings);
   const userInfo = useSelector((state) => state.userInfo);
   
   if (!userInfo.user) {

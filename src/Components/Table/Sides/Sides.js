@@ -1,15 +1,13 @@
-import React, { useContext } from 'react';
-import { useDispatch, useSelector } from "react-redux";
+import React from 'react';
+import { useSelector } from "react-redux";
 import styled from 'styled-components';
 
 import felt from '../../../assets/pool_table/pool_table.png';
 
 import { tableSizes } from '../../../Constants/tableSizes';
-// import { SettingsContext } from '../../../SettingsContext';
 
 const Sides = ( {side} ) => {
   const settings = useSelector((state) => state.settings);
-  // const { settings } = useContext(SettingsContext);
   
   let topIndexG = `${side}topG`;
   let leftIndexG = `${side}leftG`;
@@ -31,9 +29,7 @@ const Sides = ( {side} ) => {
       top = {tableSizes[settings.tableSize][topIndexB]}
       left = {tableSizes[settings.tableSize][leftIndexB]}
       />
-
     </Green>
-
   )
 }
 export default Sides;

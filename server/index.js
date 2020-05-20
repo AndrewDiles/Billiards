@@ -84,8 +84,12 @@ App
   // places a copy of the game's state onto the server for the other player to retrieve
   .post("/be/game/nextMove", handleNextMove)
   
-  // eliminates game from lobby - places game in user's history, adds it to their account, returns their new userInfo
+  // Places game in user's history, adds appropriate dubloons to their account, returns their new userInfo
   .post("/be/game/gameOver", handleGameOver)
+  // Body has shape: {
+    // userName:
+    // gameInfo:
+  // }
 
   .listen(PORT, () => console.info(`Listening on port ${PORT}`));
 

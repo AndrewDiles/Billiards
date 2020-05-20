@@ -30,6 +30,18 @@ export const logUserOut = () => ({
   type: 'LOG_USER_OUT',
 });
 
+// purchasing items: 
+export const requestPurchaseItem = () => ({
+  type: 'REQUEST_PURCHASE_ITEM',
+});
+export const purchaseItemSuccess = (user) => ({
+  type: 'PURCHASE_ITEM_SUCCESS',
+  user,
+});
+export const purchaseItemError = () => ({
+  type: 'PURCHASE_ITEM_ERROR',
+});
+
 // lobby actions:
 // get lobby data:
 export const requestAvailableGames = () => ({
@@ -86,7 +98,16 @@ export const setGameWinnerEightBall = (winner) => ({
 export const setGameWinnerNineBall = () => ({
   type: 'SET_GAME_WINNER_NINE_BALL',
 });
-
+export const requestAddGameToHistory = () => ({
+  type: 'REQUEST_ADD_GAME_TO_HISTORY',
+});
+export const addGameToHistorySuccess = (user) => ({
+  type: 'ADD_GAME_TO_HISTORY_SUCCESS',
+  user,
+});
+export const addGameToHistoryError = () => ({
+  type: 'ADD_GAME_TO_HISTORY_ERROR',
+});
 
 
 // to change with information from server?
@@ -211,5 +232,14 @@ export const addToSunkBalls = ( solids, stripes ) => ({
   solids,
   stripes
 })
-
-
+// export const incrementNumberOfShots = () => ({
+//   type: 'INCREMENT_NUMBER_OF_SHOTS',
+// })
+export const returnBallsToTable = (newlySunkBalls) => ({
+  type: 'RETURN_BALLS_TO_TABLE',
+  newlySunkBalls,
+})
+export const addSunkBalls = (newlySunkBalls) => ({
+  type: 'ADD_SUNK_BALLS',
+  newlySunkBalls,
+})

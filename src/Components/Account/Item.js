@@ -1,6 +1,12 @@
 import React from 'react';
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import styled from 'styled-components';
+
+import {
+  requestPurchaseItem,
+  purchaseItemSuccess,
+  purchaseItemError,
+} from "../../actions";
 
 import crookedStick from '../../assets/crookedStick.png';
 import plainOlCue   from '../../assets/plainOlCue.png';
@@ -16,10 +22,9 @@ import StyledButton from '../StyledButton';
 import coin from '../../assets/spinningDubloon.gif';
 
 const Item = ({ item }) => {
-  const settings = useSelector((state) => state.settings);
   const userInfo = useSelector((state) => state.userInfo);
-
-  let inventoryArray = Object.keys(userInfo.user.inventory);
+  const dispatch = useDispatch();
+  // let inventoryArray = Object.keys(userInfo.user.inventory);
 
   let url = ''
   let width = '100px'
@@ -42,6 +47,30 @@ const Item = ({ item }) => {
   else if (item === 'purpleChalk') cost = 2000;
   else if (item === 'rainbowChalk') cost = 10000;
 
+  const handleClickPurchase = () => {
+
+    dispatch(requestPurchaseItem());
+    fetch('/be/purchase', {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ 
+        userName: userInfo.user.userName,
+        item: item, 
+      }),
+    }).then((res) => {
+      if (res.status === 200) {
+        res.json().then((data) => {
+          dispatch(purchaseItemSuccess(data.userInfo));
+        });
+      } else {
+        console.log('error: res',res);
+        dispatch(purchaseItemError());
+      }
+    })
+  }
+
   return (
     <RowItem>
       <StyledImg
@@ -57,7 +86,10 @@ const Item = ({ item }) => {
         In Possession
         </p>
       ) : (
-        <StyledButton>
+        <StyledButton
+          handleClick = {handleClickPurchase}
+          disabled = {cost > userInfo.user.dubloons}
+        >
           {cost} <img src = {coin} alt="A spinning gold coin" height="10" width="10"/>
         </StyledButton>
       )}
@@ -81,13 +113,11 @@ const RowItem = styled.div`
   text-align: center;
   width: 100%;
 `
-
-const RowDivEven = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-evenly;
-  align-items: center;
-  text-align: center;
-  width: 100%;
-`
-
+// const RowDivEven = styled.div`
+//   display: flex;
+//   flex-direction: row;
+//   justify-content: space-evenly;
+//   align-items: center;
+//   text-align: center;
+//   width: 100%;
+// `

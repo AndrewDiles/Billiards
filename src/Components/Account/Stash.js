@@ -2,15 +2,12 @@ import React from 'react';
 import { useSelector } from "react-redux";
 import styled from 'styled-components';
 
-import StyledButton from '../StyledButton';
 import Item from './Item';
 
 import coin from '../../assets/spinningDubloon.gif';
 
 const Stash = () => {
-  const settings = useSelector((state) => state.settings);
   const userInfo = useSelector((state) => state.userInfo);
-
   let inventoryArray = Object.keys(userInfo.user.inventory);
 
   return (
@@ -71,4 +68,3 @@ const RowDivEven = styled.div`
   text-align: center;
   width: 100%;
 `
-

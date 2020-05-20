@@ -1,20 +1,16 @@
 import React from "react";
 import styled from "styled-components";
 
-import { NavLink } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-
-import Selections from '../Selections';
-
 import { useSpring, animated } from 'react-spring';
 
 import { openSideBar,closeSideBar } from '../../actions';
+import Selections from '../Selections';
 
-import {right} from 'react-icons-kit/entypo/right';
+// import {right} from 'react-icons-kit/entypo/right';
 import {cog} from 'react-icons-kit/entypo/cog';
 import {left} from 'react-icons-kit/entypo/left';
 import { Icon } from 'react-icons-kit';
-
 import escheresque_ste from '../../assets/escheresque_ste/escheresque_ste.png';
 
 const Sidebar = () => {
@@ -71,62 +67,20 @@ const Sidebar = () => {
   const closedMargin = {margin: '0 0 0 30px'};
 
   return (
-    // <SlideMotion>
-      <NavWrapper
-      style = {settings.sideBarOpen ? opening : settings.sideBarOpen === undefined ? closed : closing}
-      >
-        <IconDiv style = {settings.sideBarOpen ? openingMargin : settings.sideBarOpen === undefined ? closedMargin : closingMargin}>
-        {settings.sideBarOpen ? (
-          <StyledIcon onClick = {toggleSlidebar} size={64} icon={left}/>
-        ) : (
-          <StyledIcon onClick = {toggleSlidebar} size={64} icon={cog}/>
-        )}
-        </IconDiv>
-        <Selections
-        isSliding = {isSliding}
-        />
-        {/* <NavLink to="/">HOME</NavLink>
-        <NavLink to="/shop">SHOP</NavLink>
-        {user === null ? (
-          <NavLink to="/account">ACCOUNT</NavLink>
-        ) : (
-          <NavLink to="/userInformation">{accountTitle}</NavLink>
-        )} */}
-        {/* <NavLink to="/account">
-          {user === null ? (
-            "SIGN IN"
-          ) : (
-            <button className="signOutBtn" onClick={handleSignOut}>
-              SIGN OUT
-            </button>
-          )}
-        </NavLink>
-        <div>
-          {/* <img src={supermarket} alt="cart button" /> */}
-
-          {/* <CartButton 
-            onMouseEnter={() => {
-              setCartVisibilityPreHover(cartVisible);
-              setCartVisible(true);
-            }}
-            onMouseLeave={() => {
-              if (cartVisibilityPreHover && clickStatus) setCartVisible(true);
-              else if (cartVisibilityPreHover && !clickStatus)
-                setCartVisible(false);
-              else if (!cartVisibilityPreHover && clickStatus)
-                setCartVisible(true);
-              else if (!cartVisibilityPreHover && !clickStatus)
-                setCartVisible(false);
-            }}
-            onClick={() => {
-              setClickStatus(!clickStatus);
-            }}
-          > <FaShoppingCart  style={{marginRight: "10px"}} size={20}/>
-            {cartNum > 0 ? `CART (${cartNum})` : "CART"}
-          </CartButton> */}
-
-      </NavWrapper>
-    // </SlideMotion>
+    <NavWrapper
+    style = {settings.sideBarOpen ? opening : settings.sideBarOpen === undefined ? closed : closing}
+    >
+      <IconDiv style = {settings.sideBarOpen ? openingMargin : settings.sideBarOpen === undefined ? closedMargin : closingMargin}>
+      {settings.sideBarOpen ? (
+        <StyledIcon onClick = {toggleSlidebar} size={64} icon={left}/>
+      ) : (
+        <StyledIcon onClick = {toggleSlidebar} size={64} icon={cog}/>
+      )}
+      </IconDiv>
+      <Selections
+      isSliding = {isSliding}
+      />
+    </NavWrapper>
   );
   // width: ${props => props.open ? '300px' : '30px'};
   // width: ${props => props.open ? props.opening : props.closing};
@@ -153,7 +107,7 @@ const NavWrapper = styled(animated.nav)`
   /* background-image: "url(../../assets/retina_wood)"; */
   /* background: "url(src/assets/retina_wood/retina_wood.png)"; */
   background: url(${escheresque_ste});
-`;
+`
 
 /* Background pattern from Toptal Subtle Patterns */
 const StyledIcon = styled(Icon)`
@@ -165,7 +119,5 @@ const StyledIcon = styled(Icon)`
     color: gold;
   }
   
-
 `
-
 export default Sidebar;

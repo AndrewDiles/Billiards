@@ -16,11 +16,7 @@ import {
 
 // import { SettingsContext } from '../../SettingsContext';
 
-
-import { tableSizes } from '../../Constants/tableSizes';
 import StyledButton from '../StyledButton';
-
-
 
 const Selections = ({isSliding}) => {
   const dispatch = useDispatch();

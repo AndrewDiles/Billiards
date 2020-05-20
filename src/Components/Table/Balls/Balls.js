@@ -24,26 +24,18 @@ const Balls = ( {billiard} ) => {
   // const [mouselocationLeft, setMouselocationLeft] = React.useState(null);
   // const [mouselocationTop, setMouselocationTop] = React.useState(null);
   const dispatch = useDispatch();
+
   useEffect((ev)=>{
-    if (!settings.ballInHand 
-      // || ballInHandTriggered
-      ) return;
+    // if (!settings.ballInHand) return;
     // setBallInHandTriggered(true);
     // console.log('ball is in hand', settings.ballInHand)
+    
+    // if (!billiard) return (<></>) // fail safe against issues during removal of balls
+
     const table = document.getElementById('Table');
-
-    // https://www.w3schools.com/jsref/tryit.asp?filename=tryjsref_element_getboundingclientrect
-
-    if (!billiard) return (<></>) // fail safe against issues during removal of balls
-
+    
     const moveFunction = (ev) => {
       if (!(ev.target.className.includes("Hole-Green") || ev.target.className.includes("cue"))){
-        // setMouselocationLeft(parseFloat(ev.offsetX));
-        // setMouselocationTop(parseFloat(ev.offsetY));
-        // dispatch(freeMoveCueBall(
-        //   (ev.offsetX-tableSizes[settings.tableSize].ballRadius)/sizeRatios[settings.tableSize],
-        //   (ev.offsetY-tableSizes[settings.tableSize].ballRadius)/sizeRatios[settings.tableSize]
-        //   ));
         const borderSize = tableSizes[settings.tableSize].cushionWidth + tableSizes[settings.tableSize].railWidth;
         if (settings.gameStatus === 'first-shot') {
           dispatch(freeMoveCueBallIllegal(
@@ -57,7 +49,7 @@ const Balls = ( {billiard} ) => {
             ((ev.offsetY-tableSizes[settings.tableSize].ballRadius)-borderSize)/sizeRatios[settings.tableSize]
           ));
         }
-        
+
         if (testLegalBallDropLocation(ev.offsetX, ev.offsetY)){
           setLegalDrop(true);
         }
@@ -65,16 +57,27 @@ const Balls = ( {billiard} ) => {
           setLegalDrop(false);
         }
       }
-
     }
-    table.addEventListener('mousemove',moveFunction);
-    table.addEventListener('mousedown',(event) => handleTableClick(event));
-    return () => {
-      table.removeEventListener('mousemove',moveFunction);
-      table.removeEventListener('mouseclick',(event) => handleTableClick(event));
+    // if (!settings.ballInHand) return;
+    if (settings.ballInHand && billiard) {
+      table.addEventListener('mousemove',moveFunction);
+      table.addEventListener('mousedown',(event) => handleTableClick(event));
+      return () => {
+        table.removeEventListener('mousemove',moveFunction);
+        table.removeEventListener('mouseclick',(event) => handleTableClick(event));
+      }
     }
-  }, [settings.ballInHand])
 
+    
+
+    // table.addEventListener('mousemove',function() {if (settings.ballInHand && billiard) moveFunction()});
+    // table.addEventListener('mousedown',(event) => {if (settings.ballInHand && billiard) handleTableClick(event)});
+
+    // table.removeEventListener('mousemove',function() {if (settings.ballInHand && billiard) moveFunction()});
+    // table.removeEventListener('mousedown',(event) => {if (settings.ballInHand && billiard) handleTableClick(event)});
+
+  }, [settings.ballInHand, settings.gameStatus] )
+  
   const testLegalBallDropLocation = (x,y) => {
     // console.log('legal drop test begins, (x,y) =', x,y)
     let trueX = (x-tableSizes[settings.tableSize].ballRadius)/sizeRatios[settings.tableSize];

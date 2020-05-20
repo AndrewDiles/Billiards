@@ -1,5 +1,6 @@
 import { applyPhysics, applyCueStrike, moveBallsOutsideEachOther } from '../Functions/physics';
 import { generateBilliards } from '../Functions/ballGeneration';
+import { initialBallLocations } from '../Constants/ballConstants';
 
 const initialState = {
   billiards: [],
@@ -133,6 +134,16 @@ export default function billiardsReducer(state = initialState, action) {
         status: 'error',
       }
     }
+    case 'RETURN_BALLS_TO_TABLE' : {
+      let newState = {...state};
+      action.newlySunkBalls.forEach((ballNumber)=>{
+        newState.billiards[ballNumber].top = initialBallLocations.nine[ballNumber].top;
+        newState.billiards[ballNumber].left = initialBallLocations.nine[ballNumber].left;
+        newState.billiards[ballNumber].sinkingSize = 1;
+        newState.billiards[ballNumber].sinklocation = null;
+      })
+      return newState;
+    } 
     default: {
       return state;
     }

@@ -1,9 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
-import { NavLink, Redirect } from "react-router-dom";
+import { Redirect } from "react-router-dom";
 import styled from 'styled-components';
-
-import ReactPlayer from "react-player"
 
 import blueBG from '../../assets/circle blues/circle-blues.png';
 import StyledButton from '../StyledButton';
@@ -13,14 +11,9 @@ import {
   receiveUserInfo,
   receiveUserInfoError,
   requestCreateNewUser,
-  createNewUserSuccess,
-  createNewUserError
 } from "../../actions";
 
-{/* <NavLink to="/">HOME</NavLink> */}
-
 const Login = () => {
-  const settings = useSelector((state) => state.settings);
   const userInfo = useSelector((state) => state.userInfo);
   const [userName, setUserName] = useState('');
   const [password, setPassword] = useState('');
@@ -190,10 +183,7 @@ const Column = styled.div`
   width: 50%;
   align-items: center;
 `
-const RowDiv = styled.div`
-  display:flex;
-  flex-direction: row;
-`
+
 const Wrapper = styled.div`
 color: linen;
 /* background-color: lightgray; */
@@ -213,4 +203,3 @@ padding: 0 50px;
   flex-direction: column;
 }
 `
-
