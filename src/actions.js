@@ -64,6 +64,37 @@ export const joinGameSuccess = (newGameInfo) => ({
 export const joinGameError = () => ({
   type: 'JOIN_GAME_ERROR',
 });
+// setting to ready in a lobby:
+export const requestSetReady = () => ({
+  type: 'REQUEST_SET_READY',
+});
+export const setReadySuccess = () => ({
+  type: 'SET_READY_SUCCESS',
+});
+export const setReadyError = () => ({
+  type: 'SET_READY_ERROR',
+});
+// setting to not ready in a lobby:
+export const requestSetNotReady = () => ({
+  type: 'REQUEST_SET_NOT_READY',
+});
+export const setNotReadySuccess = () => ({
+  type: 'SET_NOT_READY_SUCCESS',
+});
+export const setNotReadyError = () => ({
+  type: 'SET_NOT_READY_ERROR',
+});
+// leaving a lobby
+export const requestLeave = () => ({
+  type: 'REQUEST_LEAVE',
+});
+export const leaveSuccess = () => ({
+  type: 'LEAVE_SUCCESS',
+});
+export const leaveError = () => ({
+  type: 'LEAVE_ERROR',
+});
+
 
 // -- -- -- -- -- --
 // settings actions:

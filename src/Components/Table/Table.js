@@ -51,11 +51,12 @@ const Table = () => {
   const [startTime, setStartTime] = useState(false);
 
   useInterval(() => {
+    // console.log('useInterval function begins');
     if (!(billiards.status === 'just-struck' || billiards.status === "in-motion")) {
       return;
     }
     else if (billiards.status === 'just-struck') {
-      console.log('Cue strike landed')
+      // console.log('Cue strike landed')
       // console.log('billiards.status',billiards.status);
       setStartTime(Date.now())
       dispatch(beginBallMotion());
@@ -71,7 +72,7 @@ const Table = () => {
     }
   }, settings.refreshRate);
 
-  const nonActivePlayerWins = () => {
+  const setGameWinner = () => {
     if (userInfo.currentGame.activePlayer === 'player1') {
       dispatch(setGameWinnerEightBall('player2'));
       return;
@@ -80,6 +81,42 @@ const Table = () => {
       dispatch(setGameWinnerEightBall('player1'));
       return;
     }
+  }
+
+  const nonActivePlayerWins = () => {
+    setGameWinner();
+    // if player is logged in, add game's record to their history and reward them dubloons
+    if (userInfo.user) {
+      let gameInfo = {
+        type: "eight",
+        opponent: "hot-seat",
+        result: `Completed`,
+        reward: 25,
+        date: Date(),
+      }
+      dispatch(requestAddGameToHistory());
+
+      fetch('/be/game/gameOver', {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ 
+          userName: userInfo.user.userName,
+          gameInfo: gameInfo, 
+        }),
+      }).then((res) => {
+        if (res.status === 200) {
+          res.json().then((data) => {
+            dispatch(addGameToHistorySuccess(data.userInfo));
+          });
+        } else {
+          console.log('error: res',res);
+          dispatch(addGameToHistoryError());
+        }
+      })
+    }
+    setGameWinner();
   }
   const endTurnChangePlayerFreeMove = () => {
     dispatch(finalizeBallMotion());
@@ -96,9 +133,9 @@ const Table = () => {
   }
 
   const update = () => {
-    // console.log('billiards.status',billiards.status)
-    if (billiards.status === 'idle' || billiards.status === "free-move" || userInfo.currentGame.gameWinner) return;
-
+    if (billiards.status === 'idle' || billiards.status === "free-move") return;
+    if (settings.gameType !== 'test' && userInfo.currentGame.gameWinner) return;
+    
     // Verify if balls are still moving
     let stillMotion = false;
     billiards.billiards.forEach((billiard)=>{
@@ -170,6 +207,10 @@ const Table = () => {
         if (foul && userInfo.currentGame[userInfo.currentGame.activePlayer].ballsSunk.length === 7) {
           console.log('Game foul while trying to sink the 8 ball, game loss');
           nonActivePlayerWins();
+
+
+
+
           return;
         }
         // Case foul, but no game loss
@@ -224,6 +265,39 @@ const Table = () => {
             else {
               console.log('8 sunk legally, active player wins');
               dispatch(setGameWinnerEightBall(userInfo.currentGame.activePlayer));
+
+              // if player is logged in, add game's record to their history and reward them dubloons
+              if (userInfo.user) {
+                let gameInfo = {
+                  type: "eight",
+                  opponent: "hot-seat",
+                  result: `Completed`,
+                  reward: 25,
+                  date: Date(),
+                }
+                dispatch(requestAddGameToHistory());
+
+                fetch('/be/game/gameOver', {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify({ 
+                    userName: userInfo.user.userName,
+                    gameInfo: gameInfo, 
+                  }),
+                }).then((res) => {
+                  if (res.status === 200) {
+                    res.json().then((data) => {
+                      dispatch(addGameToHistorySuccess(data.userInfo));
+                      dispatch(setGameWinnerEightBall(userInfo.currentGame.activePlayer));
+                    });
+                  } else {
+                    console.log('error: res',res);
+                    dispatch(addGameToHistoryError());
+                  }
+                })
+              }
             }
           } // End Case eight was sunk
           // Balls were sunk, and the game is not ending.
@@ -429,13 +503,12 @@ const Table = () => {
             if (userInfo.user) {
               let gameInfo = {
                 type: "nine",
-                opponent: "null",
+                opponent: null,
                 result: `win${userInfo.currentGame.player1GameInfo.numberOfShots}`,
                 reward: 50,
                 date: Date(),
               }
               dispatch(requestAddGameToHistory());
-
               fetch('/be/game/gameOver', {
                 method: "POST",
                 headers: {
@@ -478,8 +551,20 @@ const Table = () => {
 
       // Case 2.3 Experimentation
       else {
+        // put experimental ball back on table if sunk
+        if (billiards.billiards[1].sinkingSize !== 1) {
+          dispatch(returnBallsToTable([1]));
+        }
         dispatch(finalizeBallMotion());
-        dispatch(setGameStatusIdle());
+        // put cue ball back on table if sunk
+        if (billiards.billiards[0].sinkingSize !== 1) {
+          dispatch(setBallInHand());
+          dispatch(freeMoveCueBallWhiteSunk());
+          dispatch(setGameStatusFreeMove());
+        }
+        else {
+          dispatch(setGameStatusIdle());
+        }
       }
 
     } // End Case motion has ceased
@@ -513,14 +598,6 @@ const Table = () => {
           />
         )
       })}
-      {/* BELOW TO BE DELETED */}
-      {/* <TestPoint
-      settings = {settings}
-      top = {6.5}
-      left = {144.5}
-      >
-
-      </TestPoint> */}
     </TableWrapper>
   )
 }
@@ -550,281 +627,3 @@ const HighIndexTable = styled.div`
   z-index: 10;
   display: ${props => !props.ballInHand && 'none'};
 `
-// const TestPoint = styled.div`
-// top: ${props => props.top * sizeRatios[props.settings.tableSize]}px;
-// left: ${props => props.left * sizeRatios[props.settings.tableSize]}px;
-// height:5px;
-// width:5px;
-// position: absolute;
-// background-color: blue;
-// z-index: 25;
-// `
-
-// original update: 
-// const update = () => {
-//   console.log('billiards.status',billiards.status)
-//   if (billiards.status === 'idle' || billiards.status === "free-move" ) return;
-
-//   // Verify if balls are still moving
-//   let stillMotion = false;
-//   billiards.billiards.forEach((billiard)=>{
-//     if (billiard.inMotion) stillMotion = true;
-//   })
-  
-//   // Case 1: motion is ongoing, so keep updating the balls until there is no motion
-//   if (stillMotion) {
-//       dispatch(updateBalls(settings));
-//       return;
-//   }
-
-//   // Case 2: motion is done.  Begin testing:
-//   // case no ball was hit, change player turn and set ball in hand
-//   else if ((!billiards.billiards[0].firstCollision) && settings.gameType === 'eight' && !settings.ballInHand ) {
-//     console.log('1');
-//     dispatch(changeActivePlayer());
-//     dispatch(setBallInHand());
-//     dispatch(setGameStatusFreeMove());
-//   }
-//     // Has the game ended?  Does the active player need to change?  Is the white ball in hand?  Do we need to change objectives
-//   else {
-//     // Key balls to consider are white, 8 and 9
-//     let newlySunkBalls = [];
-//     let whiteSunk = false;
-//     let eightSunk = false;
-//     let nineSunk = false;
-//     // Test all balls and find all balls that have ever sunk
-//     billiards.billiards.forEach((billiard, index) => {
-//       // console.log('testing sinking size', billiard.sinkingSize)
-//       if (billiard.sinkingSize <= 0) {
-//         if (billiard.id === "cue") {
-//           whiteSunk = true;
-//         }
-//         else {
-//           newlySunkBalls.push(billiard.id);
-//           if (billiard.id === 8) eightSunk = true;
-//           else if (billiard.id === 9) nineSunk = true;
-//           console.log('newlySunkBalls', newlySunkBalls)
-//         }
-//       }
-//     })
-
-//     // newlySunkBalls is now an array that contains the ids of all balls ever sunk minus the white ball
-
-//     // Case: balls were sunk, 
-//     if (newlySunkBalls.length>0 || whiteSunk) {
-
-//       newlySunkBalls.forEach((justSunkId, index)=>{
-//         // was originally going to remove the balls from the billiards redux state, but renders caused problems
-//         // dispatch(removeBall(ball))
-
-//         // verify that the ball has been newly sunk by cross checking against the past sunk balls
-//         pastSunkBalls.forEach((pastSunkId)=> {
-//           if (justSunkId === pastSunkId) {
-//             newlySunkBalls.splice(index, 1);
-//           }
-//         })
-//         // now newlySunkBalls is all the newly sunk balls (minus the cue ball)
-//       })
-//       // sub-case: no new balls were sunk
-//       if ((newlySunkBalls.length === 0)) {
-//         console.log("no new balls were sunk:", newlySunkBalls);
-//         dispatch(finalizeBallMotion());
-//         dispatch(setGameStatusIdle());
-//         if (settings.gameType === 'eight') {
-//           console.log('2');
-//           dispatch(changeActivePlayer());
-//         }
-//         if (!billiards.billiards[0].firstCollision || whiteSunk) {
-//           dispatch(setGameStatusFreeMove());
-//           dispatch(setBallInHand());
-//           dispatch(freeMoveCueBallWhiteSunk());
-//           }
-//         // begin doing similar above testing depending on which ball what collided with
-//       }
-//       // case there were new balls sunk, test for end game conditions
-//       else {
-//         if (settings.gameType === 'nine') {
-//           // test legal shot
-//           // if legal shot, non white sunk and nine sunk, game win
-//           // if legal shot and not win, update next objective
-//           // if not legal shot return balls to table
-
-//           // still need to add game to history
-//           // 9-ball game is over, player has won.  Add game win to history, currency and number of shots it took to win.
-//           if (nineSunk && settings.gameType === 'nine'
-//           // && legalFirstBallHit  // needs to be revised
-//           // && !whiteSunk
-//           ) {
-//             dispatch(setGameWinnerNineBall())
-//           }
-//         }
-//         else if (settings.gameType === 'eight') {
-//           let solidsSunk = [];
-//           let stripesSunk = [];
-//           newlySunkBalls.forEach((ball)=>{
-//             if (ball < 8) solidsSunk.push(ball);
-//             else stripesSunk.push(ball);
-//           })
-//           // test end game : 8 sunk or white sunk on eight
-//           if (eightSunk) {
-//             if (whiteSunk) {
-//               //gameLoss
-//               if (userInfo.currentGame.activePlayer === 'player1') {
-//                 dispatch(setGameWinnerEightBall('player2'));
-//               }
-//               else {
-//                 dispatch(setGameWinnerEightBall('player1'));
-//               }
-//             }
-//               let solidsSunk = [];
-//               let stripesSunk = [];
-//               newlySunkBalls.forEach((ball)=>{
-//                 if (ball < 8) solidsSunk.push(ball)
-//                 else stripesSunk.push(ball);
-//               })
-//               // if player has a ball type then add sunk balls to each players' total
-//               if (userInfo.currentGame[userInfo.currentGame.activePlayer].ballType) {
-//                 if (solidsSunk.length > 0 ) dispatch(addToSunkBalls(solidsSunk, stripesSunk));
-//               }
-//             if (userInfo.currentGame[userInfo.currentGame.activePlayer].ballsSunk.length !== 7) {
-//               //gameLoss
-//               if (userInfo.currentGame.activePlayer === 'player1') {
-//                 dispatch(setGameWinnerEightBall('player2'));
-//               }
-//               else {
-//                 dispatch(setGameWinnerEightBall('player1'));
-//               }
-//             }
-//             else {
-//               //gameWin
-//               if (userInfo.currentGame.activePlayer === 'player1') {
-//                 dispatch(setGameWinnerEightBall('player1'));
-//               }
-//               else {
-//                 dispatch(setGameWinnerEightBall('player2'));
-//               }
-//             }
-//           }
-//           else if (whiteSunk) {
-//             // player loses turn
-//             console.log('3');
-//             dispatch(changeActivePlayer());
-//             dispatch(setBallInHand());
-//             dispatch(setGameStatusFreeMove());
-//             dispatch(freeMoveCueBallWhiteSunk());
-//           }
-//           // case a ball was sunk and the white was not sunk
-//           else {
-//             // case beginning of game and player does not have an objective
-//             if (!userInfo.currentGame[userInfo.currentGame.activePlayer].ballType) {
-//               console.log('NO BALL TYPES FOR OBJECTIVES')
-//               console.log('solidsSunk',solidsSunk,'stripesSunk',stripesSunk)
-//               // case player given choice
-//               if (solidsSunk.length >0 && stripesSunk.length > 0) {
-//                 dispatch(finalizeBallMotion());
-//                 dispatch(setGameStatusAwaitingChoice());
-//               }
-//               // case forced to sink solids
-//               else if (solidsSunk.length > 0) {
-//                 dispatch(setObjectives(userInfo.currentGame.activePlayer, "solids"));
-//                 dispatch(finalizeBallMotion());
-//                 dispatch(setGameStatusIdle());
-//                 dispatch(addToSunkBalls(solidsSunk, stripesSunk));
-//               }
-//               // case forced to sink stripes
-//               else {
-//                 dispatch(setObjectives(userInfo.currentGame.activePlayer, "stripes"));
-//                 dispatch(finalizeBallMotion());
-//                 dispatch(setGameStatusIdle());
-//                 dispatch(addToSunkBalls(solidsSunk, stripesSunk));
-//               }
-//             }
-//             // case players have objectives
-//             else {
-//               let firstBallHit = billiards.billiards[0].firstCollision;
-//               let legalHit = false;
-//               if (userInfo.currentGame[userInfo.currentGame.activePlayer].ballType === "stripes") {
-//                 if (firstBallHit > 8) legalHit = true;
-//               }
-//               else if (userInfo.currentGame[userInfo.currentGame.activePlayer].ballType === "solids") {
-//                 if (firstBallHit < 8) legalHit = true;
-//               }
-//               else (console.log('Unknown first ball struck error: ', firstBallHit));
-//               if (userInfo.currentGame[userInfo.currentGame.activePlayer].ballsSunk.length === 7) {
-//                 // This case should have been caught further up
-//                 if (firstBallHit === 8) legalHit = true;
-//               }
-//               // case player legally hit their ball first
-//               if (legalHit) {
-//                 // case active player is shooting for stripes
-//                 if(userInfo.currentGame[userInfo.currentGame.activePlayer].ballType === "stripes") {
-//                   // case they didn't sink any of their balls and they lose their turn
-//                   if (stripesSunk.length === 0) {
-//                     dispatch(finalizeBallMotion());
-//                     dispatch(setGameStatusIdle());
-//                     dispatch(addToSunkBalls(solidsSunk, stripesSunk));
-//                     console.log('4');
-//                     dispatch(changeActivePlayer());
-//                   }
-//                   // case they did sink at least one of their balls and retain their turn
-//                   else {
-//                     dispatch(finalizeBallMotion());
-//                     dispatch(setGameStatusIdle());
-//                     dispatch(addToSunkBalls(solidsSunk, stripesSunk));
-//                   }
-//                 }
-//                 // case active player is shooting for solids
-//                 else {
-//                   if (solidsSunk.length === 0) {
-//                     dispatch(finalizeBallMotion());
-//                     dispatch(setGameStatusIdle());
-//                     dispatch(addToSunkBalls(solidsSunk, stripesSunk));
-//                     console.log('5');
-//                     dispatch(changeActivePlayer());
-//                   }
-//                   // case they did sink at least one of their balls and retain their turn
-//                   else {
-//                     dispatch(finalizeBallMotion());
-//                     dispatch(setGameStatusIdle());
-//                     dispatch(addToSunkBalls(solidsSunk, stripesSunk));
-//                   }
-//                 }
-//               }
-//             } // end case players have objectives
-//           } // end case a ball was sunk and the white was not sunk
-//         } // end case playing eightball or nineball
-//       } // end case there were new balls sunk, test for end game conditions
-//     } // end case balls were sunk
-
-//     // case no balls have ever been sunk
-//     else {
-//       dispatch(finalizeBallMotion());
-//       // if (settings.gameType === 'eight') {
-//       //   console.log('6')
-//       //   dispatch(setGameStatusIdle());
-//       //   dispatch(changeActivePlayer());
-//       // }
-//       if (settings.gameType === 'nine' && newlySunkBalls.length > 0) {
-//         dispatch(setGameStatusIdle());
-//         dispatch(addToBallsSunkNine(newlySunkBalls))
-//       }
-//       // if no ball was hit then the shot as illegal and the player can freely move the white ball
-//       if (!billiards.billiards[0].firstCollision) {
-//       dispatch(setGameStatusFreeMove());
-//       dispatch(setBallInHand());
-//       }
-//       // begin doing similar above testing depending on which ball what collided with
-
-//       // dispatch(setBallInHand());
-//       // dispatch(freeMoveCueBallIllegal());
-//     } // end case no balls have ever been sunk
-    
-//     // place newly sunk balls into array
-//       newlySunkBalls.forEach((justSunkId)=>{
-//       let newPastSunkBalls = pastSunkBalls;
-//       newPastSunkBalls.push(justSunkId);
-//       setPastSunkBalls(newPastSunkBalls);
-//     })
-//   } // end cases balls moving /  not moving
-//   return
-// } // end of update

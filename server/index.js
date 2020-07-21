@@ -11,8 +11,9 @@ const {
   handleJoinGame,
   handlePurchase,
   handleCreateLobby,
-  handleBeginGame,
-  handleNextMove,
+  handleReady,
+  handleNotReady,
+  handleLeave,
   handleGameOver
 } = require('./handlers');
 
@@ -30,6 +31,14 @@ App
     res.header(
       "Access-Control-Allow-Headers",
       "Origin, X-Requested-With, Content-Type, Accept"
+    );
+    res.header(
+      "Access-Control-Allow-Origin",
+      "http://localhost:3000"
+    );
+    res.header(
+      "Access-Control-Allow-Credentials",
+      true
     );
     next();
   })
@@ -68,6 +77,8 @@ App
   .post("/be/lobby/create", handleCreateLobby)
   // Body has shape: {
   // userName:
+  // userWealth:
+  // currentTime:
   // }
 
   // joins a lobby that already exists
@@ -78,18 +89,41 @@ App
     // joiningPlayerWealth:
   // }
 
-  // begins a game from the lobby
-  .put("/be/lobby/beginGame", handleBeginGame)
+  .post("/be/lobby/ready", handleReady)
+  // Body has shape: {
+    // player1:
+    // player2:
+    // readyingPlayerNumber:
+  // }
+
+  .post("/be/lobby/not-ready", handleNotReady)
+  // Body has shape: {
+    // player1:
+    // player2:
+    // readyingPlayerNumber:
+  // }
+
+  .post("/be/lobby/leave", handleLeave)
+  // Body has shape: {
+    // player1:
+    // player2:
+    // readyingPlayerNumber:
+  // }
+
+      // begins a game from the lobby
+    // .put("/be/lobby/beginGame", handleBeginGame)
 
   // places a copy of the game's state onto the server for the other player to retrieve
-  .post("/be/game/nextMove", handleNextMove)
+  // .post("/be/game/nextMove", handleNextMove)
   
   // Places game in user's history, adds appropriate dubloons to their account, returns their new userInfo
   .post("/be/game/gameOver", handleGameOver)
   // Body has shape: {
-    // userName:
-    // gameInfo:
+  //   userName:
+  //   gameInfo:
   // }
+
+
 
   .listen(PORT, () => console.info(`Listening on port ${PORT}`));
 

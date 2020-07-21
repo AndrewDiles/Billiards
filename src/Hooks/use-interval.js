@@ -1,8 +1,8 @@
 import { useEffect, useRef } from 'react';
 
 function useInterval(callback, delay) {
-  // console.log('callbackcallbackcallbackcallbackcallbackcallback',callback)
-  // console.log('delaydelaydelaydelaydelaydelaydelaydelaydelaydelay',delay)
+  // console.log('callback',callback);
+  // console.log('delay @ top',delay);
   const savedCallback = useRef();
 
   useEffect(() => {
@@ -10,6 +10,7 @@ function useInterval(callback, delay) {
   }, [callback]);
   
   useEffect(() => {
+    // console.log('delay @ bottom',delay);
     function tick() {
       savedCallback.current();
     }

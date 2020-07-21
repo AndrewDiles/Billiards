@@ -523,6 +523,7 @@ export const applyPhysics = (billiardsObject, settings) => {
           // if no collision with wall then test for collisions with balls
           if (!collision) {
             let ballCollisions = testBallCollisions(testTop, testLeft, billiardsObject, element);
+            // Sets the first impact of the shot
             if (ballCollisions.length > 0 && element.id === "cue" && element.firstCollision === null) {
               element.firstCollision = ballCollisions[0];
             }
@@ -544,12 +545,14 @@ export const applyPhysics = (billiardsObject, settings) => {
             }
             else {
               // MODIFY THIS SO IT IGNORES BALLS THAT HAVE A BANKED COLLISION WITH THEM
+              // console.log(element.id, 'ball made contact with', ballCollisions);
               let impactedBall = billiardsObject.find(ball => ball.id === ballCollisions[0]);
               let thisBallAlreadyHit = false;
               impactedBall.collisions.forEach((collision)=>{
                 if (collision[2]=== element.id) thisBallAlreadyHit = true;
               })
               if (thisBallAlreadyHit) {
+                // console.log("Hit already being taken care of");
                 element.xVel = testXVel;
                 element.yVel = testYVel;
                 element.left = testLeft;
@@ -734,6 +737,13 @@ export const moveBallsOutsideEachOther = (billiardsObject) => {
           let rand = Math.random() -0.5;
           element.left += 10*rand*Math.cos(theta);
           element.top += 10*rand*Math.sin(theta);
+
+          // force balls in bounds in the event that they were pushing outside boundaries
+          if (element.left <= 13.5) element.left = 13.6;
+          else if (element.left >= 276.5) element.left = 276.4;
+          if (element.top >= 149.5) element.top = 149.4;
+          else if (element.top <= 13) element.top = 13.1;
+          
           // Case element is BR of billiard
           // if (element.top >= billiard.top && element.left >= billiard.left ) {
           //   element.top += 10;

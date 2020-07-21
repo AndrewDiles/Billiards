@@ -185,6 +185,67 @@ export default function userReducer(state = initialState, action) {
         status: 'idle',
       }
     }
+
+    case 'REQUEST_SET_READY' : {
+      return {
+        ...state,
+        status: 'readying',
+      }
+    }
+    case 'SET_READY_SUCCESS' : {
+      return {
+        ...state,
+        // currentGame: {...action.newGameInfo},
+        status: 'idle',
+      }
+    }
+    case 'SET_READY_ERROR' : {
+      return {
+        ...state,
+        status: 'idle',
+      }
+    }
+
+    case 'REQUEST_SET_NOT_READY' : {
+      return {
+        ...state,
+        status: 'un-readying',
+      }
+    }
+    case 'SET_NOT_READY_SUCCESS' : {
+      return {
+        ...state,
+        // currentGame: {...action.newGameInfo},
+        status: 'idle',
+      }
+    }
+    case 'SET_NOT_READY_ERROR' : {
+      return {
+        ...state,
+        status: 'idle',
+      }
+    }
+    case 'REQUEST_LEAVE' : {
+      return {
+        ...state,
+        status: 'leaving',
+      }
+    }
+    case 'LEAVE_SUCCESS' : {
+      return {
+        ...state,
+        currentGame : null,
+        status: 'idle',
+      }
+    }
+    case 'LEAVE_ERROR' : {
+      return {
+        ...state,
+        status: 'idle',
+      }
+    }
+
+
     case 'CHANGE_ACTIVE_PLAYER' : {
       let newPlayerActivePlayer = 'player1';
       // console.log('WE ARE HERE');

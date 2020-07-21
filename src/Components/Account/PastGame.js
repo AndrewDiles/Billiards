@@ -3,26 +3,27 @@ import styled from 'styled-components';
 
 const PastGame = ({ gameInfo }) => {
 
-  const day = gameInfo.date.slice(4, 10);
+  let day = gameInfo.date.slice(4, 10);
   const time = gameInfo.date.slice(16, 24);
+  if (!day) {day = "Date"}
 
   return (
     <RowDivEven>
       <p>
-        Type: {gameInfo.type}
+        {gameInfo.type}
       </p>
       {gameInfo.opponent ? (
         <p>
-          Opponent:  {gameInfo.opponent}
+          {gameInfo.opponent}
         </p>
       ) : (
         <p>
-          Opponent: Yourself
+          Yourself
         </p>
       )}
-        Result: {gameInfo.result}
+        {gameInfo.result}
       <p>
-        Date: {day} {time}
+        {day} {time}
       </p>
     </RowDivEven>
   )

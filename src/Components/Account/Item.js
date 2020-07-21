@@ -82,7 +82,7 @@ const Item = ({ item }) => {
         {item}
       </p>
       {owned ? (
-        <p>
+        <p style = {{marginRight: '5px'}}>
         In Possession
         </p>
       ) : (
@@ -113,11 +113,3 @@ const RowItem = styled.div`
   text-align: center;
   width: 100%;
 `
-// const RowDivEven = styled.div`
-//   display: flex;
-//   flex-direction: row;
-//   justify-content: space-evenly;
-//   align-items: center;
-//   text-align: center;
-//   width: 100%;
-// `

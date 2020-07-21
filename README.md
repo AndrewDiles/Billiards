@@ -12,16 +12,17 @@ Changed movement to test increments of that update's movement and test for colli
 location of red spot as contact point on cue ball is adjusted
 add hit detection on hole's knotches
 Free move box detection by tableSize
+Free movement forces specified distance on first free move
 Add hit detection with other balls during free movement
 Rotation of cue-ball not being initiated on cueStrike
 Collision affects on balls seems to misbehave based on which quadrant is hit - made effects of impact depend on theta's value
 Power bar not clickable after a scratch
+Corrected duplicity of event listeners awaiting clicking on ball (there was one for everyball instead of just one for the cue-ball)
+Removed ability to free move cue ball during ball motion
 
 ## Bugs to fix:
 
 Not enough contact points on angled cushion beside holes.  Ball can pass through ( just cause them to sink when out of bounds or make more contact points).
-
-Free movement forces specified distance on first free move
 
 If you close and re-open several games consecutively, it begins to lag.  Perhaps listeners are not being cleared somewhere?
 - useEffect bail out returning early and not removing them

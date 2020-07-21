@@ -16,10 +16,13 @@ const GameHistory = () => {
         YOUR PAST GAMES
       </h3>
       <ColDivEven>
+        <PastGame
+          gameInfo = {{type: "Type", opponent: "Opponent", result: "Result", date: "Date"}}
+        />
         {userInfo.user.gameHistory.map((gameInfo)=>{
           return (
             <PastGame
-              key = {gameInfo}
+              key = {gameInfo.date}
               gameInfo = {gameInfo}
             />
           )

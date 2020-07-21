@@ -35,6 +35,10 @@ const Balls = ( {billiard} ) => {
     const table = document.getElementById('Table');
     
     const moveFunction = (ev) => {
+      // console.log('move function triggered');
+      if (billiardInfo.status === "in-motion") {
+        return;
+      }
       if (!(ev.target.className.includes("Hole-Green") || ev.target.className.includes("cue"))){
         const borderSize = tableSizes[settings.tableSize].cushionWidth + tableSizes[settings.tableSize].railWidth;
         if (settings.gameStatus === 'first-shot') {
@@ -59,7 +63,7 @@ const Balls = ( {billiard} ) => {
       }
     }
     // if (!settings.ballInHand) return;
-    if (settings.ballInHand && billiard) {
+    if (settings.ballInHand && billiard.id==="cue") {
       table.addEventListener('mousemove',moveFunction);
       table.addEventListener('mousedown',(event) => handleTableClick(event));
       return () => {
@@ -97,9 +101,9 @@ const Balls = ( {billiard} ) => {
 
   const handleTableClick = (event) => {
     console.log('Table Clicked');
-    console.log('settings.gameStatus',settings.gameStatus);
-    console.log("settings.gameStatus === 'first-shot'",settings.gameStatus === 'first-shot');
-    console.log(!(settings.gameStatus === 'free-move' || settings.gameStatus === 'first-shot'));
+    // console.log('settings.gameStatus',settings.gameStatus);
+    // console.log("settings.gameStatus === 'first-shot'",settings.gameStatus === 'first-shot');
+    // console.log(!(settings.gameStatus === 'free-move' || settings.gameStatus === 'first-shot'));
     if (!(settings.gameStatus === 'free-move' || settings.gameStatus === 'first-shot')) return;
     // console.log(event);
     // if (testLegalBallDropLocation(mouselocationLeft, mouselocationTop)){

@@ -14,10 +14,10 @@ const Home = () => {
   window.YTConfig = {
     host: 'https://www.youtube.com' 
   } 
-  if (userInfo.user){
-  console.log('userInfo.user',userInfo.user)
-  console.log('userInfo.user.userName',userInfo.user.userName)
-  }
+  // if (userInfo.user){
+  // console.log('userInfo.user',userInfo.user)
+  // console.log('userInfo.user.userName',userInfo.user.userName)
+  // }
 
   return (
     <Wrapper>
