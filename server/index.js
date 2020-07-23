@@ -80,6 +80,7 @@ App
   // userWealth:
   // currentTime:
   // }
+  // returns {lobby}
 
   // joins a lobby that already exists
   .post("/be/lobby/join", handleJoinGame)

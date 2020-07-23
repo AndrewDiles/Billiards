@@ -72,8 +72,6 @@ const Balls = ( {billiard} ) => {
       }
     }
 
-    
-
     // table.addEventListener('mousemove',function() {if (settings.ballInHand && billiard) moveFunction()});
     // table.addEventListener('mousedown',(event) => {if (settings.ballInHand && billiard) handleTableClick(event)});
 
@@ -130,8 +128,6 @@ const Balls = ( {billiard} ) => {
 
   let degYMod180 = billiard.yAngle % 180;
   let sinDegY = Math.sin((degYMod180%45)* Math.PI / 180)
-  // console.log('degYMod180degYMod180degYMod180',degYMod180);
-  // console.log('sinDegYsinDegYsinDegYsinDegY',sinDegY);
   let scale = `scale(${billiard.sinkingSize})`;
   // const greenGrabCursor = `url(${grabGreen})`;
   // const redGrabCursor = `url(${grabRed})`;
@@ -141,9 +137,7 @@ const Balls = ( {billiard} ) => {
   if (TableWrapper && settings.ballInHand) {
     legalDrop ? TableWrapper.style.cursor = `url(${grabGreen}), auto` : TableWrapper.style.cursor = `url(${grabRed}), auto`
   }
-
   // cursor: url(${red}), auto;
-  
   // legalDrop ? Table.style.cursor = url(grabRed);
   // console.log(parseFloat(billiard.sinkingSize),'parseFloat(billiard.sinkingSize)')
   return (
@@ -179,7 +173,7 @@ const Balls = ( {billiard} ) => {
           striped = {ballColors[billiard.id].striped}
           color = {ballColors[billiard.id].color}
         >
-          {/* {billiard.id !== 'cue' && */}
+          {billiard.id !== 'cue' &&
             <WhiteCenterCircle
             className = {billiard.id}
             sinDegY = {100*sinDegY}
@@ -190,7 +184,7 @@ const Balls = ( {billiard} ) => {
               <Shine/>  
               {/* Shine actually doesn't currently make sense, as the light source would cause a shine in the same location, yet these shines rotates differently */}
             </WhiteCenterCircle>
-          {/* } */}
+          }
         </Stripe>
       </Color>
     </BallContainer>

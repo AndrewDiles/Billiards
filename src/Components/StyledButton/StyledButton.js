@@ -9,6 +9,7 @@ const StyledButton = ( { handleClick, value, disabled, selected, children} ) => 
       onClick = {(ev)=> handleClick(ev) || null}
       value = {value}
       selected = {selected}
+      children = {children}
       >
         {children}
       </ButtonStylings>
@@ -17,8 +18,11 @@ const StyledButton = ( { handleClick, value, disabled, selected, children} ) => 
 export default StyledButton;
 
 const ButtonStylings = styled.button`
+  
   width: 100px;
   padding: 5px;
+  color: ${props => props.children === "READY" && 'lime'};
+  color: ${props => props.children === "NOT READY" && 'red'};
   background-color: ${props => props.selected ? 'rgba(207, 181, 59, 0.8)' : 'rgba(255,255,255,0.3)'};
   z-index: 10;
   margin: 5px;

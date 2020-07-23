@@ -94,6 +94,17 @@ export const leaveSuccess = () => ({
 export const leaveError = () => ({
   type: 'LEAVE_ERROR',
 });
+// creating a lobby
+export const requestCreate = () => ({
+  type: 'REQUEST_CREATE',
+});
+export const createSuccess = (newGameInfo) => ({
+  type: 'CREATE_SUCCESS',
+  newGameInfo,
+});
+export const createError = () => ({
+  type: 'CREATE_ERROR',
+});
 
 
 // -- -- -- -- -- --

@@ -12,38 +12,11 @@ import {
 } from "../../actions";
 
 
-const JoinLobbyButton = ({ gameInfo, setLobbyGames, lobbyGames }) => {
+const JoinLobbyButton = ({ gameInfo, setLobbyGames, lobbyGames, currentTime }) => {
   const userInfo = useSelector((state) => state.userInfo);
-  const [currentTime, setCurrentTime] = React.useState(Date.now());
   const [joinLobbyMessage, setJoinLobbyMessage] = React.useState(null);
-  // const [displayTime, setDisplayTime] = React.useState(null);  May improve appearance of waited time in future
   const dispatch = useDispatch();
 
-  React.useEffect(()=>{
-    setInterval(()=>{
-      setCurrentTime(Date.now())
-    },1000)
-    return (
-      clearInterval(()=>{
-        setCurrentTime(Date.now())
-      },1000)
-    )
-  })
-
-  // if (!gameInfo.timeOpened) {
-  //   return (
-  //     <></>
-  //   )
-  // }
-
-//   Player1: "Scubba Joe"
-// Player1Ready: false
-// Player1Wealth: 2500
-// Player2: null
-// Player2Ready: false
-// Player2Wealth: null
-// gameOngoing: false
-// timeOpened: 1588487347739
   let handleClick = () => {
     dispatch(requestJoinGame());
     let player2Name = userInfo.user.userName;
@@ -113,7 +86,6 @@ export default JoinLobbyButton;
 const Wrapper = styled.div`
 width: 40%;
 height: 100%;
-border: 1px solid blue;
 display: flex;
 flex-direction: column;
 justify-content: center;

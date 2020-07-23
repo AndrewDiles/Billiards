@@ -222,7 +222,7 @@ const client = new MongoClient(uri, {
     const player1 = req.body.player1;
     const player2 = req.body.player2;
     const readyingPlayerNumber = req.body.readyingPlayerNumber;
-    if (!player1 || !player2 || !readyingPlayerNumber) {
+    if ((!player1 && !player2) || !readyingPlayerNumber) {
       console.log('Failed at post data reception');
       res.status(400).json({ status: 400, error: 'Credentials be missing...'  });
     }
@@ -280,7 +280,7 @@ const client = new MongoClient(uri, {
     const player1 = req.body.player1;
     const player2 = req.body.player2;
     const readyingPlayerNumber = req.body.readyingPlayerNumber;
-    if (!player1 || !player2 || !readyingPlayerNumber) {
+    if ((!player1 && !player2) || !readyingPlayerNumber) {
       res.status(400).json({ status: 400, error: 'Credentials be missing...'  });
     }
     else {
@@ -337,7 +337,10 @@ const client = new MongoClient(uri, {
     const player1 = req.body.player1;
     const player2 = req.body.player2;
     const readyingPlayerNumber = req.body.readyingPlayerNumber;
-    if (!player1 || !player2 || !readyingPlayerNumber) {
+    console.log('player1player1player1',player1);
+    console.log('player2',player2);
+    console.log('readyingPlayerNumberreadyingPlayerNumber',readyingPlayerNumber)
+    if ((player1 === null && player2 === null) || !readyingPlayerNumber) {
       console.log('Failed at post data reception');
       res.status(400).json({ status: 400, error: 'Credentials be missing...'  });
     }
@@ -347,18 +350,21 @@ const client = new MongoClient(uri, {
       
       let query;
       try {
-        let findMatch = await db.collection('lobbyInfo').findOne({ Player1: player1 });
+        let findMatch = null;
+        if (player1) {
+        findMatch = await db.collection('lobbyInfo').findOne({ Player1: player1 });
         query = { Player1: player1 };
-        if (!findMatch) {
-          let findMatch = await db.collection('lobbyInfo').findOne({ Player2: player1 });
+        }
+        if (!findMatch && player1) {
+          findMatch = await db.collection('lobbyInfo').findOne({ Player2: player1 });
           query = { Player2: player1 };
         }
-        if (!findMatch) {
-          let findMatch = await db.collection('lobbyInfo').findOne({ Player1: player2 });
+        if (!findMatch && player2) {
+          findMatch = await db.collection('lobbyInfo').findOne({ Player1: player2 });
           query = { Player1: player2 };
         }
-        if (!findMatch) {
-          let findMatch = await db.collection('lobbyInfo').findOne({ Player2: player2 });
+        if (!findMatch && player2) {
+          findMatch = await db.collection('lobbyInfo').findOne({ Player2: player2 });
           query = { Player2: player2 };
         }
         // console.log('222222222')
@@ -367,20 +373,41 @@ const client = new MongoClient(uri, {
           res.status(404).json({ status: 404, error: 'That scurvy dog took off!' });
         }
         else {
+          let deletingMatch = false;
           let newValues;
           if (readyingPlayerNumber === "Player1") {
+            if (findMatch.Player2 === null) {
+              deletingMatch = true;
+            }
+            else {
             newValues = { $set: { Player1: null, Player1Wealth: null, Player1Ready: false } };
+            }
           }
           else {
+            console.log('findMatchfindMatchfindMatch',findMatch);
+            console.log('findMatch.Player1 === null',findMatch.Player1 === null)
+            if (findMatch.Player1 === null) {
+              deletingMatch = true;
+            }
+            else {
             newValues = { $set: { Player2: null, Player2Wealth: null,  Player2Ready: false } };
+            }
           }
-          
-          const r = await db.collection('lobbyInfo').updateOne(query, newValues);
-          // assert.equal(1, r.matchedCount);
-          // console.log('44444444')
-          assert.equal(1, r.modifiedCount);
-          // console.log('55555555')
-          res.status(200).json({ status: 200, message: "Success!" })
+          console.log('deletingMatchdeletingMatchdeletingMatchdeletingMatchdeletingMatch',deletingMatch)
+          if (!deletingMatch) {
+            const r = await db.collection('lobbyInfo').updateOne(query, newValues);
+            // assert.equal(1, r.matchedCount);
+            // console.log('44444444')
+            assert.equal(1, r.modifiedCount);
+            // console.log('55555555')
+            res.status(200).json({ status: 200, message: "Success!" })
+          }
+          else {
+            console.log('DELETING MATCH');
+            const r = await db.collection('lobbyInfo').remove(query);
+            // assert.equal(1, r);
+            res.status(200).json({ status: 200, message: "Success!" })
+          }
         }
       } catch (err) {
         console.log(err);
@@ -443,7 +470,6 @@ const client = new MongoClient(uri, {
     }
   };
 
-  // TBD
   const handleCreateLobby = async (req, res) => {
 
     const userName = req.body.userName;
@@ -495,63 +521,11 @@ const client = new MongoClient(uri, {
   //TBD
   const handleBeginGame = async (req, res) => {
 
-    const userName = req.body.userName;
-    const password = req.body.password;
-
-    if (password.length === 0 || userName.length === 0) {
-      res.status(400).json({ status: 400, message: 'Fields may not be blank'  });
-    }
-
-    await client.connect();
-    const db = client.db('billiardsInfo');  // this may need to be Billiards?
-    
-    try {
-      const result = await db.collection('userInfo').findOne({ userName: userName });
-      
-      if (!result || result.length === 0) {
-        res.status(404).json({ status: 404, user: 'Not Found' });
-      }
-      else if (result.passWord !== password) {
-        res.status(400).json({ status: 400, message: 'Password is incorrect'  });
-      }
-      else {
-        res.status(200).json({ status: 200, user: result })
-      }
-    } catch (err) {
-      console.log(err);
-      res.status(500).json({ status: 500, message: "error" });
-    }
   };
 
   //TBD
   const handleNextMove = async (req, res) => {
 
-    const userName = req.body.userName;
-    const password = req.body.password;
-
-    if (password.length === 0 || userName.length === 0) {
-      res.status(400).json({ status: 400, message: 'Fields may not be blank'  });
-    }
-
-    await client.connect();
-    const db = client.db('billiardsInfo');  // this may need to be Billiards?
-    
-    try {
-      const result = await db.collection('userInfo').findOne({ userName: userName });
-      
-      if (!result || result.length === 0) {
-        res.status(404).json({ status: 404, user: 'Not Found' });
-      }
-      else if (result.passWord !== password) {
-        res.status(400).json({ status: 400, message: 'Password is incorrect'  });
-      }
-      else {
-        res.status(200).json({ status: 200, user: result })
-      }
-    } catch (err) {
-      console.log(err);
-      res.status(500).json({ status: 500, message: "error" });
-    }
   };
 
   const handleGameOver = async (req, res) => {

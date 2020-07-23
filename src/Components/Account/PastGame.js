@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-const PastGame = ({ gameInfo }) => {
+const PastGame = ({ gameInfo, bold }) => {
 
   let day = gameInfo.date.slice(4, 10);
   const time = gameInfo.date.slice(16, 24);
@@ -9,34 +9,57 @@ const PastGame = ({ gameInfo }) => {
 
   return (
     <RowDivEven>
-      <p>
+      <StyledP
+      width = '10%'
+      bold = {bold}
+      >
         {gameInfo.type}
-      </p>
+      </StyledP>
       {gameInfo.opponent ? (
-        <p>
+        <StyledP
+        width = '20%'
+        bold = {bold}
+        >
           {gameInfo.opponent}
-        </p>
+        </StyledP>
       ) : (
-        <p>
+        <StyledP
+      width = '20%'
+      bold = {bold}
+      >
           Yourself
-        </p>
+        </StyledP>
       )}
+        <StyledP
+        width = '20%'
+        bold = {bold}
+        >
         {gameInfo.result}
-      <p>
+        </StyledP>
+        <StyledP
+      width = '50%'
+      bold = {bold}
+      >
         {day} {time}
-      </p>
+      </StyledP>
     </RowDivEven>
   )
 }
 export default PastGame;
 
+const StyledP = styled.p`
+  width: ${props => props.width};
+  font-weight: ${props => props.bold === 'true' && 'bold'};
+`
+
 const RowDivEven = styled.div`
   display: flex;
   flex-direction: row;
-  justify-content: space-evenly;
+  justify-content: space-between;
   align-items: center;
   text-align: center;
   width: 100%;
-  border: white 1px solid;
+  padding-left: 20px;
+  /* border: white 1px solid; */
 `
 

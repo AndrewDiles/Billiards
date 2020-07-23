@@ -19,9 +19,9 @@ const Account = () => {
 
   return (
     <Wrapper>
-      <h1>
+      <Styledh1>
         Welcome to your cabin, {userInfo.user.userName}!
-      </h1>
+      </Styledh1>
       <CabinContent>
         <Column>
           <Stash/>
@@ -34,6 +34,12 @@ const Account = () => {
   )
 }
 export default Account;
+const Styledh1 = styled.h1`
+  font-weight: bolder;
+  @media screen and (max-width: 1100px) {
+    margin-left: 100px;
+  }
+`
 const Column = styled.div`
   display: flex;
   flex-direction: column;
@@ -41,8 +47,11 @@ const Column = styled.div`
   width: 500px;
   align-items: center;
   border: white 1px solid;
+  background-color: rgba(255,255,255,0.05);
+  border-radius: 25px;
   @media screen and (max-width: 1100px) {
     margin-top: 25px;
+    margin-left: 50px;
   }
 `
 const CabinContent = styled.div`

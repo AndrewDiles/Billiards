@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import styled from 'styled-components';
 import { CircularProgress } from '@material-ui/core';
-import { BrowserRouter as Router, Redirect } from "react-router-dom";
+import { Redirect } from "react-router-dom";
 import blueBG from '../../assets/circle blues/circle-blues.png';
-import StyledButton from '../StyledButton';
 
+import OpenLobbyButton from './OpenLobbyButton';
 import LobbyGame from "./LobbyGame";
 
 // import socketIOClient from "socket.io-client";
@@ -21,7 +21,9 @@ const Lobby = () => {
   const settings = useSelector((state) => state.settings);
   const userInfo = useSelector((state) => state.userInfo);
   const [lobbyGames, setLobbyGames] = useState([]);
+  const [fetchedLobbyData, setFetchedLobbyData] = useState(false);
   const [playerInLobbyGame, setPlayerInLobbyGame] = useState(false);
+  const [currentTime, setCurrentTime] = React.useState(Date.now());
   
   // const socket = socketIOClient.connect('http://localhost:8899', {
   //   headers: {
@@ -32,6 +34,17 @@ const Lobby = () => {
   //     methods: "GET,PUT,POST,DELETE"
   //   },
   // });
+  
+  React.useEffect(()=>{
+    const updateTime = setInterval(()=>{
+      setCurrentTime(Date.now())
+      console.log('currentTime',currentTime)
+    },500)
+    return () => {
+      console.log('Timeout removed');
+      clearInterval(updateTime);
+    }
+  },[])
 
   React.useEffect(()=>{
 
@@ -39,10 +52,13 @@ const Lobby = () => {
       // bailing if on wrong page as failsafe
       if (!window.location.href.includes("view-lobby")) return;
       //bailing if redux is alreadying in process of manipulating state / lobby info (i.e. waiting for backend)
-      if (settings.status === "readying" || settings.status === "un-readying" || settings.status === "leaving") return;
+      if (settings.status === "readying" || 
+      settings.status === "un-readying" || 
+      settings.status === "leaving" ||
+      settings.status === "creating"
+      ) return;
       
       dispatch(requestAvailableGames());
-      
       fetch('/be/lobby/view', {
         method: "GET",
         headers: {
@@ -51,8 +67,16 @@ const Lobby = () => {
       }).then((res) => {
         if (res.status === 200) {
           res.json().then((data) => {
-            // console.log('lobby info returned:', data);
-            dispatch(loadAvailableGamesSuccess());
+            if (settings.status === "readying" || 
+            settings.status === "un-readying" || 
+            settings.status === "leaving" ||
+            settings.status === "creating"
+            ) return;
+            else if (!window.location.href.includes("view-lobby")) {
+              dispatch(loadAvailableGamesError());
+              return;
+            }
+            setFetchedLobbyData(true);
             let lobbiesToDisplay = data.lobbyGames;
             data.lobbyGames.forEach((game)=>{
               if (game.Player1 === userInfo.user.userName || game.Player2 === userInfo.user.userName) {
@@ -60,10 +84,8 @@ const Lobby = () => {
                 setPlayerInLobbyGame(true);
               }
             })
-            // console.log('lobby info returned:', data.lobbyGames);
-            // console.log('lobby info reduced to:', lobbiesToDisplay);
-            // setLobbyGames(data.lobbyGames);
             setLobbyGames(lobbiesToDisplay);
+            dispatch(loadAvailableGamesSuccess());
           });
         } else {
           console.log('error: res',res);
@@ -83,61 +105,6 @@ const Lobby = () => {
       <Redirect to="/home" />
     )
   }
-  
-  // React.useEffect(()=>{
-  //   // if (mounting) { 
-  //     dispatch(requestAvailableGames());
-  //     fetch('/be/lobby/view', {
-  //       method: "GET",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //     }).then((res) => {
-  //       if (res.status === 200) {
-  //         res.json().then((data) => {
-  //           dispatch(loadAvailableGamesSuccess());
-  //           setLobbyGames(data.lobbyGames);
-  //         });
-  //       } else {
-  //         console.log('res',res);
-  //         dispatch(loadAvailableGamesError());
-  //         setLobbyGames(['The ship has sailed...  Check the dock once more?'])
-  //       }
-  //     })
-  //   // }
-  //   // return () => {
-  //   //   setMounting(false);
-  //   // }
-  // }, [])  //use Websockets to listen for changes to the database?
-  
-  // if (socket === undefined) {
-  //   console.log('socket not established')
-  // }
-  // else {
-  //   console.log('socket connection establish');
-  //   // get lobby info
-  //   socket.on('connection', function(data){
-  //       console.log('data:',data);
-  //       if(data.length){
-  //           // set data into state...
-  //       }
-  //       else {
-  //         console.log("No lobbies found")
-  //       }
-  //   });
-  // }
-
-  // let lobbyPlayerIsIn = null;
-  // if (lobbyGames.length > 0) {
-  //   lobbyGames.forEach((game) => {
-  //     if (game.playerOne === userInfo.user.userName || game.playerTwo === userInfo.user.userName) {
-  //       lobbyPlayerIsIn = game;
-  //     }
-  //   })
-  // }
-  const handleCreateMatch = () => {
-
-  }
 
   return (
     <Wrapper>
@@ -145,17 +112,14 @@ const Lobby = () => {
         <CircularProgress/>
       ) : (
         <>
-        {/* lobbyPlayerIsIn === null ? ( */}
-        {playerInLobbyGame === false && 
-            <StyledButton
-          handleClick = {handleCreateMatch}
-          disabled = {userInfo.status === 'creating-match'}
-          >
-            OPEN LOBBY
-          </StyledButton>
-}
+        {!playerInLobbyGame && fetchedLobbyData &&
+          <OpenLobbyButton
+          setPlayerInLobbyGame = {setPlayerInLobbyGame}
+          setLobbyGames = {setLobbyGames}
+          disabled = {userInfo.status === 'creating'}
+          />
+        }
           {lobbyGames.map((game) => {
-            // console.log(game);
             return (
               <LobbyGame
               setLobbyGames = {setLobbyGames}
@@ -163,13 +127,13 @@ const Lobby = () => {
               key = {game.Player1}
               gameInfo = {game}
               setPlayerInLobbyGame = {setPlayerInLobbyGame}
+              currentTime = {currentTime}
               />
             )
           })}
-          </>
-        )
-        
-        }
+        </>
+      )
+      }
     </Wrapper>
   )
 }

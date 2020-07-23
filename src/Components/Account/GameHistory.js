@@ -4,20 +4,18 @@ import styled from 'styled-components';
 
 import PastGame from './PastGame';
 
-import coin from '../../assets/spinningDubloon.gif';
-
 const GameHistory = () => {
-  const settings = useSelector((state) => state.settings);
   const userInfo = useSelector((state) => state.userInfo);
 
   return (
     <>
-      <h3>
+      <Styledh3>
         YOUR PAST GAMES
-      </h3>
+      </Styledh3>
       <ColDivEven>
         <PastGame
           gameInfo = {{type: "Type", opponent: "Opponent", result: "Result", date: "Date"}}
+          bold = 'true'
         />
         {userInfo.user.gameHistory.map((gameInfo)=>{
           return (
@@ -32,6 +30,10 @@ const GameHistory = () => {
   )
 }
 export default GameHistory;
+const Styledh3 = styled.h3`
+  font-weight: bolder;
+`
+
 const StyledImg = styled.img`
   align-self: center;
   margin-left: 10px;
@@ -47,7 +49,7 @@ const RowDiv = styled.div`
 const ColDivEven = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: space-evenly;
+  /* justify-content: space-evenly; */
   align-items: center;
   text-align: center;
   width: 100%;

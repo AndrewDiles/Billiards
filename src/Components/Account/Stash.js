@@ -12,9 +12,9 @@ const Stash = () => {
 
   return (
     <>
-      <h3>
+      <Styledh3>
         YOUR STASH
-      </h3>
+      </Styledh3>
       <ColDiv>
         <RowDivEven>
           <RowDiv>
@@ -40,6 +40,11 @@ const Stash = () => {
   )
 }
 export default Stash;
+
+const Styledh3 = styled.h3`
+  font-weight: bolder;
+`
+
 const StyledImg = styled.img`
   align-self: center;
   margin-left: 10px;

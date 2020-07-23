@@ -1,14 +1,9 @@
 import React from 'react';
-import { useSelector } from "react-redux";
 import styled from 'styled-components';
 
 import Player from './Player';
 
-const LobbyGame = ({gameInfo, lobbyGames, setLobbyGames, setPlayerInLobbyGame}) => {
-  const userInfo = useSelector((state) => state.userInfo);
-  
-  // console.log('gameInfo',gameInfo)
-
+const LobbyGame = ({gameInfo, lobbyGames, setLobbyGames, setPlayerInLobbyGame, currentTime}) => {
   if (!gameInfo) {
     console.log("gameInfo not available - bailing")
     return (
@@ -16,8 +11,7 @@ const LobbyGame = ({gameInfo, lobbyGames, setLobbyGames, setPlayerInLobbyGame}) 
     )
   }
 
-// console.log('gameInfo',gameInfo)
-
+// sample gameInfo:
 // Player1: "Scubba Joe"
 // Player1Ready: false
 // Player1Wealth: 2500
@@ -41,10 +35,17 @@ const LobbyGame = ({gameInfo, lobbyGames, setLobbyGames, setPlayerInLobbyGame}) 
         lobbyGames = {lobbyGames}
         setLobbyGames = {setLobbyGames}
         setPlayerInLobbyGame = {setPlayerInLobbyGame}
+        currentTime = {currentTime}
         />
       }
-      <Versus>
-        vs
+      <Versus
+      gameInfo = {gameInfo}
+      >
+        {(gameInfo.Player1Ready && gameInfo.Player2Ready) ? (
+          "multi-player not yet ready"
+        ) : (
+          'vs'
+        ) }
       </Versus>
       {gameInfo && 
         <Player
@@ -56,36 +57,12 @@ const LobbyGame = ({gameInfo, lobbyGames, setLobbyGames, setPlayerInLobbyGame}) 
         lobbyGames = {lobbyGames}
         setLobbyGames = {setLobbyGames}
         setPlayerInLobbyGame = {setPlayerInLobbyGame}
+        currentTime = {currentTime}
         />
       }
     </Wrapper>
   )
 }
-
-// {gameInfo && gameInfo.Player2 && userInfo && userInfo.currentGame ? (
-//   <Player
-//   playerNumber = "Player2"
-//   gameInfo = {gameInfo}
-//   name = {gameInfo.Player2}
-//   wealth = {gameInfo.Player1Wealth2}
-//   />
-// ) : (
-//   userInfo.currentGame && userInfo.currentGame.Player1 === gameInfo.Player1 ? (
-//     <Player
-//     playerNumber = "Player2"
-//     gameInfo = {gameInfo}
-//     name = {userInfo.user ? userInfo.user.userName : "no-account"}
-//     wealth = {userInfo.user ? userInfo.user.accumulatedWealth : 0}
-//     />
-//   ) : (
-//     <JoinLobbyGame
-//     gameInfo = {gameInfo}
-//     />
-//   )
-// )}
-
-
-
 export default LobbyGame;
 
 const Versus = styled.div`
@@ -96,17 +73,20 @@ color: white;
 display: flex;
 justify-content: center;
 align-items: center;
+background-color: ${props => props.gameInfo.Player1Ready && props.gameInfo.Player2Ready && 'rgba(0,255,0,0.25)'};
 `
 
 const Wrapper = styled.div`
 width: 600px;
 height: 200px;
-border: 5px solid purple;
 display: flex;
 flex-direction: row;
 justify-content: center;
 align-items: center;
 text-align: center;
 margin: 3px;
+border: white 1px solid;
+background-color: rgba(255,255,255,0.05);
+border-radius: 25px;
 `
 

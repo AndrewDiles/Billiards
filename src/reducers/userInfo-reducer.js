@@ -244,7 +244,25 @@ export default function userReducer(state = initialState, action) {
         status: 'idle',
       }
     }
-
+    case 'REQUEST_CREATE' : {
+      return {
+        ...state,
+        status: 'creating',
+      }
+    }
+    case 'CREATE_SUCCESS' : {
+      return {
+        ...state,
+        currentGame: {...action.newGameInfo},
+        status: 'idle',
+      }
+    }
+    case 'CREATE_ERROR' : {
+      return {
+        ...state,
+        status: 'idle',
+      }
+    }
 
     case 'CHANGE_ACTIVE_PLAYER' : {
       let newPlayerActivePlayer = 'player1';

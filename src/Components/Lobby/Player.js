@@ -19,7 +19,7 @@ import {
   leaveError
 } from "../../actions";
 
-const Player = ({ gameInfo, name, wealth, playerNumber, ready, lobbyGames, setLobbyGames, setPlayerInLobbyGame }) => {
+const Player = ({ gameInfo, name, wealth, playerNumber, ready, lobbyGames, setLobbyGames, setPlayerInLobbyGame, currentTime }) => {
   const userInfo = useSelector((state) => state.userInfo);
   const dispatch = useDispatch();
   // const [currentPlayerName, setCurrentPlayerName] = React.useState("no-account");
@@ -130,12 +130,18 @@ const Player = ({ gameInfo, name, wealth, playerNumber, ready, lobbyGames, setLo
             replacementLobbyGame[0].Player1Ready = false;
             replacementLobbyGame[0].Player1 = null;
             replacementLobbyGame[0].Player1Wealth = null;
+            if (replacementLobbyGame.Player2 === null) {
+              replacementLobbyGame = [];
+            }
             setLobbyGames(replacementLobbyGame);
           }
           else if (playerNumber === "Player2") {
             replacementLobbyGame[0].Player2Ready = false;
             replacementLobbyGame[0].Player2 = null;
             replacementLobbyGame[0].Player1Wealth = null;
+            if (replacementLobbyGame.Player1 === null) {
+              replacementLobbyGame = [];
+            }
             setLobbyGames(replacementLobbyGame);
           }
           else {
@@ -186,7 +192,10 @@ const Player = ({ gameInfo, name, wealth, playerNumber, ready, lobbyGames, setLo
 // timeOpened: 1587487347739
   let playerNumberReady = `${playerNumber}Ready`;
   return (
-    <Wrapper>
+    <Wrapper
+    ready = {ready}
+    playerNumber = {playerNumber}
+    >
       <Name
       name = {name}
       wealth = {wealth}
@@ -238,32 +247,17 @@ const Player = ({ gameInfo, name, wealth, playerNumber, ready, lobbyGames, setLo
               )}
             </>
           ) : (
+            gameInfo.Player1 !== userInfo.user.userName && gameInfo.Player2 !== userInfo.user.userName &&
             <JoinLobbyButton
             gameInfo = {gameInfo}
             setLobbyGames = {setLobbyGames}
             lobbyGames = {lobbyGames}
+            currentTime ={currentTime}
             />
-            // "JOIN MATCH"
           )
           }
         </>
       )}
-      {/* <RowDiv>
-        {gameInfo && gameInfo.Player1 && gameInfo.Player2 && userInfo.user && name === currentPlayerName ? (
-          <InLobbyOptions
-          gameInfo = {gameInfo}
-          />
-        ) : (
-          <>
-          <img src = {coin} alt="A spinning gold coin" height="42" width="42"/>
-          {name === "no-account" ? (
-            "-"
-          ) : ( 
-            wealth
-          )}
-          </>
-        )}
-        </RowDiv> */}
     </Wrapper>
   )
 }
@@ -280,12 +274,14 @@ const RowDiv = styled.div`
 const Wrapper = styled.div`
 width: 40%;
 height: 100%;
-border: 1px solid blue;
 display: flex;
 flex-direction: column;
 justify-content: center;
 align-items: center;
 text-align: center;
 padding: 3px;
+background-color: ${props => props.ready && 'rgba(0,255,0,0.25)'};
+border-radius: ${props => props.playerNumber === 'Player1' && '25px 0 0 25px'};
+border-radius: ${props => props.playerNumber === 'Player2' && '0 25px 25px 0'};
 `
 
