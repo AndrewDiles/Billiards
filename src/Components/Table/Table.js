@@ -215,12 +215,12 @@ const Table = () => {
         }
         // Case foul, but no game loss
         else if ((!billiards.billiards[0].firstCollision) && !settings.ballInHand && !whiteSunk) {
-          console.log('No balls hit, game foul');
+          // console.log('No balls hit, game foul');
           endTurnChangePlayerFreeMove();
           return;
         }
         else if ((!billiards.billiards[0].firstCollision) && !settings.ballInHand && whiteSunk) {
-          console.log('No balls hit and scratch, game foul');
+          // console.log('No balls hit and scratch, game foul');
           endTurnChangePlayerWhiteSunk();
           return;
         }
@@ -230,7 +230,7 @@ const Table = () => {
         if (newlySunkBalls.length === 0) {
           // Case no-scratch and a ball was hit
           if (!whiteSunk && billiards.billiards[0].firstCollision  && billiards.billiards[0].firstCollision !== 8) {
-            console.log('No new balls were sunk, change active player');
+            // console.log('No new balls were sunk, change active player');
             dispatch(finalizeBallMotion());
             dispatch(changeActivePlayer());
             dispatch(setGameStatusIdle());
@@ -238,13 +238,13 @@ const Table = () => {
           }
           // Case no-scratch but no ball was hit
           else if (!whiteSunk && (!billiards.billiards[0].firstCollision || billiards.billiards[0].firstCollision === 8 )) {
-            console.log('No new balls were sunk, and game foul (illegal-contact), change active player');
+            // console.log('No new balls were sunk, and game foul (illegal-contact), change active player');
             endTurnChangePlayerFreeMove();
             return;
           }
           // Case scratch
           else {
-            console.log('No new balls were sunk, and game foul (scratch), change active player');
+            // console.log('No new balls were sunk, and game foul (scratch), change active player');
             endTurnChangePlayerWhiteSunk();
             return;
           }
@@ -343,13 +343,13 @@ const Table = () => {
             dispatch(addToSunkBalls(solidsSunk, stripesSunk));
             // Case foul ( scratch and incorrect first contact ), change players and switch free move on
             if (foul && whiteSunk) {
-              console.log('scratch - change active player');
+              // console.log('scratch - change active player');
               endTurnChangePlayerWhiteSunk();
               return;
             }
             // Case foul ( no scratch, incorrect first contact ), change players and switch free move on
             else if (foul && !whiteSunk) {
-              console.log('foul - change active player');
+              // console.log('foul - change active player');
               endTurnChangePlayerFreeMove();
               return;
             }
@@ -358,7 +358,7 @@ const Table = () => {
               if (userInfo.currentGame[userInfo.currentGame.activePlayer].ballType === "solids") {
                 // Case they only sunk the wrong balls
                 if (solidsSunk.length === 0) {
-                  console.log('active player only sunk oppositions ball(s) - change active player');
+                  // console.log('active player only sunk oppositions ball(s) - change active player');
                   endTurnChangePlayerFreeMove();
                   return;
                 }
@@ -373,7 +373,7 @@ const Table = () => {
               else if (userInfo.currentGame[userInfo.currentGame.activePlayer].ballType === "stripes") {
                 // Case they only sunk the wrong balls
                 if (stripesSunk.length === 0) {
-                  console.log('active player only sunk oppositions ball(s) - change active player');
+                  // console.log('active player only sunk oppositions ball(s) - change active player');
                   endTurnChangePlayerFreeMove();
                   return;
                 }
@@ -406,10 +406,10 @@ const Table = () => {
         if (targetBallNumber !== billiards.billiards[0].firstCollision) {
           foul = true;
           if (!billiards.billiards[0].firstCollision) {
-            console.log('Foul - no ball hit.')
+            // console.log('Foul - no ball hit.')
           }
           else {
-            console.log('Foul - incorrect first contact.  Cue hit ', billiards.billiards[0].firstCollision, ' ball and should have hit the ', targetBallNumber);
+            // console.log('Foul - incorrect first contact.  Cue hit ', billiards.billiards[0].firstCollision, ' ball and should have hit the ', targetBallNumber);
           }
         }
 

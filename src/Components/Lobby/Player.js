@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useDispatch, useSelector } from "react-redux";
-import { NavLink, Redirect } from "react-router-dom";
 import styled from 'styled-components';
-// import { CircularProgress } from '@material-ui/core';
+import { CircularProgress } from '@material-ui/core';
 
 import Name from './Name';
 import JoinLobbyButton from './JoinLobbyButton';
@@ -22,18 +21,6 @@ import {
 const Player = ({ gameInfo, name, wealth, playerNumber, ready, lobbyGames, setLobbyGames, setPlayerInLobbyGame, currentTime }) => {
   const userInfo = useSelector((state) => state.userInfo);
   const dispatch = useDispatch();
-  // const [currentPlayerName, setCurrentPlayerName] = React.useState("no-account");
-
-  // if (userInfo.user) {
-  //   setCurrentPlayerName(userInfo.user.userName);
-  // }
-
-  // console.log(gameInfo, 'gameInfo from <Player> component');
-  // console.log(userInfo.status, 'user.status');
-  // console.log('playerNumber',playerNumber, 'name',name,'wealth', wealth)
-  // console.log('playerNumber',playerNumber, 'gameInfo',gameInfo)
-  // console.log(userInfo.user.userName, 'userName');
-  // console.log(lobbyGames,'lobbyGames');
 
   const handleClickReady = () => {
     dispatch(requestSetReady());
@@ -153,7 +140,6 @@ const Player = ({ gameInfo, name, wealth, playerNumber, ready, lobbyGames, setLo
       } else {
         console.log('res',res);
         dispatch(leaveError());
-        // setLobbyGames(['What be wrong?'])
       }
     })
   }
@@ -164,20 +150,8 @@ const Player = ({ gameInfo, name, wealth, playerNumber, ready, lobbyGames, setLo
     )
   }
 
-// Player1: "Scubba Joe"
-// Player1Ready: false
-// Player1Wealth: 2500
-// Player2: null
-// Player2Ready: false
-// Player2Wealth: null
-// gameOngoing: false
-// timeOpened: 1588487347739
-
   let playerIsLoggedInPlayer = false;
   if (userInfo.user.userName === name) playerIsLoggedInPlayer = true;
-
-  // console.log(gameInfo,'gameInfo');
-  // console.log(playerNumber,'playerNumber');
 
 //   gameInfo:
 // CurrentTurn: null
@@ -207,24 +181,29 @@ const Player = ({ gameInfo, name, wealth, playerNumber, ready, lobbyGames, setLo
           handleClick = {handleClickNotReady}
           disabled = {userInfo.status === 'un-readying'}
           >
-            {/* 
-            
-            WAS GOING TO ADD LOADING INDICATOR BUT IT HAPPENS SO FAST IT IS A DISTRACTION
-
             {userInfo.status === "un-readying" ? (
-              <CircularProgress/>
+              <CircularProgress
+              size = '12px'
+              />
             ) : (
               "NOT READY"
-            )
-            } */}
-            NOT READY
+            )}
+            {/* NOT READY */}
           </StyledButton>
         ) : (
           <StyledButton
           handleClick = {handleClickReady}
           disabled = {userInfo.status === 'readying'}
           >
-            READY
+            {userInfo.status === "readying" ? (
+              <CircularProgress
+              size = '12px'
+              />
+            ) : (
+              "READY"
+            )}
+            {/* READY */}
+
           </StyledButton>
         )
         }
@@ -232,7 +211,14 @@ const Player = ({ gameInfo, name, wealth, playerNumber, ready, lobbyGames, setLo
           handleClick = {handleClickLeave}
           disabled = {userInfo.status === 'leaving'}
         >
-        LEAVE
+          {userInfo.status === "leaving" ? (
+              <CircularProgress
+              size = '12px'
+              />
+            ) : (
+              "LEAVE"
+            )}
+        {/* LEAVE */}
         </StyledButton>
         </>
       ) : (
@@ -252,24 +238,16 @@ const Player = ({ gameInfo, name, wealth, playerNumber, ready, lobbyGames, setLo
             gameInfo = {gameInfo}
             setLobbyGames = {setLobbyGames}
             lobbyGames = {lobbyGames}
-            currentTime ={currentTime}
+            currentTime = {currentTime}
+            playerNumber = {playerNumber}
             />
-          )
-          }
+          )}
         </>
       )}
     </Wrapper>
   )
 }
 export default Player;
-
-const RowDiv = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-`
 
 const Wrapper = styled.div`
 width: 40%;

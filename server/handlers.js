@@ -1,7 +1,7 @@
 'use strict';
 const AppImport = require('./index');
 const server = require('http').Server(AppImport);
-const socket = require('socket.io')(server);
+// const socket = require('socket.io')(server);
 const { MongoClient } = require('mongodb');
 const assert = require('assert');
 
@@ -156,52 +156,82 @@ const client = new MongoClient(uri, {
     }
   };
 
-  const handleViewLobby = async (req, res) => {
-    await client.connect();
-    const db = client.db('billiardsInfo');
+  // const handleViewLobby = async (req, res) => {
+  //   await client.connect();
+  //   const db = client.db('billiardsInfo');
+  //   try {
+  //     const result = await db.collection('lobbyInfo').find().toArray();
+  //     await client.close();
+  //     res.status(200).json({ status: 200, lobbyGames: result })
+  //   } catch (err) {
+  //     console.log(err);
+  //     res.status(500).json({ status: 500, message: "error" });
+  //   }
+  // };
+
+  client.connect();
+
+  const handlePollForLobby = async (req, res) => {
+    const polldb = client.db('billiardsInfo');
     try {
-      const result = await db.collection('lobbyInfo').find().toArray();
+      const result = await polldb.collection('lobbyInfo').find().toArray();
       res.status(200).json({ status: 200, lobbyGames: result })
     } catch (err) {
       console.log(err);
       res.status(500).json({ status: 500, message: "error" });
     }
-  };
-
-
-  
-  
+  }
 
   const handleJoinGame = async (req, res) => {
 
-    const player1 = req.body.player1;
-    const joiningPlayer = req.body.player2;
-    const joiningPlayerWealth = req.body.player2Wealth;
-    // console.log('player1',player1)
-    // console.log('joiningPlayer',joiningPlayer)
-    // console.log('joiningPlayerWealth',joiningPlayerWealth)
-    if (!player1 || !joiningPlayer || joiningPlayerWealth === null) {
-      // console.log('11111111')
+    const playerToAdd = req.body.playerToAdd;
+    const playerToAddWealth = req.body.playerToAddWealth;
+    const existingPlayerInLobby = req.body.existingPlayerInLobby;
+    const slotToAddNewPlayerInto = req.body.slotToAddNewPlayerInto;
+  
+    console.log('playerToAdd',playerToAdd);
+    console.log('playerToAddWealth',playerToAddWealth);
+    console.log('existingPlayerInLobby',existingPlayerInLobby);
+    console.log('slotToAddNewPlayerInto',slotToAddNewPlayerInto);
+    if (!playerToAdd || !slotToAddNewPlayerInto || !existingPlayerInLobby || playerToAddWealth === null) {
       res.status(400).json({ status: 400, error: 'Credentials be missing...'  });
+      
     }
     else {
       await client.connect();
       const db = client.db('billiardsInfo');
       
       try {
-        const findMatch = await db.collection('lobbyInfo').findOne({ Player1: player1 });
+        let findMatch;
+        let query;
+        if (slotToAddNewPlayerInto === "Player1") {
+          findMatch = await db.collection('lobbyInfo').findOne({ Player2: existingPlayerInLobby });
+          query = { Player2: existingPlayerInLobby };
+        }
+        else if (slotToAddNewPlayerInto === "Player2") {
+          findMatch = await db.collection('lobbyInfo').findOne({ Player1: existingPlayerInLobby });
+          query = { Player1: existingPlayerInLobby };
+        }
         // console.log('222222222')
         if (!findMatch) {
           // console.log('333333333')
           res.status(404).json({ status: 404, error: 'That scurvy dog took off!' });
         }
-        else if (findMatch.player2) {
+        else if ((slotToAddNewPlayerInto === "Player2" && findMatch.player2) || ((slotToAddNewPlayerInto === "Player1" && findMatch.player1))) {
           // console.log('3.5 3.5 3.5 3.5')
           res.status(401).json({ status: 401, error: "They've already found a sucker to beat." });
         }
         else {
-          const query = { Player1: player1 };
-          const newValues = { $set: { Player2: joiningPlayer, Player2Wealth: joiningPlayerWealth } };
+          let newValues;
+          if (slotToAddNewPlayerInto === "Player1") { 
+            newValues = { $set: { Player1: playerToAdd, Player1Wealth: playerToAddWealth } };
+          }
+          else if (slotToAddNewPlayerInto === "Player2") {
+            newValues = { $set: { Player2: playerToAdd, Player2Wealth: playerToAddWealth } };
+          }
+          console.log('newValues',newValues);
+          console.log('query',query);
+          
           const r = await db.collection('lobbyInfo').updateOne(query, newValues);
           // assert.equal(1, r.matchedCount);
           // console.log('44444444')
@@ -584,7 +614,8 @@ module.exports = {
   handleCreateAccount,
   handleJoinGame,
   handlePurchase,
-  handleViewLobby,
+  // handleViewLobby,
+  handlePollForLobby,
   handleCreateLobby,
   // handleBeginGame,
   // handleNextMove,

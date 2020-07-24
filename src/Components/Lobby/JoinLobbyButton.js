@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useDispatch, useSelector } from "react-redux";
-import { NavLink, Redirect } from "react-router-dom";
 import styled from 'styled-components';
 
 import StyledButton from '../StyledButton';
@@ -12,36 +11,61 @@ import {
 } from "../../actions";
 
 
-const JoinLobbyButton = ({ gameInfo, setLobbyGames, lobbyGames, currentTime }) => {
+const JoinLobbyButton = ({ gameInfo, setLobbyGames, lobbyGames, currentTime, playerNumber }) => {
   const userInfo = useSelector((state) => state.userInfo);
   const [joinLobbyMessage, setJoinLobbyMessage] = React.useState(null);
   const dispatch = useDispatch();
 
   let handleClick = () => {
     dispatch(requestJoinGame());
-    let player2Name = userInfo.user.userName;
-    let player2Wealth = userInfo.user.accumulatedWealth;
+    let playerToAdd = userInfo.user.userName;
+    let playerToAddWealth = userInfo.user.accumulatedWealth;
+    let existingPlayerInLobby;
+    let slotToAddNewPlayerInto = playerNumber;
+    if (playerNumber === "Player1") {
+      existingPlayerInLobby = gameInfo.Player2;
+    }
+    else if (playerNumber === "Player2") {
+      existingPlayerInLobby = gameInfo.Player1;
+    }
+
+    // let player2Name = userInfo.user.userName;
+    // let player2Wealth = userInfo.user.accumulatedWealth;
     fetch('/be/lobby/join', {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ 
-        player1: gameInfo.Player1,
-        player2: player2Name,
-        player2Wealth: player2Wealth,
+        playerToAdd,
+        playerToAddWealth,
+        existingPlayerInLobby,
+        slotToAddNewPlayerInto,
+
+        // player1: gameInfo.Player1,
+        // player2: player2Name,
+        // player2Wealth: player2Wealth,
       }),
     }).then((res) => {
       if (res.status === 200) {
         let newGameInfo = {...gameInfo};
+        let replacementLobbyGames = [...lobbyGames];
+        if (slotToAddNewPlayerInto === "Player2") {
         newGameInfo.Player2 = userInfo.user.userName;
         newGameInfo.Player2Wealth = userInfo.user.accumulatedWealth;
+        replacementLobbyGames.Player2 = newGameInfo.Player2;
+        replacementLobbyGames.Player2Wealth = newGameInfo.Player2Wealth;
+        }
+        else if (slotToAddNewPlayerInto === "Player1") {
+          newGameInfo.Player1 = userInfo.user.userName;
+          newGameInfo.Player1Wealth = userInfo.user.accumulatedWealth;
+          replacementLobbyGames.Player1 = newGameInfo.Player1;
+          replacementLobbyGames.Player1Wealth = newGameInfo.Player1Wealth;
+        }
         dispatch(joinGameSuccess({
           newGameInfo : newGameInfo,
         }));
-        let replacementLobbyGames = [...lobbyGames];
-        replacementLobbyGames.Player2 = newGameInfo.Player2;
-        replacementLobbyGames.Player2Wealth = newGameInfo.Player2Wealth;
+        
         setLobbyGames(replacementLobbyGames);
       } else {
         console.log('res from join lobby game',res);

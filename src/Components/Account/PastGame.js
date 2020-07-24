@@ -17,14 +17,14 @@ const PastGame = ({ gameInfo, bold }) => {
       </StyledP>
       {gameInfo.opponent ? (
         <StyledP
-        width = '20%'
+        width = '35%'
         bold = {bold}
         >
           {gameInfo.opponent}
         </StyledP>
       ) : (
         <StyledP
-      width = '20%'
+      width = '35%'
       bold = {bold}
       >
           Yourself
@@ -37,7 +37,7 @@ const PastGame = ({ gameInfo, bold }) => {
         {gameInfo.result}
         </StyledP>
         <StyledP
-      width = '50%'
+      width = '35%'
       bold = {bold}
       >
         {day} {time}

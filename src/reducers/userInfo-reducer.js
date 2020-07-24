@@ -69,7 +69,7 @@ export default function userReducer(state = initialState, action) {
     case 'REQUEST_USER_INFO' : {
       return {
         ...state,
-        status: 'loading',
+        status: 'logging-in',
       }
     }
     case 'RECEIVE_USER_INFO' : {
@@ -89,7 +89,7 @@ export default function userReducer(state = initialState, action) {
       return {
         ...state,
         user: action.user,
-        status: 'loading',
+        status: 'creating-new-account',
       }
     }
     case 'CREATE_NEW_USER_SUCCESS' : {

@@ -1,8 +1,4 @@
-import React from 'react';
-import { useSelector } from "react-redux";
-import { tableSizes, holeInfo, holeInfoObject, actualSizes, holeAngleInfo } from '../Constants/tableSizes';
-
-
+import { holeInfo, holeAngleInfo } from '../Constants/tableSizes';
 
 export const sizeRatios = {
   narrow: 1.5,
@@ -167,19 +163,28 @@ const testOutOfBounds = (top, left) => {
   if (top < -10 || top > 140 || left < -10 || left > 265) sinking = true;
   return sinking;
 }
+const testFarOutOfBounds = (top, left) => {
+  let sinking = null;
+  if (top < -13 || top > 143 || left < -13 || left > 268) sinking = true;
+  return sinking;
+}
 const testIsSinking = (top, left) => {
   let sinking = null;
   // let ballCenter = center(top, left, actualSizes.ballRadius);
   holeInfo.forEach((hole)=>{
     let key = Object.keys(hole);
+    
     if ( (distanceBetweenTwoPoints(top, left, hole[key[0]][0], hole[key[0]][1])) <  hole[key[0]][2] ) {
       sinking = key[0];
-      // console.log(`A BALL IS SINKING INTO THE ${key[0]} HOLE!`); 
+      console.log(`A BALL IS SINKING INTO THE ${key[0]} HOLE!  Distance is/was ${distanceBetweenTwoPoints(top, left, hole[key[0]][0], hole[key[0]][1])} needs to be less than ${hole[key[0]][2]}`); 
     }
   })
-  // fall back test in case ball is out of bounds
+  // fall back test in case ball is out of bounds  --  Removing and implementing corner collision
+  // if (!sinking) {
+  //   sinking = testOutOfBounds(top, left);
+  // }
   if (!sinking) {
-    sinking = testOutOfBounds(top, left);
+    sinking = testFarOutOfBounds(top, left);
   }
   return sinking
 }
@@ -341,7 +346,7 @@ export const testCornerCollisions = (testTop, testLeft, initTop, initLeft) => {
           // }
           // if (rightDirection) {
           result = {hole: hole, side: side, impactOn: holeAngleInfo[hole][side].impactOn};
-          // console.log('corner impact on', result)
+          console.log('corner impact on', result)
         }
       }
     })
@@ -468,7 +473,7 @@ export const applyPhysics = (billiardsObject, settings) => {
           else {
 
             // -------  corner collisions not working as well as I had hoped.....  -------
-            // cornerCollision = testCornerCollisions(testTop, testLeft, element.top, element.left);
+            cornerCollision = testCornerCollisions(testTop, testLeft, element.top, element.left);
 
             // if it did hit a corner, then set its new location and velocity accordingly
             if (cornerCollision) {
@@ -488,13 +493,13 @@ export const applyPhysics = (billiardsObject, settings) => {
               }
               else if(holeAngleInfo[cornerCollision.hole][cornerCollision.side].impactOn === 'TR') {
                 element.xVel = -1*VyHolder*energySinks.cushionCollision;
-                element.yVel = VxHolder*energySinks.cushionCollision;
+                element.yVel = -1*VxHolder*energySinks.cushionCollision;
                 element.top +=0.1;
                 element.left -=0.1;
               }
               else if(holeAngleInfo[cornerCollision.hole][cornerCollision.side].impactOn === 'BR') {
                 element.xVel = VyHolder*energySinks.cushionCollision;
-                element.yVel = -1*VxHolder*energySinks.cushionCollision;
+                element.yVel = VxHolder*energySinks.cushionCollision;
                 element.top -=0.1;
                 element.left -=0.1;
               }

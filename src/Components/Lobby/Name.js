@@ -1,9 +1,5 @@
-import React, { useState } from 'react';
-import { useDispatch, useSelector } from "react-redux";
-import { NavLink, Redirect } from "react-router-dom";
+import React from 'react';
 import styled from 'styled-components';
-
-import StyledButton from '../StyledButton';
 
 import coin from '../../assets/spinningDubloon.gif';
 

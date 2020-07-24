@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import { Redirect } from "react-router-dom";
 import styled from 'styled-components';
+import { CircularProgress } from '@material-ui/core';
 
 import blueBG from '../../assets/circle blues/circle-blues.png';
 import StyledButton from '../StyledButton';
@@ -30,7 +31,10 @@ const Login = () => {
   }
 
   const handleLogin = () => {
-    if (!userName || !password) return;
+    if (!userName || !password || 
+      userInfo.status === "logging-in" || userInfo.status === "creating-new-account"
+    
+    ) return;
     dispatch(requestUserInfo());
     // console.log('userName',userName,'password',password)
     fetch('/be/logIn', {
@@ -75,7 +79,10 @@ const Login = () => {
 
 
   const handleNewAccount = () => {
-    if (newPassword !== newPassword2 || !newPassword2 || !newUserName) return;
+    // creating-new-user
+    if (newPassword !== newPassword2 || !newPassword2 || !newUserName || 
+      userInfo.status === "logging-in" || userInfo.status === "creating-new-account"
+      ) return;
     dispatch(requestCreateNewUser());
     fetch('/be/createAccount', {
       method: "POST",
@@ -127,12 +134,18 @@ const Login = () => {
         <br/>
         <StyledButton
         handleClick = {handleLogin}
-        disabled = {!password || !userName || errorMessage}
+        disabled = {!password || !userName || errorMessage || userInfo.status === "logging-in" || userInfo.status === "creating-new-account"}
         >
-          LOGIN
+          {userInfo.status === "logging-in" ? (
+              <CircularProgress
+              size = '12px'
+              />
+            ) : (
+              "LOGIN"
+            )}
         </StyledButton>
       </Column>
-
+      
       <Column>
         {errorMessage &&
           <ErrorBox>
@@ -153,9 +166,15 @@ const Login = () => {
         <br/>
         <StyledButton
         handleClick = {handleNewAccount}
-        disabled = {!newPassword || !newPassword2 || !newUserName || errorMessage || newPassword !== newPassword2}
+        disabled = {!newPassword || !newPassword2 || !newUserName || errorMessage || newPassword !== newPassword2 || userInfo.status === "logging-in" || userInfo.status === "creating-new-account"}
         >
-          CREATE ACCOUNT
+          {userInfo.status === "creating-new-account" ? (
+              <CircularProgress
+              size = '12px'
+              />
+            ) : (
+              "CREATE ACCOUNT"
+            )}
         </StyledButton>
       </Column>
 

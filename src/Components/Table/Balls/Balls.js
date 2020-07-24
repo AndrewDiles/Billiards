@@ -20,18 +20,9 @@ const Balls = ( {billiard} ) => {
   const settings = useSelector((state) => state.settings);
   const billiardInfo = useSelector((state) => state.billiards)
   const [legalDrop, setLegalDrop] = React.useState(true);
-  // const [ballInHandTriggered, setBallInHandTriggered] = React.useState(false);
-  // const [mouselocationLeft, setMouselocationLeft] = React.useState(null);
-  // const [mouselocationTop, setMouselocationTop] = React.useState(null);
   const dispatch = useDispatch();
 
   useEffect((ev)=>{
-    // if (!settings.ballInHand) return;
-    // setBallInHandTriggered(true);
-    // console.log('ball is in hand', settings.ballInHand)
-    
-    // if (!billiard) return (<></>) // fail safe against issues during removal of balls
-
     const table = document.getElementById('Table');
     
     const moveFunction = (ev) => {
@@ -71,13 +62,6 @@ const Balls = ( {billiard} ) => {
         table.removeEventListener('mouseclick',(event) => handleTableClick(event));
       }
     }
-
-    // table.addEventListener('mousemove',function() {if (settings.ballInHand && billiard) moveFunction()});
-    // table.addEventListener('mousedown',(event) => {if (settings.ballInHand && billiard) handleTableClick(event)});
-
-    // table.removeEventListener('mousemove',function() {if (settings.ballInHand && billiard) moveFunction()});
-    // table.removeEventListener('mousedown',(event) => {if (settings.ballInHand && billiard) handleTableClick(event)});
-
   }, [settings.ballInHand, settings.gameStatus] )
   
   const testLegalBallDropLocation = (x,y) => {
@@ -88,7 +72,6 @@ const Balls = ( {billiard} ) => {
     
     if (trueX >= 13 && trueX <= 268 && trueY >= 13 && trueY <= 141.1) legalLocation = true;
     // test position of each ball.  
-    // test on line for starting shot
     if (legalLocation) {
       const insideAnotherBall = testBallCollisions(trueY-13.08, trueX-13.08, billiardInfo.billiards, billiardInfo.billiards[0]);
       if (insideAnotherBall.length !== 0) legalLocation = false;
@@ -98,28 +81,23 @@ const Balls = ( {billiard} ) => {
   }
 
   const handleTableClick = (event) => {
-    console.log('Table Clicked');
-    // console.log('settings.gameStatus',settings.gameStatus);
-    // console.log("settings.gameStatus === 'first-shot'",settings.gameStatus === 'first-shot');
-    // console.log(!(settings.gameStatus === 'free-move' || settings.gameStatus === 'first-shot'));
+    // console.log('Table Clicked');
     if (!(settings.gameStatus === 'free-move' || settings.gameStatus === 'first-shot')) return;
-    // console.log(event);
     // if (testLegalBallDropLocation(mouselocationLeft, mouselocationTop)){
     //   dispatch(setBallOnTable());
     // }
-    console.log('Table Clicked and function did not bail');
+    // console.log('Table Clicked and function did not bail');
     if (testLegalBallDropLocation(event.offsetX, event.offsetY)){
       dispatch(setBallOnTable());
       const TableWrapper = document.getElementById('TableWrapper');
       TableWrapper.style.cursor = 'default';
       setLegalDrop(true);
     }
-    else {console.log('can not drop ball here')}
+    else {console.log('can not drop ball here. Top:', billiardInfo.billiards[0].top, 'Left:', billiardInfo.billiards[0].left)}
   }
   const handleClick = (ev) => {
-    console.log('Ball Clicked')
+    // console.log('Ball Clicked')
     if (!(settings.gameStatus === 'free-move' || settings.gameStatus === 'first-shot')) return;
-    // console.log('evtarget',ev.target)
     if (!ev.target.className.includes('cue')) return
     // console.log('YOU CLICKED ON THE CUE BALL!');
     if (!settings.ballInHand) dispatch(setBallInHand());
@@ -129,17 +107,12 @@ const Balls = ( {billiard} ) => {
   let degYMod180 = billiard.yAngle % 180;
   let sinDegY = Math.sin((degYMod180%45)* Math.PI / 180)
   let scale = `scale(${billiard.sinkingSize})`;
-  // const greenGrabCursor = `url(${grabGreen})`;
-  // const redGrabCursor = `url(${grabRed})`;
 
-  
   const TableWrapper = document.getElementById('TableWrapper');
   if (TableWrapper && settings.ballInHand) {
     legalDrop ? TableWrapper.style.cursor = `url(${grabGreen}), auto` : TableWrapper.style.cursor = `url(${grabRed}), auto`
   }
-  // cursor: url(${red}), auto;
-  // legalDrop ? Table.style.cursor = url(grabRed);
-  // console.log(parseFloat(billiard.sinkingSize),'parseFloat(billiard.sinkingSize)')
+
   return (
     <BallContainer
     legalDrop = {legalDrop}

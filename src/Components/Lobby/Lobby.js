@@ -38,10 +38,9 @@ const Lobby = () => {
   React.useEffect(()=>{
     const updateTime = setInterval(()=>{
       setCurrentTime(Date.now())
-      console.log('currentTime',currentTime)
     },500)
     return () => {
-      console.log('Timeout removed');
+      // console.log('Timeout removed');
       clearInterval(updateTime);
     }
   },[])
@@ -59,7 +58,8 @@ const Lobby = () => {
       ) return;
       
       dispatch(requestAvailableGames());
-      fetch('/be/lobby/view', {
+      // fetch('/be/lobby/view', {
+      fetch('/be/lobby/poll', {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -70,7 +70,8 @@ const Lobby = () => {
             if (settings.status === "readying" || 
             settings.status === "un-readying" || 
             settings.status === "leaving" ||
-            settings.status === "creating"
+            settings.status === "creating" ||
+            !window.location.href.includes("view-lobby")
             ) return;
             else if (!window.location.href.includes("view-lobby")) {
               dispatch(loadAvailableGamesError());
@@ -98,7 +99,7 @@ const Lobby = () => {
     return () => {
       clearInterval(interval);
     }
-  }, [])
+  }, [dispatch,settings.status,userInfo.user.userName])
 
   if (!userInfo.user) {
     return (

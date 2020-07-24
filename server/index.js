@@ -7,7 +7,8 @@ const morgan = require("morgan");
 const { 
   handleLogIn,
   handleCreateAccount,
-  handleViewLobby,
+  // handleViewLobby,
+  handlePollForLobby,
   handleJoinGame,
   handlePurchase,
   handleCreateLobby,
@@ -70,8 +71,10 @@ App
   // }
   // returns new userInfo
   
-  // fetches all the current lobbies from mongo
-  .get("/be/lobby/view", handleViewLobby)
+  // fetches all the current lobbies from mongo - obsolete
+  // .get("/be/lobby/view", handleViewLobby)
+
+  .get("/be/lobby/poll", handlePollForLobby)
 
   // creates a lobby, returns a lobby number
   .post("/be/lobby/create", handleCreateLobby)
@@ -85,9 +88,10 @@ App
   // joins a lobby that already exists
   .post("/be/lobby/join", handleJoinGame)
   // Body has shape: {
-    // player1:
-    // joiningPlayer:
-    // joiningPlayerWealth:
+    // playerToAdd,
+    // playerToAddWealth,
+    // existingPlayerInLobby,
+    // slotToAddNewPlayerInto,
   // }
 
   .post("/be/lobby/ready", handleReady)

@@ -34,18 +34,6 @@ const Styledh3 = styled.h3`
   font-weight: bolder;
 `
 
-const StyledImg = styled.img`
-  align-self: center;
-  margin-left: 10px;
-`
-const RowDiv = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-`
-
 const ColDivEven = styled.div`
   display: flex;
   flex-direction: column;

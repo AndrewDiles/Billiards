@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useDispatch, useSelector } from "react-redux";
-import { NavLink, Redirect } from "react-router-dom";
-import styled from 'styled-components';
+import { CircularProgress } from '@material-ui/core';
 
 import StyledButton from '../StyledButton';
 
@@ -10,7 +9,6 @@ import {
   createSuccess,
   createError,
 } from "../../actions";
-
 
 const OpenLobbyButton = ({ setLobbyGames, setPlayerInLobbyGame, disabled }) => {
   const userInfo = useSelector((state) => state.userInfo);
@@ -49,21 +47,15 @@ const OpenLobbyButton = ({ setLobbyGames, setPlayerInLobbyGame, disabled }) => {
           handleClick = {handleClick}
           disabled = {disabled}
           >
-            OPEN LOBBY
+            {userInfo.status === "creating" ? (
+              <CircularProgress
+              size = '12px'
+              />
+            ) : (
+              "OPEN LOBBY"
+            )}
+            {/* OPEN LOBBY */}
           </StyledButton>
   )
 }
 export default OpenLobbyButton;
-
-
-
-const Wrapper = styled.div`
-width: 40%;
-height: 100%;
-display: flex;
-flex-direction: column;
-justify-content: center;
-align-items: center;
-text-align: center;
-padding: 3px;
-`

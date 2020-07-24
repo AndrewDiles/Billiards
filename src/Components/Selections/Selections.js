@@ -25,7 +25,7 @@ const Selections = ({isSliding}) => {
   const [href, setHref] = React.useState('');
   React.useEffect(()=>{
     setHref(window.location.href);
-  },[window.location.href])
+  },[])
 
   if (!settings.sideBarOpen || isSliding) {
     return (<></>)
