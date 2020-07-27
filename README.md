@@ -19,6 +19,7 @@ Collision affects on balls seems to misbehave based on which quadrant is hit - m
 Power bar not clickable after a scratch
 Corrected duplicity of event listeners awaiting clicking on ball (there was one for everyball instead of just one for the cue-ball)
 Removed ability to free move cue ball during ball motion
+Began closing connections to mongo server during polling, as not closing them was quickly hitting connection cap on free-use service 
 
 ## Bugs to fix:
 
@@ -30,3 +31,5 @@ If you close and re-open several games consecutively, it begins to lag.  Perhaps
 - final update balls should make sure balls are not past walls?
 
 collision affects on balls seems to misbehave based on which quadrant is hit.
+
+Sometimes ball impacts are ignored for one of the balls.

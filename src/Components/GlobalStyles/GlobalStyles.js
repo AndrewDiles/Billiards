@@ -92,6 +92,35 @@ html {
   width: 100vw;
 }
 
+@keyframes rotate {
+  0% {
+    offset-distance: 0%;
+    background: radial-gradient(rgba(148,0,211,.85), rgba(148,0,211,0));
+  }
+  14% {
+    background: radial-gradient(rgba(75,0,130,.85), rgba(75,0,130,0));
+  }
+  28% {
+    background: radial-gradient(rgba(0,0,255,.85), rgba(0,0,255,0));
+  }
+  42% {
+    background: radial-gradient(rgba(0,255,0,.85), rgba(0,255,0,0));
+  }
+  56% {
+    background: radial-gradient(rgba(255,255,0,.85), rgba(255,255,0,0));
+  }
+  70% {
+    background: radial-gradient(rgba(255,127,0,.85), rgba(255,127,0,0));
+  }
+  85% {
+    background: radial-gradient(rgba(255,0,0,.85), rgba(255,0,0,0));
+  }
+  100% {
+    offset-distance: 100%;
+    background: radial-gradient(rgba(148,0,211,.85), rgba(148,0,211,0));
+  }
+}
+
 `;
 
 export default GlobalStyles;

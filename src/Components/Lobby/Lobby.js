@@ -46,7 +46,6 @@ const Lobby = () => {
   },[])
 
   React.useEffect(()=>{
-
     const getLobbyInfo = () => {
       // bailing if on wrong page as failsafe
       if (!window.location.href.includes("view-lobby")) return;
@@ -100,12 +99,6 @@ const Lobby = () => {
       clearInterval(interval);
     }
   }, [dispatch,settings.status,userInfo.user.userName])
-
-  if (!userInfo.user) {
-    return (
-      <Redirect to="/home" />
-    )
-  }
 
   return (
     <Wrapper>

@@ -205,9 +205,6 @@ const Stripe = styled.div`
   /* top: ${props => props.degYMod180 > 90 ? `${props.sinDegY+50}%` : `${props.sinDegY}%`}; */
 `
 
-
-// Math.sin(90 * Math.PI / 180)
-
 const BallContainer = styled.div`
   cursor: ${props => props.freeMove ? props.inHand ? 'grabbing' : 'grab' : 'arrow'};
   height: ${props => props.radius && 2*props.radius}px;
@@ -218,8 +215,8 @@ const BallContainer = styled.div`
   z-index: 4;
   transform: ${props => props.scale && props.scale};
   opacity: ${props => props.opacity};
-  /* opacity: 0.5; */
-  /* border: red solid 1px; TEST PURPOSES*/ 
+  /* border: red solid 1px;  */
+  /* ABOVE BORDER IS FOR TEST PURPOSES  */
 `
 const Color = styled.div`
   height: ${props => props.radius && 2*props.radius}px;

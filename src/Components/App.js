@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Switch, Route, Redirect } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 import SideBar from './SideBar';
 import GlobalStyles from './GlobalStyles';
@@ -11,6 +12,13 @@ import Lobby from './Lobby';
 import FourOhFour from './FourOhFour';
 
 function App() {
+  const userInfo = useSelector((state) => state.userInfo);
+
+  // if (!userInfo.user) {
+  //   return (
+  //     <Redirect to="/home" />
+  //   )
+  // }
 
   return (
     <Router>
@@ -33,7 +41,11 @@ function App() {
           <Game/>
         </Route>
         <Route exact path="/view-lobby">
-          <Lobby/>
+          {userInfo.user? (
+            <Lobby/>
+          ) : (
+            <Redirect to="/home" />
+          )}
         </Route>
         <Route path="/:failedPath">
           <FourOhFour/>

@@ -163,11 +163,11 @@ const testOutOfBounds = (top, left) => {
   if (top < -10 || top > 140 || left < -10 || left > 265) sinking = true;
   return sinking;
 }
-const testFarOutOfBounds = (top, left) => {
-  let sinking = null;
-  if (top < -13 || top > 143 || left < -13 || left > 268) sinking = true;
-  return sinking;
-}
+// const testFarOutOfBounds = (top, left) => {
+//   let sinking = null;
+//   if (top < -11 || top > 141 || left < -11 || left > 266) sinking = true;
+//   return sinking;
+// }
 const testIsSinking = (top, left) => {
   let sinking = null;
   // let ballCenter = center(top, left, actualSizes.ballRadius);
@@ -180,12 +180,12 @@ const testIsSinking = (top, left) => {
     }
   })
   // fall back test in case ball is out of bounds  --  Removing and implementing corner collision
-  // if (!sinking) {
-  //   sinking = testOutOfBounds(top, left);
-  // }
   if (!sinking) {
-    sinking = testFarOutOfBounds(top, left);
+    sinking = testOutOfBounds(top, left);
   }
+  // if (!sinking) {
+  //   sinking = testFarOutOfBounds(top, left);
+  // }
   return sinking
 }
 // const resolveCushionCollisions = (ballObject) => {
@@ -484,38 +484,40 @@ export const applyPhysics = (billiardsObject, settings) => {
               let VxHolder = testXVel;
               let VyHolder = testYVel;
               if(holeAngleInfo[cornerCollision.hole][cornerCollision.side].impactOn === 'TL') {
-
-
                 element.xVel = VyHolder*energySinks.cushionCollision;
                 element.yVel = -1*VxHolder*energySinks.cushionCollision;
-                element.top +=0.1;
-                element.left +=0.1;
+                element.top +=0.05;
+                element.left +=0.05;
               }
               else if(holeAngleInfo[cornerCollision.hole][cornerCollision.side].impactOn === 'TR') {
                 element.xVel = -1*VyHolder*energySinks.cushionCollision;
                 element.yVel = -1*VxHolder*energySinks.cushionCollision;
-                element.top +=0.1;
-                element.left -=0.1;
+                element.top +=0.05;
+                element.left -=0.05;
               }
               else if(holeAngleInfo[cornerCollision.hole][cornerCollision.side].impactOn === 'BR') {
                 element.xVel = VyHolder*energySinks.cushionCollision;
                 element.yVel = VxHolder*energySinks.cushionCollision;
-                element.top -=0.1;
-                element.left -=0.1;
+                element.top -=0.05;
+                element.left -=0.05;
               }
               else if(holeAngleInfo[cornerCollision.hole][cornerCollision.side].impactOn === 'BL') {
-                if (VyHolder>0) {
+                // if (VyHolder>0) {
+                //   element.xVel = -1*VyHolder*energySinks.cushionCollision;
+                //   element.yVel = VxHolder*energySinks.cushionCollision;
+                //   element.top -=0.05;
+                //   element.left +=0.05;
+                // }
+                // else {
+                //   element.xVel = -1*VyHolder*energySinks.cushionCollision;
+                //   element.yVel = VxHolder*energySinks.cushionCollision;
+                //   element.top -=0.1;
+                //   element.left +=0.1;
+                // }
                   element.xVel = -1*VyHolder*energySinks.cushionCollision;
                   element.yVel = VxHolder*energySinks.cushionCollision;
-                  element.top -=0.1;
-                  element.left +=0.1;
-                }
-                else {
-                  element.xVel = -1*VyHolder*energySinks.cushionCollision;
-                  element.yVel = VxHolder*energySinks.cushionCollision;
-                  element.top -=0.1;
-                  element.left +=0.1;
-                }
+                  element.top -=0.05;
+                  element.left +=0.05;
               }
             }
           }
@@ -768,6 +770,13 @@ export const moveBallsOutsideEachOther = (billiardsObject) => {
           // }
           test = testSingleBallCollision(element, billiard, 4.2);
         }
+      }
+
+      if (!billiard.sinking) {
+        if (element.left <= 13.5) element.left = 13.6;
+        else if (element.left >= 276.5) element.left = 276.4;
+        if (element.top >= 149.5) element.top = 149.4;
+        else if (element.top <= 13) element.top = 13.1;
       }
     })
     return element;
