@@ -3,20 +3,10 @@ import styled from 'styled-components';
 
 const RotatingOrb = ({ visible, buttonInfo }) => {
   
-  // const [currentTime, setCurrentTime] = React.useState(Date.now());
-
-  // React.useEffect(()=>{
-  //   if (!visible) {
-  //     return(<></>);
-  //   }
-  //   const updateTime = setInterval(()=>{
-  //     setCurrentTime(Date.now())
-  //   },500)
-  //   return () => {
-  //     // console.log('Timeout removed');
-  //     clearInterval(updateTime);
-  //   }
-  // },[])
+  // Making sure the orb travels at a given speed independant of the perimeter of the button
+  const speed = .15;
+  const distanceToTravel = 2*(buttonInfo.height+buttonInfo.width);
+  const time = parseInt(distanceToTravel/speed);
 
   if (!visible) {
     return(<></>);
@@ -27,6 +17,7 @@ const RotatingOrb = ({ visible, buttonInfo }) => {
     visible = {visible}
     height = {buttonInfo.height}
     width = {buttonInfo.width}
+    time = {time}
     />
   )
 }
@@ -44,5 +35,5 @@ const Orb = styled.div`
   /* background: radial-gradient(rgba(255,255,255,.85), rgba(255,255,255,0)); */
   /* background: radial-gradient(rgba(10, 71, 255, 0.8), rgba(115, 112, 255, 0.01)); */
   offset-path: ${props => props.visible ? `path('M0,0 L${props.width-5},0 L${props.width-5},${props.height-5} L0,${props.height-5} Z')` : ''};
-  animation: ${props => props.visible ? "rotate 2000ms infinite linear" : ""}
+  animation: ${props => props.visible ? `rotate ${props.time}ms infinite linear` : ""};
 `

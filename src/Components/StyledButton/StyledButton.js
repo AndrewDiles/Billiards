@@ -1,4 +1,4 @@
-import React, { createElement } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 
 import RotatingOrb from './RotatingOrb';
@@ -9,50 +9,43 @@ const StyledButton = ( { handleClick, value, disabled, selected, children} ) => 
 
   const activateOrb =(event) => {
     setVisible(true);
-    setButtonInfo({height: event.target.getBoundingClientRect().height, width: event.target.getBoundingClientRect().width})
+    setButtonInfo({height: event.target.getBoundingClientRect().height, width: event.target.getBoundingClientRect().width});
   }
   const deactivateOrb =(ev) => {
     setVisible(false);
     setButtonInfo(initialButtonInfo);
   }
 
+  React.useEffect(()=>{
+    return () => {
+      deactivateOrb();
+    }
+  },[])
+
   return (
       <ButtonStylings
       disabled = {disabled || null}
-      onClick = {(ev)=> {handleClick(ev);}}
+      onClick = {(ev)=> {handleClick(ev);deactivateOrb(ev);}}
       value = {value}
       selected = {selected}
       children = {children}
       onMouseEnter = {(ev=> activateOrb(ev))}
       onMouseLeave = {(ev=> deactivateOrb(ev))}
-      // onMouseEnter = {activateOrb}
-      // onMouseLeave = {deactivateOrb}
       >
-        <RotatingOrb
-        visible = {visible}
-        // height = {StyledButton.style}
-        buttonInfo ={buttonInfo}
-        // width = {}
-        />
+        {visible &&
+          <RotatingOrb
+          id = "orb"
+          visible = {visible}
+          buttonInfo ={buttonInfo}
+          />
+        }
         {children}
       </ButtonStylings>
   )
 }
 export default StyledButton;
 
-// const RotatingOrb = styled.div`
-//   z-index: 20;
-//   width: 10px;
-//   height: 10px;
-//   position: relative;
-//   border-radius: 50%;
-//   left: -5px;
-//   top: -5px;
-//   background: radial-gradient(rgba(10, 71, 255, 0.8), rgba(115, 112, 255, 0.01));
-// `
-
 const ButtonStylings = styled.button`
-  
   width: 100px;
   padding: 5px;
   position: relative;
@@ -65,7 +58,7 @@ const ButtonStylings = styled.button`
   /* font-size: 1.3em; */
   font-weight: bolder;
   text-align: center;
-  transition: background-color 0.5s;
+  transition: background-color .75s;
   &:hover {
     cursor: ${props => props.disabled ? 'not-allowed' : 'pointer'};
     background-color: gold;

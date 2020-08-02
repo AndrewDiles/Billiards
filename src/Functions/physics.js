@@ -95,7 +95,6 @@ export const applyFrictionToVelocity = (vi) => {
     else if (vi >.25 ) vf = vi - 0.016*energySinks.translationalFriction;
     else if (vi >.1 ) vf = vi - 0.004*energySinks.translationalFriction;
   }
-
   // in the event that the friction brings the initial Velocity to 0, V final was already set to 0
   return vf
 }
@@ -346,7 +345,7 @@ export const testCornerCollisions = (testTop, testLeft, initTop, initLeft) => {
           // }
           // if (rightDirection) {
           result = {hole: hole, side: side, impactOn: holeAngleInfo[hole][side].impactOn};
-          console.log('corner impact on', result)
+          // console.log('corner impact on', result)
         }
       }
     })
@@ -359,6 +358,9 @@ export const applyPhysics = (billiardsObject, settings) => {
   
   // handle current collisions
   
+  // Creating a container for past collisions to insure balls have a chance to get outside eachother
+  let pastCollisions = [];
+
   // mapping out returns from all billiards
   return billiardsObject.map((elem) => {
     
@@ -373,24 +375,23 @@ export const applyPhysics = (billiardsObject, settings) => {
       element.inMotion = false;
     }
 
-    // Creating a container for past collisions to insure balls have a chance to get outside eachother
-    let pastCollisions = [];
-    // console.log('element.collisions for', element.id, ' : ' ,element.collisions)
+    // console.log('element.collisions for', element.id, ' : ' ,element.collisions) //< ----------- TEST
 
-    // if there is a pending collision it must be resolved immediately (this may occue at the time of the collision)
+    // if there is a pending collision it must be resolved immediately (this may occur at the time of the collision)
     if (element.collisions.length !== 0 && !element.sinkinglocation && element.sinkingSize > 0) {
       // resolve new change in energy  -- this may occur at time of impact
       element.collisions.forEach((collision)=> {
         element.xVel += collision[0];
         element.yVel += collision[1];
-        pastCollisions.push(collision[2]);
-        // console.log(pastCollisions);
+        let impact = {"ballImpacted" : element.id, "ballImpacting" : collision[2]}
+        pastCollisions.push(impact);
+        console.log('pastCollisions',pastCollisions);
       })
+      // console.log('pre-resolution:',element.collisions);
+      // console.log('post-resolution:',element.collisions);
       element.collisions = [];
       element.inMotion = true;
-      // console.log('pre-resolution:',element.collisions);
       // resolveCushionCollisions(element);
-      // console.log('post-resolution:',element.collisions);
     }
     
     // console.log(`Moving the ${element.id} ball`)
@@ -526,19 +527,31 @@ export const applyPhysics = (billiardsObject, settings) => {
         if (!cornerCollision) { 
           // tests for collisions with walls
           let collision = testCushionCollisions(testTop, testLeft);
-          
+
           // if no collision with wall then test for collisions with balls
           if (!collision) {
             let ballCollisions = testBallCollisions(testTop, testLeft, billiardsObject, element);
+            // console.log(`ball ${element.id}'s collision array: ${collision}`);
             // Sets the first impact of the shot
             if (ballCollisions.length > 0 && element.id === "cue" && element.firstCollision === null) {
               element.firstCollision = ballCollisions[0];
             }
+
+            if (ballCollisions[0]) {
+            console.log(`Ball${element.id} hit ${ballCollisions[0]}`) // -------------------- TEST
+            }
+
+
             // This loop removes any detected collisions that occured within the time interval of the refresh rate.
             ballCollisions.forEach((collision, index)=>{
               let alreadyRecordedThisImpact = false;
+              // console.log(pastCollisions)
                 pastCollisions.forEach((pastCollision)=>{
-                  if (collision[2]===pastCollision) alreadyRecordedThisImpact = true;
+                  // console.log('pastCollision.ballImpacted',pastCollision.ballImpacted);
+                  if (collision===pastCollision.ballImpacting) {
+                    alreadyRecordedThisImpact = true;
+                    console.log(`The ${collision} ball has already hit the ${pastCollision.ballImpacted} ball.`);
+                  }
                 })
               if (alreadyRecordedThisImpact) ballCollisions.splice(index,1);
             })
@@ -612,6 +625,7 @@ export const applyPhysics = (billiardsObject, settings) => {
                 element.xVel = Vfb1x;
                 element.yVel = Vfb1y;
                 impactedBall.inMotion = true;
+                console.log('impactedBall',impactedBall);
                 impactedBall.collisions.push([Vfb2x,Vfb2y, element.id]);
                 let approxXPos = (leftAv/2) + (leftAv + Vfb1x* (settings.refreshRate/100))/2;
                 let approxYPos = (topAv/2) + (topAv + Vfb1y* (settings.refreshRate/100))/2;
@@ -739,45 +753,60 @@ export const moveBallsOutsideEachOther = (billiardsObject) => {
       
       if (billiard.id !== element.id) {
         let test = testSingleBallCollision(element, billiard, 4.1);
+        let xDifference, yDifference = 0;
         while (test) {
-          let theta = angleBetweenTwoBalls(element.top, element.left, billiard.top, billiard.left)
-          let rand = Math.random() -0.5;
-          element.left += 10*rand*Math.cos(theta);
-          element.top += 10*rand*Math.sin(theta);
+
+          // moving out of eachother with small random increments... less favorable solution
+          // let theta = angleBetweenTwoBalls(element.top, element.left, billiard.top, billiard.left)
+          // let rand = Math.random() -0.5;
+          // element.left += 10*rand*Math.cos(theta);
+          // element.top += 10*rand*Math.sin(theta);
+
+          // better solution with no randomness:
+          if (element.left > billiard.left) {
+            xDifference = element.left - billiard.left;
+            element.left += xDifference/2;
+            billiard.left -= xDifference/2;
+          }
+          else {
+            xDifference = billiard.left - element.left;
+            element.left -= xDifference/2;
+            billiard.left += xDifference/2;
+          }
+          if (element.top > billiard.top) {
+            yDifference = element.top - billiard.top;
+            element.top += yDifference/2;
+            billiard.top -= yDifference/2;
+          }
+          else {
+            yDifference = billiard.top - element.top;
+            element.top -= yDifference/2;
+            billiard.top += yDifference/2;
+          }
 
           // force balls in bounds in the event that they were pushing outside boundaries
-          if (element.left <= 13.5) element.left = 13.6;
-          else if (element.left >= 276.5) element.left = 276.4;
-          if (element.top >= 149.5) element.top = 149.4;
-          else if (element.top <= 13) element.top = 13.1;
-          
-          // Case element is BR of billiard
-          // if (element.top >= billiard.top && element.left >= billiard.left ) {
-          //   element.top += 10;
-          //   element.left += 10;
-          // }
-          // else if (element.top >= billiard.top && element.left <= billiard.left) {
-          //   element.top += 10;
-          //   element.left -= 10;
-          // }
-          // else if (element.top <= billiard.top && element.left <= billiard.left) {
-          //   element.top -= 10;
-          //   element.left -= 10;
-          // }
-          // else if (element.top <= billiard.top && element.left <= billiard.left) {
-          //   element.top -= 10;
-          //   element.left -= 10;
-          // }
+          if (!element.sinking) {
+            if (element.left <= 0) element.left = .1;
+            else if (element.left >= 255) element.left = 254.9;
+            if (element.top >= 127.5) element.top = 127.49;
+            else if (element.top <= 0) element.top = .1;
+          }
+          if (!billiard.sinking) {
+            if (billiard.left <= 0) billiard.left = .1;
+            else if (billiard.left >= 255) billiard.left = 254.9;
+            if (billiard.top >= 127.5) billiard.top = 127.49;
+            else if (billiard.top <= 0) billiard.top = .1;
+          }
           test = testSingleBallCollision(element, billiard, 4.2);
         }
       }
 
-      if (!billiard.sinking) {
-        if (element.left <= 13.5) element.left = 13.6;
-        else if (element.left >= 276.5) element.left = 276.4;
-        if (element.top >= 149.5) element.top = 149.4;
-        else if (element.top <= 13) element.top = 13.1;
-      }
+      // if (!billiard.sinking) {
+      //   if (element.left <= 13.5) element.left = 13.6;
+      //   else if (element.left >= 276.5) element.left = 276.4;
+      //   if (element.top >= 149.5) element.top = 149.4;
+      //   else if (element.top <= 13) element.top = 13.1;
+      // }
     })
     return element;
   })

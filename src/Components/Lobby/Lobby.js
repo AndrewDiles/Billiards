@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import styled from 'styled-components';
 import { CircularProgress } from '@material-ui/core';
-import { Redirect } from "react-router-dom";
 import blueBG from '../../assets/circle blues/circle-blues.png';
 
 import OpenLobbyButton from './OpenLobbyButton';
