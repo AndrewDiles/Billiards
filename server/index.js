@@ -18,7 +18,7 @@ const {
   handleGameOver
 } = require('./handlers');
 
-const PORT = 8899;
+const PORT = process.env.PORT || 8899;
 
 const App = express();
 
