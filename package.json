@@ -21,10 +21,12 @@
     "styled-components": "^5.1.0"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start:react": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "heroku-prebuild": "cd server && npm install",
+    "start": "cd server && npm start:production"
   },
   "eslintConfig": {
     "extends": "react-app"

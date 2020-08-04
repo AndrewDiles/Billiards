@@ -18,7 +18,7 @@ const {
   handleGameOver
 } = require('./handlers');
 
-const PORT = 80 || process.env.PORT || 8899;
+const PORT = process.env.PORT || 8899;
 
 const App = express();
 
@@ -43,7 +43,7 @@ App
     next();
   })
   .use(morgan("tiny"))
-  .use(express.static("./server/assets"))
+  .use(express.static("../build/"))
   .use(bodyParser.json())
   .use(express.urlencoded({ extended: false }))
   .use("/", express.static(__dirname + "/"))
