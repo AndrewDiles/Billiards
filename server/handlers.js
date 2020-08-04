@@ -77,6 +77,7 @@ const client = new MongoClient(uri, {
   useNewUrlParser: true,
   useUnifiedTopology: true
 });
+client.connect();
 
   const handleLogIn = async (req, res) => {
     // res.status(400).json({ status: 400, message: 'Password is incorrect'  });
@@ -87,7 +88,7 @@ const client = new MongoClient(uri, {
       res.status(400).json({ status: 400, message: 'Ye be missing some credentials.'  });
     }
 
-    await client.connect();
+    // await client.connect();
     const db = client.db('billiardsInfo');
     
     try {
@@ -119,7 +120,7 @@ const client = new MongoClient(uri, {
       res.status(400).json({ status: 400, message: 'Your name includes "no-account"?  Be this a joke?' });
     }
 
-    await client.connect();
+    // await client.connect();
     const db = client.db('billiardsInfo');
     
     try {
@@ -169,7 +170,7 @@ const client = new MongoClient(uri, {
   //   }
   // };
 
-  client.connect();
+  
 
   const handlePollForLobby = async (req, res) => {
     const polldb = client.db('billiardsInfo');
@@ -198,7 +199,7 @@ const client = new MongoClient(uri, {
       
     }
     else {
-      await client.connect();
+      // await client.connect();
       const db = client.db('billiardsInfo');
       
       try {
@@ -257,7 +258,7 @@ const client = new MongoClient(uri, {
       res.status(400).json({ status: 400, error: 'Credentials be missing...'  });
     }
     else {
-      await client.connect();
+      // await client.connect();
       const db = client.db('billiardsInfo');
       
       let query;
@@ -314,7 +315,7 @@ const client = new MongoClient(uri, {
       res.status(400).json({ status: 400, error: 'Credentials be missing...'  });
     }
     else {
-      await client.connect();
+      // await client.connect();
       const db = client.db('billiardsInfo');
       
       let query;
@@ -375,7 +376,7 @@ const client = new MongoClient(uri, {
       res.status(400).json({ status: 400, error: 'Credentials be missing...'  });
     }
     else {
-      await client.connect();
+      // await client.connect();
       const db = client.db('billiardsInfo');
       
       let query;
@@ -461,7 +462,7 @@ const client = new MongoClient(uri, {
 
     console.log('getting mongo info')
 
-    await client.connect();
+    // await client.connect();
     const db = client.db('billiardsInfo');
     
     try {
@@ -510,7 +511,7 @@ const client = new MongoClient(uri, {
       res.status(400).json({ status: 400, message: 'Fields may not be blank'  });
     }
 
-    await client.connect();
+    // await client.connect();
     const db = client.db('billiardsInfo');
     
     try {
@@ -567,7 +568,7 @@ const client = new MongoClient(uri, {
       res.status(400).json({ status: 400, message: 'Fields may not be blank'  });
     }
 
-    await client.connect();
+    // await client.connect();
     const db = client.db('billiardsInfo');  // this may need to be Billiards?
     
     try {
