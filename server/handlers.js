@@ -125,7 +125,12 @@ const client = new MongoClient(uri, {
       res.status(400).json({ status: 400, message: 'Your name includes "no-account"?  Be this a joke?' });
     }
 
-    await client.connect();
+    try {
+      await client.connect();
+      } catch (err) {
+        console.log('err from trying to connect', err);
+      }
+
     const db = client.db('billiardsInfo');
     
     try {
@@ -160,6 +165,7 @@ const client = new MongoClient(uri, {
       console.log(err);
       res.status(500).json({ status: 500, message: "error" });
     }
+    await client.close();
   };
 
   // const handleViewLobby = async (req, res) => {
@@ -178,6 +184,12 @@ const client = new MongoClient(uri, {
   
 
   const handlePollForLobby = async (req, res) => {
+    try {
+      await client.connect();
+      } catch (err) {
+        console.log('err from trying to connect', err);
+      }
+
     const polldb = client.db('billiardsInfo');
     try {
       const result = await polldb.collection('lobbyInfo').find().toArray();
@@ -186,6 +198,7 @@ const client = new MongoClient(uri, {
       console.log(err);
       res.status(500).json({ status: 500, message: "error" });
     }
+    await client.close();
   }
 
   const handleJoinGame = async (req, res) => {
@@ -204,7 +217,11 @@ const client = new MongoClient(uri, {
       
     }
     else {
+      try {
       await client.connect();
+      } catch (err) {
+        console.log('err from trying to connect', err);
+      }
       const db = client.db('billiardsInfo');
       
       try {
@@ -218,13 +235,10 @@ const client = new MongoClient(uri, {
           findMatch = await db.collection('lobbyInfo').findOne({ Player1: existingPlayerInLobby });
           query = { Player1: existingPlayerInLobby };
         }
-        // console.log('222222222')
         if (!findMatch) {
-          // console.log('333333333')
           res.status(404).json({ status: 404, error: 'That scurvy dog took off!' });
         }
         else if ((slotToAddNewPlayerInto === "Player2" && findMatch.player2) || ((slotToAddNewPlayerInto === "Player1" && findMatch.player1))) {
-          // console.log('3.5 3.5 3.5 3.5')
           res.status(401).json({ status: 401, error: "They've already found a sucker to beat." });
         }
         else {
@@ -240,17 +254,15 @@ const client = new MongoClient(uri, {
           
           const r = await db.collection('lobbyInfo').updateOne(query, newValues);
           // assert.equal(1, r.matchedCount);
-          // console.log('44444444')
           assert.equal(1, r.modifiedCount);
-          // console.log('55555555')
           res.status(200).json({ status: 200, message: "Success!" })
         }
       } catch (err) {
         console.log(err);
-        // console.log('666666666')
         res.status(500).json({ status: 500, error: "Someone will walk the plank for this error!" });
       }
     }
+    await client.close();
   };
 
   const handleReady = async (req, res) => {
@@ -263,7 +275,12 @@ const client = new MongoClient(uri, {
       res.status(400).json({ status: 400, error: 'Credentials be missing...'  });
     }
     else {
-      await client.connect();
+      try {
+        await client.connect();
+      } catch (err) {
+        console.log('err from trying to connect', err);
+      }
+
       const db = client.db('billiardsInfo');
       
       let query;
@@ -282,9 +299,7 @@ const client = new MongoClient(uri, {
           let findMatch = await db.collection('lobbyInfo').findOne({ Player2: player2 });
           query = { Player2: player2 };
         }
-        // console.log('222222222')
         if (!findMatch) {
-          // console.log('333333333')
           res.status(404).json({ status: 404, error: 'That scurvy dog took off!' });
         }
         else {
@@ -298,17 +313,15 @@ const client = new MongoClient(uri, {
           
           const r = await db.collection('lobbyInfo').updateOne(query, newValues);
           // assert.equal(1, r.matchedCount);
-          // console.log('44444444')
           assert.equal(1, r.modifiedCount);
-          // console.log('55555555')
           res.status(200).json({ status: 200, message: "Success!" })
         }
       } catch (err) {
         console.log(err);
-        // console.log('666666666')
         res.status(500).json({ status: 500, error: "Someone will walk the plank for this error!" });
       }
     }
+    await client.close();
   };
 
   const handleNotReady = async (req, res) => {
@@ -320,7 +333,11 @@ const client = new MongoClient(uri, {
       res.status(400).json({ status: 400, error: 'Credentials be missing...'  });
     }
     else {
-      await client.connect();
+      try {
+        await client.connect();
+      } catch (err) {
+        console.log('err from trying to connect', err);
+      }
       const db = client.db('billiardsInfo');
       
       let query;
@@ -339,9 +356,7 @@ const client = new MongoClient(uri, {
           let findMatch = await db.collection('lobbyInfo').findOne({ Player2: player2 });
           query = { Player2: player2 };
         }
-        // console.log('222222222')
         if (!findMatch) {
-          // console.log('333333333')
           res.status(404).json({ status: 404, error: 'That scurvy dog took off!' });
         }
         else {
@@ -355,17 +370,15 @@ const client = new MongoClient(uri, {
           
           const r = await db.collection('lobbyInfo').updateOne(query, newValues);
           // assert.equal(1, r.matchedCount);
-          // console.log('44444444')
           assert.equal(1, r.modifiedCount);
-          // console.log('55555555')
           res.status(200).json({ status: 200, message: "Success!" })
         }
       } catch (err) {
         console.log(err);
-        // console.log('666666666')
         res.status(500).json({ status: 500, error: "Someone will walk the plank for this error!" });
       }
     }
+    await client.close();
   };
 
   const handleLeave = async (req, res) => {
@@ -381,7 +394,11 @@ const client = new MongoClient(uri, {
       res.status(400).json({ status: 400, error: 'Credentials be missing...'  });
     }
     else {
-      await client.connect();
+      try {
+        await client.connect();
+      } catch (err) {
+        console.log('err from trying to connect', err);
+      }
       const db = client.db('billiardsInfo');
       
       let query;
@@ -403,9 +420,7 @@ const client = new MongoClient(uri, {
           findMatch = await db.collection('lobbyInfo').findOne({ Player2: player2 });
           query = { Player2: player2 };
         }
-        // console.log('222222222')
         if (!findMatch) {
-          // console.log('333333333')
           res.status(404).json({ status: 404, error: 'That scurvy dog took off!' });
         }
         else {
@@ -433,9 +448,7 @@ const client = new MongoClient(uri, {
           if (!deletingMatch) {
             const r = await db.collection('lobbyInfo').updateOne(query, newValues);
             // assert.equal(1, r.matchedCount);
-            // console.log('44444444')
             assert.equal(1, r.modifiedCount);
-            // console.log('55555555')
             res.status(200).json({ status: 200, message: "Success!" })
           }
           else {
@@ -447,10 +460,10 @@ const client = new MongoClient(uri, {
         }
       } catch (err) {
         console.log(err);
-        // console.log('666666666')
         res.status(500).json({ status: 500, error: "Someone will walk the plank for this error!" });
       }
     }
+    await client.close();
   };
 
   const handlePurchase = async (req, res) => {
@@ -467,7 +480,11 @@ const client = new MongoClient(uri, {
 
     console.log('getting mongo info')
 
-    // await client.connect();
+    try {
+      await client.connect();
+    } catch (err) {
+      console.log('err from trying to connect', err);
+    }
     const db = client.db('billiardsInfo');
     
     try {
@@ -492,9 +509,7 @@ const client = new MongoClient(uri, {
         const newValues = { $set: { inventory : newInventory, dubloons : newWealth}};
         const r = await db.collection('userInfo').updateOne(query, newValues);
         // assert.equal(1, r.matchedCount);
-        // console.log('44444444')
         assert.equal(1, r.modifiedCount);
-        // console.log('55555555')
         let newUserInfo = result;
         newUserInfo.dubloons = newWealth;
         newUserInfo.inventory = newInventory;
@@ -504,6 +519,7 @@ const client = new MongoClient(uri, {
       console.log(err);
       res.status(500).json({ status: 500, message: "error" });
     }
+    await client.close();
   };
 
   const handleCreateLobby = async (req, res) => {
@@ -516,7 +532,11 @@ const client = new MongoClient(uri, {
       res.status(400).json({ status: 400, message: 'Fields may not be blank'  });
     }
 
-    // await client.connect();
+    try {
+      await client.connect();
+    } catch (err) {
+      console.log('err from trying to connect', err);
+    }
     const db = client.db('billiardsInfo');
     
     try {
@@ -552,6 +572,7 @@ const client = new MongoClient(uri, {
       console.log(err);
       res.status(500).json({ status: 500, message: "error" });
     }
+    await client.close();
   };
 
   //TBD
@@ -573,8 +594,12 @@ const client = new MongoClient(uri, {
       res.status(400).json({ status: 400, message: 'Fields may not be blank'  });
     }
 
-    // await client.connect();
-    const db = client.db('billiardsInfo');  // this may need to be Billiards?
+    try {
+      await client.connect();
+    } catch (err) {
+      console.log('err from trying to connect', err);
+    }
+    const db = client.db('billiardsInfo');
     
     try {
       const result = await db.collection('userInfo').findOne({ userName: userName });
@@ -613,6 +638,7 @@ const client = new MongoClient(uri, {
       console.log(err);
       res.status(500).json({ status: 500, message: "error" });
     }
+    await client.close();
   };
 
 module.exports = {
