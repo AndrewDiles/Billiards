@@ -77,7 +77,6 @@ const client = new MongoClient(uri, {
   useNewUrlParser: true,
   useUnifiedTopology: true
 });
-client.connect();
 
   const handleLogIn = async (req, res) => {
     // res.status(400).json({ status: 400, message: 'Password is incorrect'  });
@@ -88,7 +87,7 @@ client.connect();
       res.status(400).json({ status: 400, message: 'Ye be missing some credentials.'  });
     }
 
-    // await client.connect();
+    await client.connect();
     const db = client.db('billiardsInfo');
     
     try {
@@ -107,6 +106,7 @@ client.connect();
       console.log(err);
       res.status(500).json({ status: 500, message: "error" });
     }
+    await client.close();
   };
 
   const handleCreateAccount = async (req, res) => {
@@ -120,7 +120,7 @@ client.connect();
       res.status(400).json({ status: 400, message: 'Your name includes "no-account"?  Be this a joke?' });
     }
 
-    // await client.connect();
+    await client.connect();
     const db = client.db('billiardsInfo');
     
     try {
@@ -199,7 +199,7 @@ client.connect();
       
     }
     else {
-      // await client.connect();
+      await client.connect();
       const db = client.db('billiardsInfo');
       
       try {
@@ -258,7 +258,7 @@ client.connect();
       res.status(400).json({ status: 400, error: 'Credentials be missing...'  });
     }
     else {
-      // await client.connect();
+      await client.connect();
       const db = client.db('billiardsInfo');
       
       let query;
@@ -315,7 +315,7 @@ client.connect();
       res.status(400).json({ status: 400, error: 'Credentials be missing...'  });
     }
     else {
-      // await client.connect();
+      await client.connect();
       const db = client.db('billiardsInfo');
       
       let query;
@@ -376,7 +376,7 @@ client.connect();
       res.status(400).json({ status: 400, error: 'Credentials be missing...'  });
     }
     else {
-      // await client.connect();
+      await client.connect();
       const db = client.db('billiardsInfo');
       
       let query;
