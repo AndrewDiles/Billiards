@@ -87,7 +87,12 @@ const client = new MongoClient(uri, {
       res.status(400).json({ status: 400, message: 'Ye be missing some credentials.'  });
     }
 
+    try {
     await client.connect();
+    } catch (err) {
+      console.log('err from trying to connect', err);
+    }
+
     const db = client.db('billiardsInfo');
     
     try {
