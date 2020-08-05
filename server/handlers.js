@@ -4,6 +4,7 @@ const server = require('http').Server(AppImport);
 // const socket = require('socket.io')(server);
 const { MongoClient } = require('mongodb');
 const assert = require('assert');
+const password = process.env.mongoKey;
 
 // MongoClient.connect('mongodb+srv://poolMaster:*****@cluster0-el4bm.mongodb.net/test',
 //   { useUnifiedTopology: true },
@@ -63,14 +64,13 @@ const assert = require('assert');
 //   }
 // );
 
-const initial = "Xq52IG";
-//Xr75ML
-let result = "";
-for(let i=0; i<initial.length; i++) {
-result += String.fromCharCode(initial.charCodeAt(i)+i)
-}
+// const initial = "Xq52IG";
+// let result = "";
+// for(let i=0; i<initial.length; i++) {
+// result += String.fromCharCode(initial.charCodeAt(i)+i)
+// }
 
-const uri = `mongodb+srv://poolMaster:${result}@cluster0-el4bm.mongodb.net/test`
+const uri = `mongodb+srv://poolMaster:${password}@cluster0-el4bm.mongodb.net/test`
 
 
 const client = new MongoClient(uri, { 
@@ -111,7 +111,7 @@ const client = new MongoClient(uri, {
       console.log(err);
       res.status(500).json({ status: 500, message: "error" });
     }
-    await client.close();
+    // await client.close();
   };
 
   const handleCreateAccount = async (req, res) => {
@@ -165,7 +165,7 @@ const client = new MongoClient(uri, {
       console.log(err);
       res.status(500).json({ status: 500, message: "error" });
     }
-    await client.close();
+    // await client.close();
   };
 
   // const handleViewLobby = async (req, res) => {
@@ -198,7 +198,7 @@ const client = new MongoClient(uri, {
       console.log(err);
       res.status(500).json({ status: 500, message: "error" });
     }
-    await client.close();
+    // await client.close();
   }
 
   const handleJoinGame = async (req, res) => {
@@ -262,7 +262,7 @@ const client = new MongoClient(uri, {
         res.status(500).json({ status: 500, error: "Someone will walk the plank for this error!" });
       }
     }
-    await client.close();
+    // await client.close();
   };
 
   const handleReady = async (req, res) => {
@@ -321,7 +321,7 @@ const client = new MongoClient(uri, {
         res.status(500).json({ status: 500, error: "Someone will walk the plank for this error!" });
       }
     }
-    await client.close();
+    // await client.close();
   };
 
   const handleNotReady = async (req, res) => {
@@ -378,7 +378,7 @@ const client = new MongoClient(uri, {
         res.status(500).json({ status: 500, error: "Someone will walk the plank for this error!" });
       }
     }
-    await client.close();
+    // await client.close();
   };
 
   const handleLeave = async (req, res) => {
@@ -463,7 +463,7 @@ const client = new MongoClient(uri, {
         res.status(500).json({ status: 500, error: "Someone will walk the plank for this error!" });
       }
     }
-    await client.close();
+    // await client.close();
   };
 
   const handlePurchase = async (req, res) => {
@@ -519,7 +519,7 @@ const client = new MongoClient(uri, {
       console.log(err);
       res.status(500).json({ status: 500, message: "error" });
     }
-    await client.close();
+    // await client.close();
   };
 
   const handleCreateLobby = async (req, res) => {
@@ -572,7 +572,7 @@ const client = new MongoClient(uri, {
       console.log(err);
       res.status(500).json({ status: 500, message: "error" });
     }
-    await client.close();
+    // await client.close();
   };
 
   //TBD
@@ -638,7 +638,7 @@ const client = new MongoClient(uri, {
       console.log(err);
       res.status(500).json({ status: 500, message: "error" });
     }
-    await client.close();
+    // await client.close();
   };
 
 module.exports = {
