@@ -136,7 +136,7 @@ App
   // })
 
   .use(['/app', '/app/*'], function(req, res, next) {
-    res.sendFile(path.join(__dirname, '../public', 'app.html'));
+    res.sendFile(path.join(__dirname, '../public', 'index.html'));
   })
 
   .listen(PORT, () => console.info(`Listening on port ${PORT}`));
