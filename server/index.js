@@ -131,7 +131,11 @@ App
   //   res.sendFile(path.join(__dirname, '../public', 'app.html'));
   // })
 
-  router.get(['/app', '/app/*'], function(req, res, next) {
+  // router.get(['/app', '/app/*'], function(req, res, next) {
+  //   res.sendFile(path.join(__dirname, '../public', 'app.html'));
+  // })
+
+  .use(['/app', '/app/*'], function(req, res, next) {
     res.sendFile(path.join(__dirname, '../public', 'app.html'));
   })
 
