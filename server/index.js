@@ -46,7 +46,7 @@ App
   })
   .use(morgan("tiny"))
   .use(express.static("../build/"))
-  .use('/home', express.static("../build/"))
+  // .use('/home', express.static("../build/"))
   .use(bodyParser.json())
   .use(express.urlencoded({ extended: false }))
   // .use("/", express.static(__dirname + "/"))
@@ -130,15 +130,15 @@ App
   //   gameInfo:
   // }
 
-  // .use(function(req, res, next) {
-  //   console.log('hitting end point #1');
-  //   res.sendFile(path.join(__dirname, '../build', 'index.html'));
-  // })
+  .use(function(req, res, next) {
+    console.log('hitting end point #1');
+    res.sendFile(path.join(__dirname, '../build', 'index.html'));
+  })
 
-  // router.get('/app', function(req, res, next) {
-  //     console.log('hitting end point #2');
-  //   res.sendFile(path.join(__dirname, '../public', 'index.html'));
-  // })
+  router.get('/*', function(req, res, next) {
+      console.log('hitting end point #2');
+    res.sendFile(path.join(__dirname, '../build', 'index.html'));
+  })
 
   .listen(PORT, () => console.info(`Listening on port ${PORT}`));
 
