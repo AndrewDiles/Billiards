@@ -43,10 +43,10 @@ App
     next();
   })
   .use(morgan("tiny"))
-  .use(express.static("../build/"))
+  // .use(express.static("../build/"))
   .use(bodyParser.json())
   .use(express.urlencoded({ extended: false }))
-  // .use("/", express.static(__dirname + "/"))
+  .use("/", express.static(__dirname + "/"))
 
 
   // provided the correct password: retrieves user's profile info
@@ -127,15 +127,10 @@ App
   //   gameInfo:
   // }
 
-  // .use(['/app', '/app/*'], function(req, res, next) {
-  //   console.log('hitting end point #1');
+  // .use(function(req, res, next) {
+  //   console.log('hitting end point #2');
   //   res.sendFile(path.join(__dirname, '../public', 'index.html'));
   // })
-
-  .use(function(req, res, next) {
-    console.log('hitting end point #2');
-    res.sendFile(path.join(__dirname, '../public', 'index.html'));
-  })
 
 
   .listen(PORT, () => console.info(`Listening on port ${PORT}`));
