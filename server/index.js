@@ -130,15 +130,15 @@ App
   //   gameInfo:
   // }
 
-  .use(function(req, res, next) {
-    console.log('hitting end point #1');
-    res.sendFile(path.join(__dirname, '../build', 'index.html'));
-  })
+  // .use(function(req, res, next) {
+  //   console.log('hitting end point #1');
+  //   res.sendFile(path.join(__dirname, '../build', 'index.html'));
+  // })
 
-  router.get('/*', function(req, res, next) {
-      console.log('hitting end point #2');
-    res.sendFile(path.join(__dirname, '../build', 'index.html'));
-  })
+  // router.get('/*', function(req, res, next) {
+  //     console.log('hitting end point #2');
+  //   res.sendFile(path.join(__dirname, '../build', 'index.html'));
+  // })
 
   .listen(PORT, () => console.info(`Listening on port ${PORT}`));
 
