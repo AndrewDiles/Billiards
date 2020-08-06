@@ -43,10 +43,10 @@ App
     next();
   })
   .use(morgan("tiny"))
-  // .use(express.static("../build/"))
+  .use(express.static("../build/"))
   .use(bodyParser.json())
   .use(express.urlencoded({ extended: false }))
-  .use("/", express.static(__dirname + "/"))
+  // .use("/", express.static(__dirname + "/"))
 
 
   // provided the correct password: retrieves user's profile info
