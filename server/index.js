@@ -127,17 +127,14 @@ App
   //   gameInfo:
   // }
 
- 
-
-
-  .use(['/app', '/app/*'], function(req, res, next) {
-    console.log('hitting end point #1');
-    res.sendFile(path.join(__dirname, '../public', 'index.html'));
-  })
+  // .use(['/app', '/app/*'], function(req, res, next) {
+  //   console.log('hitting end point #1');
+  //   res.sendFile(path.join(__dirname, '../public', 'index.html'));
+  // })
 
   .use(function(req, res, next) {
     console.log('hitting end point #2');
-    res.sendFile(path.join(__dirname, '../public', 'app.html'));
+    res.sendFile(path.join(__dirname, '../public', 'index.html'));
   })
 
 
