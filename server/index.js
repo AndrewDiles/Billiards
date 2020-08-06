@@ -127,7 +127,11 @@ App
   //   gameInfo:
   // }
 
-  .use(function(req, res, next) {
+  // .use(function(req, res, next) {
+  //   res.sendFile(path.join(__dirname, '../public', 'app.html'));
+  // })
+
+  router.get(['/app', '/app/*'], function(req, res, next) {
     res.sendFile(path.join(__dirname, '../public', 'app.html'));
   })
 
