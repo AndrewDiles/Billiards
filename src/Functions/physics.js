@@ -175,7 +175,7 @@ const testIsSinking = (top, left) => {
     
     if ( (distanceBetweenTwoPoints(top, left, hole[key[0]][0], hole[key[0]][1])) <  hole[key[0]][2] ) {
       sinking = key[0];
-      console.log(`A BALL IS SINKING INTO THE ${key[0]} HOLE!  Distance is/was ${distanceBetweenTwoPoints(top, left, hole[key[0]][0], hole[key[0]][1])} needs to be less than ${hole[key[0]][2]}`); 
+      // console.log(`A BALL IS SINKING INTO THE ${key[0]} HOLE!  Distance is/was ${distanceBetweenTwoPoints(top, left, hole[key[0]][0], hole[key[0]][1])} needs to be less than ${hole[key[0]][2]}`); 
     }
   })
   // fall back test in case ball is out of bounds  --  Removing and implementing corner collision
@@ -358,8 +358,8 @@ export const applyPhysics = (billiardsObject, settings) => {
   
   // handle current collisions
   
-  // Creating a container for past collisions to insure balls have a chance to get outside eachother
-  let pastCollisions = [];
+  // Retrieving or creating a container for past collisions to insure balls have a chance to get outside eachother
+  let pastCollisions = billiardsObject[0].pastCollisions || [];
 
   // mapping out returns from all billiards
   return billiardsObject.map((elem) => {
@@ -375,7 +375,7 @@ export const applyPhysics = (billiardsObject, settings) => {
       element.inMotion = false;
     }
 
-    // console.log('element.collisions for', element.id, ' : ' ,element.collisions) //< ----------- TEST
+    // console.log('element.collisions for', element.id, ' : ' ,element.collisions)
 
     // if there is a pending collision it must be resolved immediately (this may occur at the time of the collision)
     if (element.collisions.length !== 0 && !element.sinkinglocation && element.sinkingSize > 0) {
@@ -385,7 +385,7 @@ export const applyPhysics = (billiardsObject, settings) => {
         element.yVel += collision[1];
         let impact = {"ballImpacted" : element.id, "ballImpacting" : collision[2]}
         pastCollisions.push(impact);
-        console.log('pastCollisions',pastCollisions);
+        // console.log('pastCollisions',pastCollisions);
       })
       // console.log('pre-resolution:',element.collisions);
       // console.log('post-resolution:',element.collisions);
@@ -537,10 +537,9 @@ export const applyPhysics = (billiardsObject, settings) => {
               element.firstCollision = ballCollisions[0];
             }
 
-            if (ballCollisions[0]) {
-            console.log(`Ball${element.id} hit ${ballCollisions[0]}`) // -------------------- TEST
-            }
-
+            // if (ballCollisions[0]) {
+            // console.log(`Ball${element.id} hit ${ballCollisions[0]}`) // -------------------- TEST
+            // }
 
             // This loop removes any detected collisions that occured within the time interval of the refresh rate.
             ballCollisions.forEach((collision, index)=>{
@@ -550,7 +549,7 @@ export const applyPhysics = (billiardsObject, settings) => {
                   // console.log('pastCollision.ballImpacted',pastCollision.ballImpacted);
                   if (collision===pastCollision.ballImpacting) {
                     alreadyRecordedThisImpact = true;
-                    console.log(`The ${collision} ball has already hit the ${pastCollision.ballImpacted} ball.`);
+                    // console.log(`The ${collision} ball has already hit the ${pastCollision.ballImpacted} ball.`);
                   }
                 })
               if (alreadyRecordedThisImpact) ballCollisions.splice(index,1);
@@ -593,7 +592,7 @@ export const applyPhysics = (billiardsObject, settings) => {
                 // let impactedBall = billiardsObject.find(ball => ball.id === ballCollisions[0]);
                 // console.log('the ball the current ball being tested`s data is:',impactedBall);
                 let theta = angleBetweenTwoBalls(topAv, leftAv, impactedBall.top, impactedBall.left);
-                // console.log('theta is:',theta);
+                console.log('theta is:',theta);
                 let Vib2 = getHypotenuse(impactedBall.xVel, impactedBall.yVel);
                 let Vib1 = getHypotenuse(testXVel, testYVel);
                 // let Vfb1x = Vib2*Math.sin(theta) - Vib1*Math.sin(theta);
@@ -607,25 +606,38 @@ export const applyPhysics = (billiardsObject, settings) => {
                 Vfb2x > 0 ? Vfb2x > 0.001 ? Vfb2x -= 0.001 : Vfb2x = 0 : Vfb2x < -0.001 ? Vfb2x += 0.001 : Vfb2x = 0;
                 Vfb2y > 0 ? Vfb2y > 0.001 ? Vfb2y -= 0.001 : Vfb2y = 0 : Vfb2y < -0.001 ? Vfb2y += 0.001 : Vfb2y = 0;
                 if (theta < -0.785398) {
-                  Vfb1x *= -1;
-                  Vfb1y *= -1;
-                  Vfb2y *= -1;
+                  if (topAv < impactedBall.top && leftAv < impactedBall.left) {
+                    // Vfb1x *= -1;
+                    Vfb1y *= -1;
+                    Vfb2y *= -1;
+                  }
+                  else {
+                    Vfb1x *= -1;
+                    Vfb2x *= -1;
+                  }
                 }
                 else if (theta < 0) {
                   // Vfb2x *= -1;
                 }
                 else if (theta < 0.785398) {
                   Vfb2x *= -1;
+                  // Vfb1x *= -1;
                 }
                 else {
+                  if (topAv < impactedBall.top && leftAv > impactedBall.left) {
+                    Vfb1y *= -1;
+                    Vfb2y *= -1;
+                  }
+                  else {
                   Vfb1x *= -1;
                   Vfb1y *= -1;
                   Vfb2y *= -1;
+                  }
                 }
                 element.xVel = Vfb1x;
                 element.yVel = Vfb1y;
                 impactedBall.inMotion = true;
-                console.log('impactedBall',impactedBall);
+                // console.log('impactedBall',impactedBall);
                 impactedBall.collisions.push([Vfb2x,Vfb2y, element.id]);
                 let approxXPos = (leftAv/2) + (leftAv + Vfb1x* (settings.refreshRate/100))/2;
                 let approxYPos = (topAv/2) + (topAv + Vfb1y* (settings.refreshRate/100))/2;
@@ -721,10 +733,13 @@ export const applyPhysics = (billiardsObject, settings) => {
         element.sinkinglocation = "TL";
       }
     }
-
+    
+    // storing pastCollisions for next update
+    billiardsObject[0].pastCollisions = pastCollisions;
     return element
     // test collisions (has no affect if not in motion)
   })
+
   // return newBilliardsArray
   // return billiardsObject
 }
@@ -754,8 +769,10 @@ export const moveBallsOutsideEachOther = (billiardsObject) => {
       if (billiard.id !== element.id) {
         let test = testSingleBallCollision(element, billiard, 4.1);
         let xDifference, yDifference = 0;
-        while (test) {
-
+        let nudgeAttempts = 0;
+        while (nudgeAttempts <10 && test) {
+          // increment nudgeAttempts to insure this never permacycles
+          nudgeAttempts ++;
           // moving out of eachother with small random increments... less favorable solution
           // let theta = angleBetweenTwoBalls(element.top, element.left, billiard.top, billiard.left)
           // let rand = Math.random() -0.5;

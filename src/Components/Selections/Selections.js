@@ -11,7 +11,10 @@ import {
   quitGame,
   removeCurrentGame,
   logUserOut,
-  joinGameSuccess
+  joinGameSuccess,
+  setBallInHand,
+  freeMoveCueBallWhiteSunk,
+  setGameStatusFreeMove
 } from "../../actions";
 
 // import { SettingsContext } from '../../SettingsContext';
@@ -75,7 +78,15 @@ const Selections = ({isSliding}) => {
         }
       ));
     }
-    dispatch(setGameStatusFirstShot());
+    
+    if (text === "test") {
+      dispatch(setBallInHand());
+      dispatch(freeMoveCueBallWhiteSunk());
+      dispatch(setGameStatusFreeMove());
+    }
+    else {
+      dispatch(setGameStatusFirstShot());
+    }
   }
   const handleQuit = () => {
     dispatch(quitGame());

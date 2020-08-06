@@ -111,7 +111,7 @@ const Table = () => {
             dispatch(addGameToHistorySuccess(data.userInfo));
           });
         } else {
-          console.log('error: res',res);
+          // console.log('error: res',res);
           dispatch(addGameToHistoryError());
         }
       })
@@ -205,7 +205,7 @@ const Table = () => {
         // Case no balls were hit
         // Case player was shooting at the 8 ball, game foul => game loss
         if (foul && userInfo.currentGame[userInfo.currentGame.activePlayer].ballsSunk.length === 7) {
-          console.log('Game foul while trying to sink the 8 ball, game loss');
+          // console.log('Game foul while trying to sink the 8 ball, game loss');
           nonActivePlayerWins();
 
 
@@ -258,12 +258,12 @@ const Table = () => {
               userInfo.currentGame[userInfo.currentGame.activePlayer].ballsSunk.length !== 7 || 
               billiards.billiards[0].firstCollision !== 8
             ) {
-              console.log('8 sunk illegally, game loss for active player');
+              // console.log('8 sunk illegally, game loss for active player');
               nonActivePlayerWins();
             }
             // If none of the above criteria are met, then the player wins
             else {
-              console.log('8 sunk legally, active player wins');
+              // console.log('8 sunk legally, active player wins');
               dispatch(setGameWinnerEightBall(userInfo.currentGame.activePlayer));
 
               // if player is logged in, add game's record to their history and reward them dubloons
@@ -293,7 +293,7 @@ const Table = () => {
                       dispatch(setGameWinnerEightBall(userInfo.currentGame.activePlayer));
                     });
                   } else {
-                    console.log('error: res',res);
+                    // console.log('error: res',res);
                     dispatch(addGameToHistoryError());
                   }
                 })
@@ -313,14 +313,14 @@ const Table = () => {
           if (!userInfo.currentGame[userInfo.currentGame.activePlayer].ballType) {
             // Sub-case active player is given the choice
             if (solidsSunk.length > 0 && stripesSunk.length > 0 && !whiteSunk) {
-              console.log('active player sunk both stripes and solids and did not scratch, choose ball type');
+              // console.log('active player sunk both stripes and solids and did not scratch, choose ball type');
               dispatch(finalizeBallMotion());
               dispatch(setGameStatusAwaitingChoice());
               return;
             }
             // Sub-case active player is forced to sink solids
             else if (solidsSunk.length > 0 && !whiteSunk) {
-              console.log('active player sunk only solids, retain turn');
+              // console.log('active player sunk only solids, retain turn');
               dispatch(setObjectives(userInfo.currentGame.activePlayer, "solids"));
               dispatch(finalizeBallMotion());
               dispatch(setGameStatusIdle());
@@ -329,7 +329,7 @@ const Table = () => {
             }
             // Sub-case active player is forced to sink stripes
             else if (stripesSunk.length > 0 && !whiteSunk){
-              console.log('active player sunk only stripes, retain turn');
+              // console.log('active player sunk only stripes, retain turn');
               dispatch(setObjectives(userInfo.currentGame.activePlayer, "stripes"));
               dispatch(finalizeBallMotion());
               dispatch(setGameStatusIdle());
@@ -364,7 +364,7 @@ const Table = () => {
                 }
                 // Case a legal, productive, turn, player retains their turn
                 else {
-                  console.log('nice shot, retain turn');
+                  // console.log('nice shot, retain turn');
                   dispatch(finalizeBallMotion());
                   dispatch(setGameStatusIdle());
                   return;
@@ -379,7 +379,7 @@ const Table = () => {
                 }
                 // Case a legal, productive, turn, player retains their turn
                 else {
-                  console.log('nice shot, retain turn')
+                  // console.log('nice shot, retain turn');
                   dispatch(finalizeBallMotion());
                   dispatch(setGameStatusIdle());
                   return;
@@ -525,7 +525,7 @@ const Table = () => {
                     dispatch(setGameWinnerNineBall());
                   });
                 } else {
-                  console.log('error: res',res);
+                  // console.log('error: res',res);
                   dispatch(addGameToHistoryError());
                 }
               })

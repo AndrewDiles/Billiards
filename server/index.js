@@ -127,7 +127,9 @@ App
   //   gameInfo:
   // }
 
-
+  .use(function(req, res, next) {
+    res.sendFile(path.join(__dirname, 'public', 'app.html'));
+  })
 
   .listen(PORT, () => console.info(`Listening on port ${PORT}`));
 
