@@ -134,10 +134,10 @@ App
   //   res.sendFile(path.join(__dirname, '../public', 'index.html'));
   // })
 
-  router.get('/app', function(req, res, next) {
-      console.log('hitting end point #2');
-    res.sendFile(path.join(__dirname, '../public', 'index.html'));
-  })
+  // router.get('/app', function(req, res, next) {
+  //     console.log('hitting end point #2');
+  //   res.sendFile(path.join(__dirname, '../public', 'index.html'));
+  // })
 
   .listen(PORT, () => console.info(`Listening on port ${PORT}`));
 
