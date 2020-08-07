@@ -66,29 +66,34 @@ const Lobby = () => {
       }).then((res) => {
         console.log('res from poll', res)
         if (res.status === 200) {
-          res.json().then((data) => {
-            console.log('data from poll', data)
-            if (settings.status === "readying" || 
-            settings.status === "un-readying" || 
-            settings.status === "leaving" ||
-            settings.status === "creating" ||
-            !window.location.href.includes("view-lobby")
-            ) return;
-            else if (!window.location.href.includes("view-lobby")) {
-              dispatch(loadAvailableGamesError());
-              return;
-            }
-            setFetchedLobbyData(true);
-            let lobbiesToDisplay = data.lobbyGames;
-            data.lobbyGames.forEach((game)=>{
-              if (game.Player1 === userInfo.user.userName || game.Player2 === userInfo.user.userName) {
-                lobbiesToDisplay = [game];
-                setPlayerInLobbyGame(true);
-              }
-            })
-            setLobbyGames(lobbiesToDisplay);
+          if (typeof data != "object") {
             dispatch(loadAvailableGamesSuccess());
-          });
+          }
+          else {
+            res.json().then((data) => {
+              // console.log('data from poll', data)
+              if (settings.status === "readying" || 
+              settings.status === "un-readying" || 
+              settings.status === "leaving" ||
+              settings.status === "creating" ||
+              !window.location.href.includes("view-lobby")
+              ) return;
+              else if (!window.location.href.includes("view-lobby")) {
+                dispatch(loadAvailableGamesError());
+                return;
+              }
+              setFetchedLobbyData(true);
+              let lobbiesToDisplay = data.lobbyGames;
+              data.lobbyGames.forEach((game)=>{
+                if (game.Player1 === userInfo.user.userName || game.Player2 === userInfo.user.userName) {
+                  lobbiesToDisplay = [game];
+                  setPlayerInLobbyGame(true);
+                }
+              })
+              setLobbyGames(lobbiesToDisplay);
+              dispatch(loadAvailableGamesSuccess());
+            });
+          }
         } else if (res.status === 304) {
           dispatch(loadAvailableGamesSuccess());
         }
