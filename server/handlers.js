@@ -6,6 +6,8 @@ const { MongoClient } = require('mongodb');
 const assert = require('assert');
 const password = process.env.mongoKey;
 
+let storedLobbyData = [];
+
 // MongoClient.connect('mongodb+srv://poolMaster:*****@cluster0-el4bm.mongodb.net/test',
 //   { useUnifiedTopology: true },
 //   function(err, db){
@@ -77,8 +79,13 @@ const client = new MongoClient(uri, {
   useNewUrlParser: true,
   useUnifiedTopology: true
 });
+const pollingConnection =  new MongoClient(uri, { 
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+});
 
   const handleLogIn = async (req, res) => {
+    console.log('YOU HIT THE LOGIN');
     // res.status(400).json({ status: 400, message: 'Password is incorrect'  });
     const userName = req.body.userName;
     const password = req.body.password;
@@ -97,7 +104,7 @@ const client = new MongoClient(uri, {
     
     try {
       const result = await db.collection('userInfo').findOne({ userName: userName });
-      console.log('result from mongo was:', result)
+      // console.log('result from mongo was:', result)
       if (!result || result.length === 0) {
         res.status(404).json({ status: 404, user: 'Not Found', message: 'Ye could not be found!' });
       }
@@ -184,28 +191,30 @@ const client = new MongoClient(uri, {
   
 
   const handlePollForLobby = async (req, res) => {
+    console.log('YOU HIT THE POLL HANDLER')
     try {
-      await client.connect();
+      await pollingConnection.connect();
       } catch (err) {
         console.log('err from trying to connect', err);
       }
 
-    const polldb = client.db('billiardsInfo');
+    const polldb = pollingConnection.db('billiardsInfo');
     try {
       const result = await polldb.collection('lobbyInfo').find().toArray();
+      // console.log('result from mongo was:', result)
       if (result) {
-        console.log('result found:', result)
-        res.status(200).json({ status: 200, lobbyGames: result })
+        storedLobbyData = result;
+        res.status(200).json({ status: 200, lobbyGames: storedLobbyData })
       }
       else {
-        console.log('result null:', result)
-        res.status(304).json({ status: 304, lobbyGames: [] })
+        // console.log('result null:', result)
+        res.status(304).json({ status: 304, lobbyGames: storedLobbyData })
       }
     } catch (err) {
       console.log(err);
       res.status(500).json({ status: 500, message: "error" });
     }
-    // await client.close();
+    // await pollingConnection.close();
   }
 
   const handleJoinGame = async (req, res) => {

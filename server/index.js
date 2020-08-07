@@ -50,7 +50,7 @@ App
   .use('/view-account', express.static("../build/"))
   .use('/view-lobby', express.static("../build/"))
   .use('/', express.static("../build/"))
-  .use('/*', express.static("../build/"))
+  // .use('/*', express.static("../build/"))
 
   .use(bodyParser.json())
   .use(express.urlencoded({ extended: false }))

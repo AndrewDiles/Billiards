@@ -47,10 +47,9 @@ const Login = () => {
         password: password 
       }),
     }).then((res) => {
-      // console.log('respresprespresprespresp',resp)
+      console.log('res from login',res)
       if (res.status === 200) {
         res.json().then((data) => {
-          // console.log(userData, "IM IN USERDATA LOGGED IN");
           let userInfo = {
             userName: data.user.userName,
             dubloons: data.user.dubloons,

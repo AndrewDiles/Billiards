@@ -222,12 +222,12 @@ const StyledNavLink = styled(NavLink)`
   width: 100px;
 `
 const Wrapper = styled.div`
-  /* position: absolute; */
+  position: absolute;
   z-index: 10;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: left;
-  top: 0;
-  right: 0;
+  top: 5px;
+  left: 5px;
 `

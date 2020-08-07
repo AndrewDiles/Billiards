@@ -64,15 +64,16 @@ const Lobby = () => {
           "Content-Type": "application/json",
         },
       }).then((res) => {
-        console.log('res from poll', res, 'type of res is:', typeof res)
+        // console.log('res from poll', res, 'type of res is:', typeof res)
         if (res.status === 200 || res.status === 304) {
           if (typeof res !== "object") {
-            console.log('res in lobby is not an object...')
+            // console.log('res in lobby is not an object...')
             dispatch(loadAvailableGamesSuccess())
           }
           else {
-            // res.json().then((data) => {
-              console.log('lobbyGames from poll', res.lobbyGames)
+            // console.log('res in lobby is an object.')
+            res.json().then((data) => {
+              console.log('data from poll', data)
               if (settings.status === "readying" || 
               settings.status === "un-readying" || 
               settings.status === "leaving" ||
@@ -84,8 +85,8 @@ const Lobby = () => {
                 return;
               }
               setFetchedLobbyData(true);
-              let lobbiesToDisplay = res.lobbyGames;
-              res.lobbyGames.forEach((game)=>{
+              let lobbiesToDisplay = data.lobbyGames || [];
+              lobbiesToDisplay.forEach((game)=>{
                 if (game.Player1 === userInfo.user.userName || game.Player2 === userInfo.user.userName) {
                   lobbiesToDisplay = [game];
                   setPlayerInLobbyGame(true);
@@ -93,9 +94,9 @@ const Lobby = () => {
               })
               setLobbyGames(lobbiesToDisplay);
               dispatch(loadAvailableGamesSuccess());
-            // }
-            }
+            })
           }
+        }
         else {
           console.log('error: res',res);
           dispatch(loadAvailableGamesError());
