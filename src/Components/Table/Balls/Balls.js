@@ -63,6 +63,7 @@ const Balls = ( {billiard} ) => {
       }
     }
   }, [settings.ballInHand, settings.gameStatus] )
+  // }, [settings.ballInHand, settings.gameStatus, billiard.id, billiardInfo.status, dispatch, handleTableClick, settings.tableSize, testLegalBallDropLocation] )
   
   const testLegalBallDropLocation = (x,y) => {
     // console.log('legal drop test begins, (x,y) =', x,y)

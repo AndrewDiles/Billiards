@@ -4,8 +4,6 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const morgan = require("morgan");
 
-// const router = new express.Router();
-
 const { 
   handleLogIn,
   handleCreateAccount,
@@ -46,19 +44,13 @@ App
   })
   .use(morgan("tiny"))
 
-  .use('/home', express.static("../build/"))
-  .use('/login', express.static("../build/"))
-  .use('/billiards', express.static("../build/"))
-  .use('/view-account', express.static("../build/"))
-  .use('/view-lobby', express.static("../build/"))
-  .use('/', express.static("../build/"))
+  // .use('/home', express.static("../build/"))
+  // .use('/login', express.static("../build/"))
+  // .use('/billiards', express.static("../build/"))
+  // .use('/view-account', express.static("../build/"))
+  // .use('/view-lobby', express.static("../build/"))
+  // .use('/', express.static("../build/"))
   .use('/*', express.static("../build/"))
-
-  // .use(express.static("../build/"))
-
-  // .get('/*', (req, res) => {
-  //   res.sendFile("../build/");
-  // })
 
   .use(bodyParser.json())
   .use(express.urlencoded({ extended: false }))
@@ -142,16 +134,6 @@ App
   //   userName:
   //   gameInfo:
   // }
-
-  // .use(function(req, res, next) {
-  //   console.log('hitting end point #1');
-  //   res.sendFile(path.join(__dirname, '../build', 'index.html'));
-  // })
-
-  // router.get('/*', function(req, res, next) {
-  //     console.log('hitting end point #2');
-  //   res.sendFile(path.join(__dirname, '../build', 'index.html'));
-  // })
 
   .listen(PORT, () => console.info(`Listening on port ${PORT}`));
 
