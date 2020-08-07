@@ -193,7 +193,12 @@ const client = new MongoClient(uri, {
     const polldb = client.db('billiardsInfo');
     try {
       const result = await polldb.collection('lobbyInfo').find().toArray();
-      res.status(200).json({ status: 200, lobbyGames: result })
+      if (result) {
+        res.status(200).json({ status: 200, lobbyGames: result })
+      }
+      else {
+        res.status(304).json({ status: 304, lobbyGames: [] })
+      }
     } catch (err) {
       console.log(err);
       res.status(500).json({ status: 500, message: "error" });
