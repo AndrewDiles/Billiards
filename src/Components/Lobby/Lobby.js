@@ -64,6 +64,7 @@ const Lobby = () => {
           "Content-Type": "application/json",
         },
       }).then((res) => {
+        console.log('res from poll', res)
         if (res.status === 200) {
           res.json().then((data) => {
             if (settings.status === "readying" || 
