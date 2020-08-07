@@ -45,8 +45,9 @@ App
     next();
   })
   .use(morgan("tiny"))
-  // .use(express.static("../build/"))
-  .use('/*', express.static("../build/"))
+  .use('/home', express.static("../build/"))
+  .use('/login', express.static("../build/"))
+  .use(express.static("../build/"))
   .use(bodyParser.json())
   .use(express.urlencoded({ extended: false }))
   // .use("/", express.static(__dirname + "/"))
