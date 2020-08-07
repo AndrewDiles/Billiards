@@ -52,7 +52,8 @@ const Lobby = () => {
       if (settings.status === "readying" || 
       settings.status === "un-readying" || 
       settings.status === "leaving" ||
-      settings.status === "creating"
+      settings.status === "creating" ||
+      settings.status === "loading"
       ) return;
       
       dispatch(requestAvailableGames());
