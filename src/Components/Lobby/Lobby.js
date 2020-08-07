@@ -86,7 +86,10 @@ const Lobby = () => {
             setLobbyGames(lobbiesToDisplay);
             dispatch(loadAvailableGamesSuccess());
           });
-        } else {
+        } else if (res.status === 304) {
+          dispatch(loadAvailableGamesSuccess());
+        }
+        else {
           console.log('error: res',res);
           dispatch(loadAvailableGamesError());
         }
