@@ -163,7 +163,7 @@ export default function userReducer(state = initialState, action) {
     case 'LOAD_AVAILABLE_GAMES_ERROR' : {
       return {
         ...state,
-        status: 'error',
+        status: 'idle',
       }
     }
     case 'REQUEST_JOIN_GAME' : {
