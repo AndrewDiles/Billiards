@@ -67,6 +67,7 @@ const Lobby = () => {
         console.log('res from poll', res)
         if (res.status === 200) {
           res.json().then((data) => {
+            console.log('data from poll', data)
             if (settings.status === "readying" || 
             settings.status === "un-readying" || 
             settings.status === "leaving" ||
