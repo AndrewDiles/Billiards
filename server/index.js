@@ -46,16 +46,19 @@ App
   })
   .use(morgan("tiny"))
 
-  // .use('/home', express.static("../build/"))
-  // .use('/login', express.static("../build/"))
-  // .use('/billiards', express.static("../build/"))
-  // .use('/view-account', express.static("../build/"))
-  // .use('/view-lobby', express.static("../build/"))
+  .use('/home', express.static("../build/"))
+  .use('/login', express.static("../build/"))
+  .use('/billiards', express.static("../build/"))
+  .use('/view-account', express.static("../build/"))
+  .use('/view-lobby', express.static("../build/"))
+  .use('/', express.static("../build/"))
+  .use('/*', express.static("../build/"))
+
   // .use(express.static("../build/"))
 
-  .get('/*', (req, res) => {
-    res.sendFile("../build/");
-  })
+  // .get('/*', (req, res) => {
+  //   res.sendFile("../build/");
+  // })
 
   .use(bodyParser.json())
   .use(express.urlencoded({ extended: false }))
