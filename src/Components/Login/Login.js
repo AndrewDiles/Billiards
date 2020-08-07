@@ -47,7 +47,7 @@ const Login = () => {
         password: password 
       }),
     }).then((res) => {
-      console.log('res from login',res)
+      // console.log('res from login',res)
       if (res.status === 200) {
         res.json().then((data) => {
           let userInfo = {

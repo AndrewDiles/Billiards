@@ -251,6 +251,7 @@ const resolveCushionCollision = (collision, xVel, testXVel, yVel, testYVel, left
   }
   else if (collision === "BOTTOM_CUSHION"){
     // console.log('BOTTOM CUSHION HIT DETECTED');
+    // console.log('testYVel',testYVel, 'yVel', yVel);
     top = 127.49;
     xVel = testXVel;
     left = testLeft;
@@ -277,7 +278,9 @@ export const testBallCollisions = (testTop, testLeft, allBilliards, testBilliard
   // let r = tableSizes[settings.tableSize].ballRadius;
   let r = 4.2;
   allBilliards.forEach((billiard)=>{
-    if (billiard.id !== testBilliard.id && !billiard.sinkinglocation) {
+    if (billiard.id !== testBilliard.id 
+      && !billiard.sinkinglocation && billiard.sinkingSize === 1 
+      && !testBilliard.sinkinglocation && testBilliard.sinkingSize === 1) {
       // console.log('distance between:',distanceBetweenTwoPoints(testTop,testLeft, billiard.top, billiard.left))
       // console.log('2r req: ', 2*r)
       if(distanceBetweenTwoPoints(testTop,testLeft, billiard.top, billiard.left) < 2*r) {
@@ -448,6 +451,7 @@ export const applyPhysics = (billiardsObject, settings) => {
         let vf = applyFrictionToVelocity(vi)
       
         // similar triangles is an easy way to find the new x,y velocities
+        
         let testXVel = getMissingTriangleSide(vi, element.xVel, vf);
         let testYVel = getMissingTriangleSide(vi, element.yVel, vf);
 
@@ -478,7 +482,7 @@ export const applyPhysics = (billiardsObject, settings) => {
 
             // if it did hit a corner, then set its new location and velocity accordingly
             if (cornerCollision) {
-              // console.log('impact on',holeAngleInfo[cornerCollision.hole][cornerCollision.side].impactOn)
+              // console.log(`${element.id} ball had an impact on ${holeAngleInfo[cornerCollision.hole][cornerCollision.side].impactOn}`);
               element.top = holeAngleInfo[cornerCollision.hole][cornerCollision.side].top - holeAngleInfo[cornerCollision.hole][cornerCollision.side].testTop;
               element.left = holeAngleInfo[cornerCollision.hole][cornerCollision.side].left - holeAngleInfo[cornerCollision.hole][cornerCollision.side].testLeft;
 
@@ -592,7 +596,7 @@ export const applyPhysics = (billiardsObject, settings) => {
                 // let impactedBall = billiardsObject.find(ball => ball.id === ballCollisions[0]);
                 // console.log('the ball the current ball being tested`s data is:',impactedBall);
                 let theta = angleBetweenTwoBalls(topAv, leftAv, impactedBall.top, impactedBall.left);
-                console.log('theta is:',theta);
+                // console.log('theta is:',theta);
                 let Vib2 = getHypotenuse(impactedBall.xVel, impactedBall.yVel);
                 let Vib1 = getHypotenuse(testXVel, testYVel);
                 // let Vfb1x = Vib2*Math.sin(theta) - Vib1*Math.sin(theta);

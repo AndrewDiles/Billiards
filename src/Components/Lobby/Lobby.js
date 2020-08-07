@@ -73,7 +73,7 @@ const Lobby = () => {
           else {
             // console.log('res in lobby is an object.')
             res.json().then((data) => {
-              console.log('data from poll', data)
+              // console.log('data from poll', data)
               if (settings.status === "readying" || 
               settings.status === "un-readying" || 
               settings.status === "leaving" ||

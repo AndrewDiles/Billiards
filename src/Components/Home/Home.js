@@ -75,7 +75,7 @@ const Home = () => {
           <ReactPlayer
           height = {'300px'}
           width = {'533px'}
-          url="https://youtu.be/08cdUCacaHI"
+          url="https://youtu.be/M1SxJ5DfHD4"
           />          
         </Column>
         <Column>
