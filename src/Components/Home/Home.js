@@ -33,8 +33,11 @@ const Home = () => {
           <h3>
             Please make an account to play against other shark-shooters remotely.
           </h3>
+          <Note>
+            note: multi-player play has yet to be completed
+          </Note>
           <h3>
-            Or enjoy local player without an account.
+            Or enjoy local play without an account.
           </h3>
           {/* <h3/></h3> */}
           {!userInfo.user ? (
@@ -99,6 +102,9 @@ const Home = () => {
   )
 }
 export default Home;
+const Note = styled.h5`
+  color: crimson;
+`
 const Column = styled.div`
   display: flex;
   flex-direction: column;

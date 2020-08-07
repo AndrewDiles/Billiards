@@ -605,35 +605,56 @@ export const applyPhysics = (billiardsObject, settings) => {
                 let Vfb2y = -Vib1*Math.cos(theta) + Vib2*Math.cos(theta);
                 Vfb2x > 0 ? Vfb2x > 0.001 ? Vfb2x -= 0.001 : Vfb2x = 0 : Vfb2x < -0.001 ? Vfb2x += 0.001 : Vfb2x = 0;
                 Vfb2y > 0 ? Vfb2y > 0.001 ? Vfb2y -= 0.001 : Vfb2y = 0 : Vfb2y < -0.001 ? Vfb2y += 0.001 : Vfb2y = 0;
-                if (theta < -0.785398) {
-                  if (topAv < impactedBall.top && leftAv < impactedBall.left) {
-                    // Vfb1x *= -1;
-                    Vfb1y *= -1;
-                    Vfb2y *= -1;
-                  }
-                  else {
-                    Vfb1x *= -1;
-                    Vfb2x *= -1;
-                  }
-                }
-                else if (theta < 0) {
-                  // Vfb2x *= -1;
-                }
-                else if (theta < 0.785398) {
-                  Vfb2x *= -1;
-                  // Vfb1x *= -1;
-                }
-                else {
-                  if (topAv < impactedBall.top && leftAv > impactedBall.left) {
-                    Vfb1y *= -1;
-                    Vfb2y *= -1;
-                  }
-                  else {
-                  Vfb1x *= -1;
+                // case top left of impacted ball
+                if (topAv <= impactedBall.top && leftAv <= impactedBall.left) {
                   Vfb1y *= -1;
                   Vfb2y *= -1;
-                  }
                 }
+                // case top right of impacted ball
+                else if (topAv <= impactedBall.top && leftAv >= impactedBall.left) {
+                  Vfb1y *= -1;
+                  Vfb2y *= -1;
+                }
+                // case bottom left of impacted ball
+                else if (topAv >= impactedBall.top && leftAv <= impactedBall.left) {
+                  Vfb1x *= -1;
+                  Vfb2x *= -1;
+                }
+                // case bottom right of impacted ball
+                else if (topAv >= impactedBall.top && leftAv >= impactedBall.left) {
+                  Vfb1x *= -1;
+                  Vfb2x *= -1;
+                }
+                // old attempt involved looking at theta, but it was unreliable as theta was not the determining factor regarding which quadrant the impact was on
+                // if (theta < -0.785398) {
+                //   if (topAv < impactedBall.top && leftAv < impactedBall.left) {
+                //     // Vfb1x *= -1;
+                //     Vfb1y *= -1;
+                //     Vfb2y *= -1;
+                //   }
+                //   else {
+                //     Vfb1x *= -1;
+                //     Vfb2x *= -1;
+                //   }
+                // }
+                // else if (theta < 0) {
+                //   // Vfb2x *= -1;
+                // }
+                // else if (theta < 0.785398) {
+                //   Vfb2x *= -1;
+                //   // Vfb1x *= -1;
+                // }
+                // else {
+                //   if (topAv < impactedBall.top && leftAv > impactedBall.left) {
+                //     Vfb1y *= -1;
+                //     Vfb2y *= -1;
+                //   }
+                //   else {
+                //   Vfb1x *= -1;
+                //   Vfb1y *= -1;
+                //   Vfb2y *= -1;
+                //   }
+                // }
                 element.xVel = Vfb1x;
                 element.yVel = Vfb1y;
                 impactedBall.inMotion = true;
