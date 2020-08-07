@@ -72,7 +72,7 @@ const Lobby = () => {
           }
           else {
             // res.json().then((data) => {
-              console.log('data from poll', res.data)
+              console.log('lobbyGames from poll', res.lobbyGames)
               if (settings.status === "readying" || 
               settings.status === "un-readying" || 
               settings.status === "leaving" ||
@@ -84,8 +84,8 @@ const Lobby = () => {
                 return;
               }
               setFetchedLobbyData(true);
-              let lobbiesToDisplay = res.data.lobbyGames;
-              res.data.lobbyGames.forEach((game)=>{
+              let lobbiesToDisplay = res.lobbyGames;
+              res.lobbyGames.forEach((game)=>{
                 if (game.Player1 === userInfo.user.userName || game.Player2 === userInfo.user.userName) {
                   lobbiesToDisplay = [game];
                   setPlayerInLobbyGame(true);
