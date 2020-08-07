@@ -66,7 +66,8 @@ const Lobby = () => {
       }).then((res) => {
         console.log('res from poll', res, 'type of res is:', typeof res)
         if (res.status === 200 || res.status === 304) {
-          if (typeof res != "object") {
+          if (typeof res !== "object") {
+            console.log('res in lobby is not an object...')
             dispatch(loadAvailableGamesSuccess());
           }
           else {
