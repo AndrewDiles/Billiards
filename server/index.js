@@ -50,24 +50,25 @@ App
   // .use('/view-account', express.static("../build/"))
   // .use('/view-lobby', express.static("../build/"))
   // .use('/', express.static("../build/"))
-  .use('../src/assets/*', express.static('../build'))
+  
+  // .use('../src/assets/*', express.static('../build'))
   .get('/', function(req, res, next) {
-    res.sendFile('../build/index.html')
+    res.sendFile(path.join(__dirname, '../build/index.html'))
   })
   .get('/home', function(req, res, next) {
-    res.sendFile('../build/index.html')
+    res.sendFile(path.join(__dirname, '../build/index.html'))
   })
   .get('/login', function(req, res, next) {
-    res.sendFile('../build/index.html')
+    res.sendFile(path.join(__dirname, '../build/index.html'))
   })
   .get('/billiards', function(req, res, next) {
-    res.sendFile('../build/index.html')
+    res.sendFile(path.join(__dirname, '../build/index.html'))
   })
   .get('/view-accounts', function(req, res, next) {
-    res.sendFile('../build/index.html')
+    res.sendFile(path.join(__dirname, '../build/index.html'))
   })
   .get('/view-lobby', function(req, res, next) {
-    res.sendFile('../build/index.html')
+    res.sendFile(path.join(__dirname, '../build/index.html'))
   })
 
   .use(bodyParser.json())
