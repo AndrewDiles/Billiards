@@ -4,7 +4,7 @@ const server = require('http').Server(AppImport);
 // const socket = require('socket.io')(server);
 const { MongoClient } = require('mongodb');
 const assert = require('assert');
-const password = process.env.mongoKey;
+const password = process.env.mongoKey || '1qazxsw23edc';
 
 let storedLobbyData = [];
 

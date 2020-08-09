@@ -43,11 +43,17 @@ export default Stash;
 
 const Styledh3 = styled.h3`
   font-weight: bolder;
+  @media screen and (max-width: 550px) {
+    size: 0.7em;
+  }
 `
 
 const StyledImg = styled.img`
   align-self: center;
   margin-left: 10px;
+  @media screen and (max-width: 550px) {
+    margin-left: 0;
+  }
 `
 const RowDiv = styled.div`
   display: flex;
@@ -55,6 +61,9 @@ const RowDiv = styled.div`
   justify-content: center;
   align-items: center;
   text-align: center;
+  @media screen and (max-width: 550px) {
+    size: 0.5em;
+  }
 `
 const ColDiv = styled.div`
   display: flex;

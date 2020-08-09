@@ -86,5 +86,8 @@ justify-content: center;
 align-items: center;
 text-align: center;
 padding-left: 40px;
+@media screen and (max-width: 700px) {
+    padding-left: 0;
+  }
 `
 

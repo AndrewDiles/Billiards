@@ -50,6 +50,9 @@ export default PastGame;
 const StyledP = styled.p`
   width: ${props => props.width};
   font-weight: ${props => props.bold === 'true' && 'bold'};
+  @media screen and (max-width: 550px) {
+    size: 0.5em;
+  }
 `
 
 const RowDivEven = styled.div`
@@ -60,6 +63,8 @@ const RowDivEven = styled.div`
   text-align: center;
   width: 100%;
   padding-left: 20px;
-  /* border: white 1px solid; */
+  @media screen and (max-width: 550px) {
+    padding-left: 5px;
+  }
 `
 
