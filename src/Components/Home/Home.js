@@ -121,14 +121,17 @@ const Column = styled.div`
   background-color: rgba(255,255,255,0.05);
   border-radius: 25px;
   margin: 0 2%;
-  min-height: 700px;
+  min-height: 600px;
   width: 600px;
   padding: 30px;
   @media screen and (max-width: 1100px) {
     border-radius: ${props => props.colNum === '1' ? '25px 25px 0 0' : '0 0 25px 25px'};
   }
   @media screen and (max-width: 700px) {
-    width: 400px;
+    width: 500px;
+  }
+  @media screen and (max-width: 550px) {
+    width: 325px;
   }
 `
 const RowDiv = styled.div`

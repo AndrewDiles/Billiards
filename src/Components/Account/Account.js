@@ -54,7 +54,10 @@ const Column = styled.div`
     margin-left: 50px;
   }
   @media screen and (max-width: 700px) {
-    width: 400px;
+    width: 500px;
+  }
+  @media screen and (max-width: 550px) {
+    width: 325px;
   }
 `
 const CabinContent = styled.div`
