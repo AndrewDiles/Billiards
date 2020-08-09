@@ -375,7 +375,7 @@ export default function userReducer(state = initialState, action) {
       }
     }
     case 'SET_OBJECTIVES' : {
-      console.log('action.player',action.player,'action.ballType',action.ballType)
+      // console.log('action.player',action.player,'action.ballType',action.ballType)
       let newState = {...state};
       state.currentGame[action.player].ballType = action.ballType;
       let altBallType = '';
@@ -385,7 +385,7 @@ export default function userReducer(state = initialState, action) {
       if (action.player === "player1") altPlayer = "player2";
       else altPlayer = "player1";
       state.currentGame[altPlayer].ballType = altBallType;
-      console.log('altPlayer',altPlayer,'altBallType',altBallType)
+      // console.log('altPlayer',altPlayer,'altBallType',altBallType)
       return newState
     }
     case 'ADD_TO_SUNK_BALLS' : {

@@ -4,7 +4,6 @@ import styled from 'styled-components';
 
 import grabGreen from '../../../assets/grabGreen.png';
 import grabRed from '../../../assets/grabRed.png';
-
 import { testBallCollisions } from '../../../Functions/physics';
 
 import {
@@ -138,7 +137,8 @@ const Balls = ( {billiard} ) => {
       radius = {actualSizes.ballRadius * sizeRatios[settings.tableSize]}
       xAngle = {billiard.xAngle}
       >
-        <Stripe
+        {billiard.id !== 'cue' &&
+          <Stripe
           className = {billiard.id}
           radius = {actualSizes.ballRadius * sizeRatios[settings.tableSize]}
           sinDegY = {100*sinDegY}
@@ -146,8 +146,7 @@ const Balls = ( {billiard} ) => {
           yAngle = {billiard.yAngle}
           striped = {ballColors[billiard.id].striped}
           color = {ballColors[billiard.id].color}
-        >
-          {billiard.id !== 'cue' &&
+          >
             <WhiteCenterCircle
             className = {billiard.id}
             sinDegY = {100*sinDegY}
@@ -158,8 +157,8 @@ const Balls = ( {billiard} ) => {
               <Shine/>  
               {/* Shine actually doesn't currently make sense, as the light source would cause a shine in the same location, yet these shines rotates differently */}
             </WhiteCenterCircle>
-          }
-        </Stripe>
+          </Stripe>
+        }
       </Color>
     </BallContainer>
   )

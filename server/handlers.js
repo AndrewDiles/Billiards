@@ -85,7 +85,6 @@ const pollingConnection =  new MongoClient(uri, {
 });
 
   const handleLogIn = async (req, res) => {
-    console.log('YOU HIT THE LOGIN');
     // res.status(400).json({ status: 400, message: 'Password is incorrect'  });
     const userName = req.body.userName;
     const password = req.body.password;
@@ -191,7 +190,6 @@ const pollingConnection =  new MongoClient(uri, {
   
 
   const handlePollForLobby = async (req, res) => {
-    console.log('YOU HIT THE POLL HANDLER')
     try {
       await pollingConnection.connect();
       } catch (err) {
@@ -224,10 +222,6 @@ const pollingConnection =  new MongoClient(uri, {
     const existingPlayerInLobby = req.body.existingPlayerInLobby;
     const slotToAddNewPlayerInto = req.body.slotToAddNewPlayerInto;
   
-    console.log('playerToAdd',playerToAdd);
-    console.log('playerToAddWealth',playerToAddWealth);
-    console.log('existingPlayerInLobby',existingPlayerInLobby);
-    console.log('slotToAddNewPlayerInto',slotToAddNewPlayerInto);
     if (!playerToAdd || !slotToAddNewPlayerInto || !existingPlayerInLobby || playerToAddWealth === null) {
       res.status(400).json({ status: 400, error: 'Credentials be missing...'  });
       
@@ -265,8 +259,8 @@ const pollingConnection =  new MongoClient(uri, {
           else if (slotToAddNewPlayerInto === "Player2") {
             newValues = { $set: { Player2: playerToAdd, Player2Wealth: playerToAddWealth } };
           }
-          console.log('newValues',newValues);
-          console.log('query',query);
+          // console.log('newValues',newValues);
+          // console.log('query',query);
           
           const r = await db.collection('lobbyInfo').updateOne(query, newValues);
           // assert.equal(1, r.matchedCount);
@@ -402,9 +396,6 @@ const pollingConnection =  new MongoClient(uri, {
     const player1 = req.body.player1;
     const player2 = req.body.player2;
     const readyingPlayerNumber = req.body.readyingPlayerNumber;
-    console.log('player1player1player1',player1);
-    console.log('player2',player2);
-    console.log('readyingPlayerNumberreadyingPlayerNumber',readyingPlayerNumber)
     if ((player1 === null && player2 === null) || !readyingPlayerNumber) {
       console.log('Failed at post data reception');
       res.status(400).json({ status: 400, error: 'Credentials be missing...'  });
@@ -451,8 +442,6 @@ const pollingConnection =  new MongoClient(uri, {
             }
           }
           else {
-            console.log('findMatchfindMatchfindMatch',findMatch);
-            console.log('findMatch.Player1 === null',findMatch.Player1 === null)
             if (findMatch.Player1 === null) {
               deletingMatch = true;
             }
@@ -460,7 +449,6 @@ const pollingConnection =  new MongoClient(uri, {
             newValues = { $set: { Player2: null, Player2Wealth: null,  Player2Ready: false } };
             }
           }
-          console.log('deletingMatchdeletingMatchdeletingMatchdeletingMatchdeletingMatch',deletingMatch)
           if (!deletingMatch) {
             const r = await db.collection('lobbyInfo').updateOne(query, newValues);
             // assert.equal(1, r.matchedCount);
@@ -468,7 +456,6 @@ const pollingConnection =  new MongoClient(uri, {
             res.status(200).json({ status: 200, message: "Success!" })
           }
           else {
-            console.log('DELETING MATCH');
             const r = await db.collection('lobbyInfo').remove(query);
             // assert.equal(1, r);
             res.status(200).json({ status: 200, message: "Success!" })
@@ -487,14 +474,12 @@ const pollingConnection =  new MongoClient(uri, {
     const userName = req.body.userName;
     const item = req.body.item;
 
-    console.log(`user ${userName} wishes to buy ${item}`);
+    // console.log(`user ${userName} wishes to buy ${item}`);
 
     if (!userName || !item) {
       res.status(400).json({ status: 400, message: 'Fields may not be blank'  });
       return;
     }
-
-    console.log('getting mongo info')
 
     try {
       await client.connect();
@@ -517,7 +502,7 @@ const pollingConnection =  new MongoClient(uri, {
         else if (item === 'wirtsLeg') cost = 30000;
         else if (item === 'purpleChalk') cost = 2000;
         else if (item === 'rainbowChalk') cost = 10000;
-        console.log(`cost of ${item} is ${cost}`);
+        // console.log(`cost of ${item} is ${cost}`);
         let newWealth = result.dubloons - cost;
         let newInventory = result.inventory;
         newInventory[item] = true;

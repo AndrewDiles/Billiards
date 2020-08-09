@@ -8,8 +8,6 @@ import magicWand from '../../assets/magicWand.png';
 import boomStick from '../../assets/boomStick.png';
 import wirtsLeg from '../../assets/wirtsLeg.png';
 
-
-
 import { setShotAngle, setCueStrikeLocation } from "../../actions";
 
 import {determinePadding} from '../../Functions/cuePadding';

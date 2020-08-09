@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import styled from 'styled-components';
+import PredictiveLine from './PredictiveLine';
 
 import {
   beginBallMotion,
@@ -572,33 +573,38 @@ const Table = () => {
   } // end of update
 
   return (
-    <TableWrapper
-    id = {'TableWrapper'}
-    // className = {"Table"}
-    settings = {settings}
-    tableSizes = {tableSizes}
-    ballInHand = {settings.ballInHand}
-    >
-      {settings.ballInHand &&
-      <HighIndexTable
-      id = {'Table'}
-      className = {"Table"}
+    <>
+      <TableWrapper
+      id = {'TableWrapper'}
+      // className = {"Table"}
       settings = {settings}
       tableSizes = {tableSizes}
       ballInHand = {settings.ballInHand}
-      />}
-      <TableMemo
-      settings = {settings}
-      />
-      {billiards.billiards.map((billiard)=>{
-        return (
-          <Ball
-          key = {billiard && billiard.id}
-          billiard = {billiard}
-          />
-        )
-      })}
-    </TableWrapper>
+      >
+        {settings.ballInHand &&
+        <HighIndexTable
+        id = {'Table'}
+        className = {"Table"}
+        settings = {settings}
+        tableSizes = {tableSizes}
+        ballInHand = {settings.ballInHand}
+        />}
+        <TableMemo
+        settings = {settings}
+        />
+        {!settings.ballInHand && billiards.status === 'idle' &&
+        <PredictiveLine/>
+        }
+        {billiards.billiards.map((billiard)=>{
+          return (
+            <Ball
+            key = {billiard && billiard.id}
+            billiard = {billiard}
+            />
+          )
+        })}
+      </TableWrapper>
+    </>
   )
 }
 

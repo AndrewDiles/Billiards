@@ -18,8 +18,17 @@ const ShootButton = ( ) => {
   
   const dispatch = useDispatch();
 
+  let cuePower = 15;
+  if (userInfo.user) {
+    if (userInfo.user.inventory.wirtsLeg) cuePower = 25;
+    else if (userInfo.user.inventory.boomStick) cuePower = 30;
+    else if (userInfo.user.inventory.magicWand) cuePower = 20;
+    else if (userInfo.user.inventory.plainOlCue) cuePower = 15;
+    else if (userInfo.user.inventory.crookedStick) cuePower = 10;
+  }
+
   const handleClickToShoot = () => {
-    dispatch(cueStrike(1+15*(settings.shotPower+.01)*(settings.shotPower+.01), settings.shotAngle, settings.cueStrikeLocationX, settings.cueStrikeLocationY));  //will later have parameters     power, angle 0=> right, Math.PI/2 => up Math.PI => left, 3Math.PI/2 => down strikeLocationX, strikeLocationY
+    dispatch(cueStrike(1+cuePower*(settings.shotPower+.01)*(settings.shotPower+.01), settings.shotAngle, settings.cueStrikeLocationX, settings.cueStrikeLocationY));  //will later have parameters     power, angle 0=> right, Math.PI/2 => up Math.PI => left, 3Math.PI/2 => down strikeLocationX, strikeLocationY
     if (settings.gameType === "nine") {
       dispatch(addToShotTotal());
     }
