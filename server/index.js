@@ -3,6 +3,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const morgan = require("morgan");
+const path = require('path');
 
 const { 
   handleLogIn,
@@ -50,7 +51,7 @@ App
   // .use('/view-account', express.static("../build/"))
   // .use('/view-lobby', express.static("../build/"))
   // .use('/', express.static("../build/"))
-  
+
   // .use('../src/assets/*', express.static('../build'))
   .get('/', function(req, res, next) {
     res.sendFile(path.join(__dirname, '../build/index.html'))
