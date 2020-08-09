@@ -65,13 +65,16 @@ App
   .get('/billiards', function(req, res, next) {
     res.sendFile(path.join(__dirname, '../build/index.html'))
   })
-  .get('/view-accounts', function(req, res, next) {
+  .get('/view-account', function(req, res, next) {
     res.sendFile(path.join(__dirname, '../build/index.html'))
   })
   .get('/view-lobby', function(req, res, next) {
     res.sendFile(path.join(__dirname, '../build/index.html'))
   })
   .use('/', express.static("../build/"))
+  .get('*', function(req, res, next) {
+    res.sendFile(path.join(__dirname, '../build/index.html'));
+  })
 
   .use(bodyParser.json())
   .use(express.urlencoded({ extended: false }))
