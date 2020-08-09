@@ -51,7 +51,25 @@ App
   // .use('/view-lobby', express.static("../build/"))
   // .use('/', express.static("../build/"))
   .use('../src/assets/*', express.static('../build'))
-  .get('*', function(req, res, next) {
+  .get('/home', function(req, res, next) {
+    res.sendFile(path.join(__dirname, '../build/index.html'));
+  })
+  .get('/login', function(req, res, next) {
+    res.sendFile(path.join(__dirname, '../build/index.html'));
+  })
+  .get('/billiards', function(req, res, next) {
+    res.sendFile(path.join(__dirname, '../build/index.html'));
+  })
+  .get('/view-account', function(req, res, next) {
+    res.sendFile(path.join(__dirname, '../build/index.html'));
+  })
+  .get('/view-lobby', function(req, res, next) {
+    res.sendFile(path.join(__dirname, '../build/index.html'));
+  })
+  .get('/', function(req, res, next) {
+    res.sendFile(path.join(__dirname, '../build/index.html'));
+  })
+  .get('/*', function(req, res, next) {
   res.sendFile(path.join(__dirname, '../build/index.html'));
   })
 
