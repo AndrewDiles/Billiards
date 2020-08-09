@@ -71,6 +71,7 @@ App
   .get('/view-lobby', function(req, res, next) {
     res.sendFile(path.join(__dirname, '../build/index.html'))
   })
+  .use('/', express.static("../build/"))
 
   .use(bodyParser.json())
   .use(express.urlencoded({ extended: false }))
