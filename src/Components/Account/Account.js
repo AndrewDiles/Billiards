@@ -53,6 +53,9 @@ const Column = styled.div`
     margin-top: 25px;
     margin-left: 50px;
   }
+  @media screen and (max-width: 700px) {
+    width: 400px;
+  }
 `
 const CabinContent = styled.div`
   display:flex;
@@ -79,5 +82,6 @@ flex-direction: column;
 justify-content: center;
 align-items: center;
 text-align: center;
+padding-left: 40px;
 `
 

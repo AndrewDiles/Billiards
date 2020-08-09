@@ -10,18 +10,17 @@ import StyledButton from '../StyledButton';
 
 const Home = () => {
   // const settings = useSelector((state) => state.settings);
+  const [refreshedWindow, setReshreshedWindow] = React.useState(window);
   const userInfo = useSelector((state) => state.userInfo);
   window.YTConfig = {
     host: 'https://www.youtube.com' 
-  } 
-  // if (userInfo.user){
-  // console.log('userInfo.user',userInfo.user)
-  // console.log('userInfo.user.userName',userInfo.user.userName)
-  // }
+  }
 
   return (
     <Wrapper>
-      <h1>
+      <h1
+      style={{padding:"50px"}}
+      >
         {!userInfo.user ? (
           "Welcome to Blue Shark's Billiards"
         ) : (
@@ -29,7 +28,9 @@ const Home = () => {
         )}
       </h1>
       <RowDiv>
-        <Column>
+        <Column
+        colNum = '1'
+        >
           <h3>
             Please make an account to play against other shark-shooters remotely.
           </h3>
@@ -73,28 +74,29 @@ const Home = () => {
             Curious how to use this GUI?  See below for instructions:
           </h3>
           <ReactPlayer
-          height = {'300px'}
-          width = {'533px'}
+          height = {'200px'}
+          width = {'356px'}
           url="https://youtu.be/M1SxJ5DfHD4"
           />          
         </Column>
-        <Column>
+        <Column
+        colNum = '2'
+        >
           <h3>
             Curious how to play pool?  See below rules:
           </h3>
           <ReactPlayer
-          height = {'300px'}
-          width = {'533px'}
+          height = {'200px'}
+          width = {'356px'}
           url="https://www.youtube.com/watch?v=eDKt-kaOtGE"
           />
-          {/* <br></br> */}
+          <br/>
           <ReactPlayer
-          height = {'300px'}
-          width = {'533px'}
+          height = {'200px'}
+          width = {'356px'}
           url="https://www.youtube.com/watch?v=HOgFBLlk2aI"
           />
         </Column>
-
 
       </RowDiv>
       
@@ -116,6 +118,12 @@ const Column = styled.div`
   min-height: 700px;
   width: 600px;
   padding: 15px;
+  @media screen and (max-width: 1100px) {
+    border-radius: ${props => props.colNum === '1' ? '25px 25px 0 0' : '0 0 25px 25px'};
+  }
+  @media screen and (max-width: 700px) {
+    width: 400px;
+  }
 `
 const RowDiv = styled.div`
   display:flex;
@@ -125,7 +133,7 @@ const RowDiv = styled.div`
   text-align: center;
   @media screen and (max-width: 1100px) {
   flex-direction: column;
-}
+  }
 `
 const Wrapper = styled.div`
 color: linen;
@@ -141,4 +149,5 @@ flex-direction: column;
 justify-content: center;
 align-items: center;
 text-align: center;
+padding-left: 40px;
 `
