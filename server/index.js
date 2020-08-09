@@ -72,9 +72,6 @@ App
     res.sendFile(path.join(__dirname, '../build/index.html'))
   })
   .use('/', express.static("../build/"))
-  .get('*', function(req, res, next) {
-    res.sendFile(path.join(__dirname, '../build/index.html'));
-  })
 
   .use(bodyParser.json())
   .use(express.urlencoded({ extended: false }))
@@ -158,6 +155,10 @@ App
   //   userName:
   //   gameInfo:
   // }
+
+  .get('*', function(req, res, next) {
+    res.sendFile(path.join(__dirname, '../build/index.html'));
+  })
 
   .listen(PORT, () => console.info(`Listening on port ${PORT}`));
 
