@@ -31,15 +31,17 @@ const Home = () => {
         <Column
         colNum = '1'
         >
-          <h3>
+          <Styledh3
+          >
             Please make an account to play against other shark-shooters remotely.
-          </h3>
+          </Styledh3>
           <Note>
             note: multi-player play has yet to be completed
           </Note>
-          <h3>
+          <Styledh3
+          >
             Or enjoy local play without an account.
-          </h3>
+          </Styledh3>
           {/* <h3/></h3> */}
           {!userInfo.user ? (
             <NavLink to="/login">
@@ -70,30 +72,31 @@ const Home = () => {
               </NavLink>
             </>
           )}
-          <h3>
+          <Styledh3
+          >
             Curious how to use this GUI?  See below for instructions:
-          </h3>
+          </Styledh3>
           <ReactPlayer
-          height = {'200px'}
-          width = {'356px'}
+          height = {'171px'}
+          width = {'304px'}
           url="https://youtu.be/M1SxJ5DfHD4"
           />          
         </Column>
         <Column
         colNum = '2'
         >
-          <h3>
+          <Styledh3>
             Curious how to play pool?  See below rules:
-          </h3>
+          </Styledh3>
           <ReactPlayer
-          height = {'200px'}
-          width = {'356px'}
+          height = {'171px'}
+          width = {'304px'}
           url="https://www.youtube.com/watch?v=eDKt-kaOtGE"
           />
           <br/>
           <ReactPlayer
-          height = {'200px'}
-          width = {'356px'}
+          height = {'171px'}
+          width = {'304px'}
           url="https://www.youtube.com/watch?v=HOgFBLlk2aI"
           />
         </Column>
@@ -104,6 +107,10 @@ const Home = () => {
   )
 }
 export default Home;
+
+const Styledh3 = styled.h3`
+  padding: "0 30px"
+`
 const Note = styled.h5`
   color: crimson;
 `
