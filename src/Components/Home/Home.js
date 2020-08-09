@@ -109,7 +109,6 @@ const Home = () => {
 export default Home;
 
 const Styledh3 = styled.h3`
-  padding: "0 30px"
 `
 const Note = styled.h5`
   color: crimson;
@@ -124,7 +123,7 @@ const Column = styled.div`
   margin: 0 2%;
   min-height: 700px;
   width: 600px;
-  padding: 15px;
+  padding: 30px;
   @media screen and (max-width: 1100px) {
     border-radius: ${props => props.colNum === '1' ? '25px 25px 0 0' : '0 0 25px 25px'};
   }
