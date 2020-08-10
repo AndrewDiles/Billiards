@@ -103,8 +103,7 @@ const Lobby = () => {
         }
       })
     }
-    let interval = setInterval(getLobbyInfo,1000);
-    // setTimeout(getLobbyInfo, 1000);
+    let interval = setInterval(getLobbyInfo,1500);
     return () => {
       clearInterval(interval);
     }
