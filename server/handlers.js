@@ -81,7 +81,8 @@ const client = new MongoClient(uri, {
 });
 const pollingConnection =  new MongoClient(uri, { 
   useNewUrlParser: true,
-  useUnifiedTopology: true
+  useUnifiedTopology: true,
+  connectTimeoutMS: 3000
 });
 
   const handleLogIn = async (req, res) => {
@@ -198,17 +199,14 @@ const pollingConnection =  new MongoClient(uri, {
         // console.log('result from mongo was:', result)
         if (result) {
           storedLobbyData = result;
-          await pollingConnection.close();
           res.status(200).json({ status: 200, lobbyGames: storedLobbyData })
         }
         else {
           // console.log('result null:', result)
-          await pollingConnection.close();
           res.status(304).json({ status: 304, lobbyGames: storedLobbyData })
         }
       } catch (err) {
         console.log(err);
-        await pollingConnection.close();
         res.status(500).json({ status: 500, message: "error" });
       }
     } catch (err) {
