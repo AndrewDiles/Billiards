@@ -143,16 +143,6 @@ const Lobby = () => {
 }
 export default Lobby;
 
-// const Column = styled.div`
-//   display: flex;
-//   flex-direction: column;
-//   width: 50%;
-//   align-items: center;
-// `
-// const RowDiv = styled.div`
-//   display:flex;
-//   flex-direction: row;
-// `
 const Wrapper = styled.div`
 color: linen;
 /* background-color: lightgray; */

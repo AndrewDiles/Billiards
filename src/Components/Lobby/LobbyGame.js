@@ -88,5 +88,13 @@ margin: 3px;
 border: white 1px solid;
 background-color: rgba(255,255,255,0.05);
 border-radius: 25px;
+@media screen and (max-width: 700px) {
+  width: 400px;
+  height: 250px;
+}
+@media screen and (max-width: 400px) {
+  width: 250px;
+  height: auto;
+}
 `
 
