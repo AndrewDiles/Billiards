@@ -192,27 +192,26 @@ const pollingConnection =  new MongoClient(uri, {
   const handlePollForLobby = async (req, res) => {
     try {
       await pollingConnection.connect();
+      const polldb = pollingConnection.db('billiardsInfo');
+      try {
+        const result = await polldb.collection('lobbyInfo').find().toArray();
+        // console.log('result from mongo was:', result)
+        if (result) {
+          storedLobbyData = result;
+          res.status(200).json({ status: 200, lobbyGames: storedLobbyData })
+        }
+        else {
+          // console.log('result null:', result)
+          res.status(304).json({ status: 304, lobbyGames: storedLobbyData })
+        }
       } catch (err) {
-        console.log('err from trying to connect', err);
+        console.log(err);
+        res.status(500).json({ status: 500, message: "error" });
       }
-
-    const polldb = pollingConnection.db('billiardsInfo');
-    try {
-      const result = await polldb.collection('lobbyInfo').find().toArray();
-      // console.log('result from mongo was:', result)
-      if (result) {
-        storedLobbyData = result;
-        res.status(200).json({ status: 200, lobbyGames: storedLobbyData })
-      }
-      else {
-        // console.log('result null:', result)
-        res.status(304).json({ status: 304, lobbyGames: storedLobbyData })
-      }
+      await pollingConnection.close();
     } catch (err) {
-      console.log(err);
-      res.status(500).json({ status: 500, message: "error" });
+      console.log('err from trying to connect', err);
     }
-    await pollingConnection.close();
   }
 
   const handleJoinGame = async (req, res) => {
