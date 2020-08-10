@@ -212,7 +212,7 @@ const pollingConnection =  new MongoClient(uri, {
       console.log(err);
       res.status(500).json({ status: 500, message: "error" });
     }
-    // await pollingConnection.close();
+    await pollingConnection.close();
   }
 
   const handleJoinGame = async (req, res) => {
