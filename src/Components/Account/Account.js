@@ -55,6 +55,8 @@ const Column = styled.div`
   }
   @media screen and (max-width: 700px) {
     width: 500px;
+    margin-top: 10px;
+    margin-left: 30px;
   }
   @media screen and (max-width: 550px) {
     width: 325px;
