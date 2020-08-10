@@ -74,6 +74,9 @@ display: flex;
 justify-content: center;
 align-items: center;
 background-color: ${props => props.gameInfo.Player1Ready && props.gameInfo.Player2Ready && 'rgba(0,255,0,0.25)'};
+@media screen and (max-width: 700px) {
+  font-size: 1em;
+}
 `
 
 const Wrapper = styled.div`
@@ -93,8 +96,7 @@ border-radius: 25px;
   height: 250px;
 }
 @media screen and (max-width: 400px) {
-  width: 250px;
-  height: auto;
+  width: 280px;
 }
 `
 

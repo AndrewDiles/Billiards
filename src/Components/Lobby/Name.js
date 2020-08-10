@@ -51,6 +51,9 @@ align-items: center;
 text-align: center;
 padding: 3px;
 font-size: 1.5em;
+@media screen and (max-width: 700px) {
+  font-size: 1em;
+}
 `
 const WealthDiv = styled.div`
 width: 100%;
@@ -62,6 +65,9 @@ align-items: center;
 text-align: center;
 padding: 3px;
 font-size: 1em;
+@media screen and (max-width: 700px) {
+  font-size: 1em;
+}
 `
 
 const StyledImg = styled.img`
