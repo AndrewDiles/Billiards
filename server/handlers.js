@@ -199,16 +199,17 @@ const pollingConnection =  new MongoClient(uri, {
         if (result) {
           storedLobbyData = result;
           res.status(200).json({ status: 200, lobbyGames: storedLobbyData })
+          await pollingConnection.close();
         }
         else {
           // console.log('result null:', result)
           res.status(304).json({ status: 304, lobbyGames: storedLobbyData })
+          await pollingConnection.close();
         }
       } catch (err) {
         console.log(err);
         res.status(500).json({ status: 500, message: "error" });
       }
-      await pollingConnection.close();
     } catch (err) {
       console.log('err from trying to connect', err);
     }
