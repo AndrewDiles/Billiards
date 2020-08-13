@@ -27,15 +27,15 @@ const ShootButton = ( ) => {
     else if (userInfo.user.inventory.crookedStick) cuePower = 10;
   }
 
-  let angleMultiplier = 1;
+  let angleMultiplier = 2;
   if (userInfo.user) {
-    if (userInfo.user.inventory.rainbowChalk) angleMultiplier = 0.1;          // rainbowChalk reduces range by 90%
-    else if (userInfo.user.inventory.purpleChalk) angleMultiplier = 0.25;     // purpleChalk reduces range by 75%    
-    else if (userInfo.user.inventory.chalk) angleMultiplier = 0.5;            // chalk reduces range by 50%
+    if (userInfo.user.inventory.rainbowChalk) angleMultiplier = 0.2;          // rainbowChalk reduces range by 90%
+    else if (userInfo.user.inventory.purpleChalk) angleMultiplier = 0.5;     // purpleChalk reduces range by 75%    
+    else if (userInfo.user.inventory.chalk) angleMultiplier = 1;            // chalk reduces range by 50%
   }
   // one degree: 0.00872664625
   // half degree: 0.00436332312
-  let angleVariation = angleMultiplier * 0.00872664625 * ((Math.random())-.5); // this gives error of +/- half a degree x chalkMultiplier
+  let angleVariation = angleMultiplier * 0.00872664625 * ((Math.random())-.5); // this gives error of +/- one degree x chalkMultiplier
 
   const handleClickToShoot = () => {
     dispatch(cueStrike(1+cuePower*(settings.shotPower+.01)*(settings.shotPower+.01), angleVariation + settings.shotAngle, settings.cueStrikeLocationX, settings.cueStrikeLocationY));  //will later have parameters     power, angle 0=> right, Math.PI/2 => up Math.PI => left, 3Math.PI/2 => down strikeLocationX, strikeLocationY
