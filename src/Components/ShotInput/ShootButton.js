@@ -29,9 +29,9 @@ const ShootButton = ( ) => {
 
   let angleMultiplier = 1;
   if (userInfo.user) {
-    if (userInfo.user.inventory.chalk) angleMultiplier = 0.5;             // chalk reduces range by 50%
-    else if (userInfo.user.inventory.purpleChalk) angleMultiplier = 0.25; // purpleChalk reduces range by 75%    
-    else if (userInfo.user.inventory.rainbowChalk) angleMultiplier = 0.1; // rainbowChalk reduces range by 90%
+    if (userInfo.user.inventory.rainbowChalk) angleMultiplier = 0.1;          // rainbowChalk reduces range by 90%
+    else if (userInfo.user.inventory.purpleChalk) angleMultiplier = 0.25;     // purpleChalk reduces range by 75%    
+    else if (userInfo.user.inventory.chalk) angleMultiplier = 0.5;            // chalk reduces range by 50%
   }
   // one degree: 0.00872664625
   // half degree: 0.00436332312

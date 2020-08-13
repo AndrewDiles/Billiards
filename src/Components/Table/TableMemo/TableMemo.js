@@ -19,9 +19,9 @@ export function TableMemoComponent({ settings }) {
 
   let chalkUrl = null;
   if (userInfo.user) {
-    if (userInfo.user.inventory.chalk) chalkUrl = blueChalk;
-    else if (userInfo.user.inventory.rainbowChalk) chalkUrl = rainbowChalk;
+    if (userInfo.user.inventory.rainbowChalk) chalkUrl = rainbowChalk;
     else if (userInfo.user.inventory.purpleChalk) chalkUrl = purpleChalk;
+    else if (userInfo.user.inventory.chalk) chalkUrl = blueChalk;
   }
   let transform,left,top,size;
   if (settings.tableSize === "narrow") {
