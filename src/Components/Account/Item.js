@@ -44,6 +44,7 @@ const Item = ({ item }) => {
   else if (item === 'magicWand') cost = 500;
   else if (item === 'boomStick') cost = 5000;
   else if (item === 'wirtsLeg') cost = 30000;
+  else if (item === 'chalk') cost = 250;
   else if (item === 'purpleChalk') cost = 2000;
   else if (item === 'rainbowChalk') cost = 10000;
 

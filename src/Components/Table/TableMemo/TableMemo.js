@@ -17,9 +17,10 @@ export function TableMemoComponent({ settings }) {
   const userInfo = useSelector((state) => state.userInfo);
   // console.log('TABLE MEMO HAS RE-RENDERED');
 
-  let chalkUrl = blueChalk;
+  let chalkUrl = null;
   if (userInfo.user) {
-    if (userInfo.user.inventory.rainbowChalk) chalkUrl = rainbowChalk;
+    if (userInfo.user.inventory.chalk) chalkUrl = blueChalk;
+    else if (userInfo.user.inventory.rainbowChalk) chalkUrl = rainbowChalk;
     else if (userInfo.user.inventory.purpleChalk) chalkUrl = purpleChalk;
   }
   let transform,left,top,size;
@@ -45,14 +46,16 @@ export function TableMemoComponent({ settings }) {
     size = {settings.tableSize}
     tableSizes = {tableSizes}
     >
-      <ChalkImg
-      transform = {transform}
-      size = {size}
-      left = {left}
-      top = {top}
-      src = {chalkUrl} 
-      alt = "A small image of a the user's chalk"
+      { chalkUrl &&
+        <ChalkImg
+        transform = {transform}
+        size = {size}
+        left = {left}
+        top = {top}
+        src = {chalkUrl} 
+        alt = "A small image of a the user's chalk"
       />
+      }
       <Cushion
       size = {settings.tableSize}
       tableSizes = {tableSizes}
